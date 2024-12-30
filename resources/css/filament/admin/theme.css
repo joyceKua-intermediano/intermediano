@@ -1,0 +1,41 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+.fi-layout {
+    @apply bg-gray-300;
+}
+
+.fi-sidebar-header {
+    background-color: #7D2B1D;
+}
+
+.fi-topbar nav {
+    background-color: #7D2B1D;
+}
+
+.fi-topbar nav .fi-icon-btn {
+    @apply text-white;
+}
+
+.fi-logo {
+    /* height: 40px !important; */
+    height: auto !important;
+}
+
+#kanban-board {
+    @apply overflow-x-auto overflow-y-hidden gap-4 pb-4 min-h-[750px];
+}
+
+.fi-ta-ctn {
+    @apply bg-gray-100;
+}
+
+.fi-modal-window {
+    @apply bg-gray-100;
+}
+
+table td, table th {
+    word-wrap: break-word;         /* All browsers since IE 5.5+ */
+    overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+}

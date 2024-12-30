@@ -1,0 +1,16 @@
+image: debian:bookworm-slim
+
+before_script:
+  - apt update
+  - apt install -y openssh-client sshpass
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan 45.56.120.186 >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+build1:
+  stage: build
+  script:
+    - sshpass -p $DEPLOYER_PASS ssh deployer@45.56.120.186
+  tags:
+    - intermediano
