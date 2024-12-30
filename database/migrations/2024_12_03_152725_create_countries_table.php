@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->decimal('income_tax_rate', 5, 2);
             $table->boolean('use_real_time_conversion')->default(false);
+            $table->decimal('converted_currency_quota', 10, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
             

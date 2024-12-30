@@ -6,6 +6,7 @@ use App\Filament\Resources\CountryResource\Pages;
 use App\Filament\Resources\CountryResource\RelationManagers;
 use App\Helpers\ExchangeRateHelper;
 use App\Models\Country;
+use App\Models\Currency;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -97,7 +98,7 @@ class CountryResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    Tables\Columns\ToggleColumn::make('use_real_time_conversion')
+                Tables\Columns\ToggleColumn::make('use_real_time_conversion')
                     ->label('Real-Time Conversion')
                     ->sortable()
                     ->toggleable()
@@ -112,7 +113,7 @@ class CountryResource extends Resource
                         $firstCurrency = $record->currencies()->first();
 
                         return $record->use_real_time_conversion
-                            ? ExchangeRateHelper::getExchangeRate('USD', $firstCurrency->currency_name,)
+                            ? $record->converted_currency_quota
                             : $record->currencies()->where('currency_name', $firstCurrency->currency_name)->first()->currency_quota ?? $record->currency_name;
                     }),
                 Tables\Columns\TextColumn::make('updated_at')

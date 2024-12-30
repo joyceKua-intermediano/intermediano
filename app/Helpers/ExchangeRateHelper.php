@@ -22,4 +22,13 @@ class ExchangeRateHelper
             return 'Error: Unable to fetch rates.';
         }
     }
+
+    public static function getExchangeRateForInvestment($investment): float | string {
+        if ($investment->country->use_real_time_conversion) {
+            return $investment->country->converted_currency_quota;
+        } else {
+            return $investment->currency->currency_quota ?? 1;
+        }
+
+    }
 }

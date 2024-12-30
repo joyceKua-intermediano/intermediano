@@ -9,7 +9,7 @@ class Country extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'income_tax_rate', 'use_real_time_conversion'];
+    protected $fillable = ['name', 'income_tax_rate', 'use_real_time_conversion', 'converted_currency_quota'];
 
     public function currencies()
     {
