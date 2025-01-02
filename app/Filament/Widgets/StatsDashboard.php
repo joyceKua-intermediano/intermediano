@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Filament\Widgets;
+use Carbon\Carbon;
 
 use App\Helpers\ExchangeRateHelper;
 use App\Models\Country;
@@ -11,19 +12,16 @@ use Maatwebsite\Excel\Concerns\WithBackgroundColor;
 
 class StatsDashboard extends BaseWidget
 {
+    public ?string $filter = null;
 
+    public function __construct()
+    {
+        $this->filter = now()->year;
+    }
     protected function getStats(): array
     {
-        $getExchangeRate = function ($investment) {
-            if ($investment->country->use_real_time_conversion) {
-                return $investment->country->converted_currency_quota;
-                // return ExchangeRateHelper::getExchangeRate('USD', $investment->currency->currency_name);
-            } else {
-                return $investment->currency->currency_quota ?? 1;
-            }
-        };
-
-        $investmentsPerCountry = Investment::all()
+        $investmentsPerCountry = Investment::whereYear('deposit_date', $this->filter)
+        ->get()
             ->groupBy('country_id')
             ->map(function ($investments, $countryId) {
                 $totalCapital = $investments->sum(function ($investment) {

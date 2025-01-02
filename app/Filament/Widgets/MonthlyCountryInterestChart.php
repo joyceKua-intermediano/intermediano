@@ -13,11 +13,17 @@ class MonthlyCountryInterestChart extends ChartWidget
     protected static ?int $sort = 1;
 
     protected static ?string $heading = 'Monthly Total Interest by Country';
+    public ?string $filter = null;
+
+    public function __construct()
+    {
+        $this->filter = now()->year;
+    }
 
 
     protected function getData(): array
     {
-        $investmentsMonthlyPerCountry = Investment::all()->groupBy('country_id')->map(function ($investments, $countryId) {
+        $investmentsMonthlyPerCountry = Investment::whereYear('deposit_date', $this->filter)->get()->groupBy('country_id')->map(function ($investments, $countryId) {
             $countryName = Country::find($countryId)->name ?? 'Unknown';
 
             $monthlyData = collect([

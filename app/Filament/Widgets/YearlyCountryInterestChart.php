@@ -8,6 +8,12 @@ use Filament\Widgets\ChartWidget;
 
 class YearlyCountryInterestChart extends ChartWidget
 {
+    public ?string $filter = null;
+
+    public function __construct()
+    {
+        $this->filter = now()->year;
+    }
     protected static ?int $sort = 2;
 
     protected static ?string $heading = 'Total Investment by Country';
@@ -27,6 +33,7 @@ class YearlyCountryInterestChart extends ChartWidget
             ->join('currencies as currency', 'currency.id', '=', 'investments.currency_id')
             ->groupBy('investments.country_id', 'countries.name')
             ->orderByDesc('total_investment_usd')
+            ->whereYear('deposit_date', $this->filter)
             ->get();
 
         // Extract the country names and investment totals for the chart
@@ -70,6 +77,7 @@ class YearlyCountryInterestChart extends ChartWidget
         )
             ->join('countries', 'countries.id', '=', 'investments.country_id')
             ->join('currencies as currency', 'currency.id', '=', 'investments.currency_id')
+            ->whereYear('deposit_date', $this->filter)
             ->first()
             ->total_investment_usd;
 

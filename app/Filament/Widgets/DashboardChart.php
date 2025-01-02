@@ -13,7 +13,12 @@ class DashboardChart extends ChartWidget
 
     protected static ?string $heading = '2024 Investments';
 
-    public ?string $filter = '2024';
+    public ?string $filter = null;
+
+    public function __construct()
+    {
+        $this->filter = now()->year;
+    }
 
     protected function getFilters(): ?array
     {
