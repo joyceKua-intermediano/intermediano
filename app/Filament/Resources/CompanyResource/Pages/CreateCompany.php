@@ -23,4 +23,8 @@ class CreateCompany extends CreateRecord
     public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable {
         return __("Company Registration");
     }
+
+    protected function getRedirectUrl(): string {
+        return $this->getResource()::getUrl('index');
+    }
 }
