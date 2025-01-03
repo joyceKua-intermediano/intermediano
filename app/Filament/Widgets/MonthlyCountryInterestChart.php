@@ -12,7 +12,7 @@ class MonthlyCountryInterestChart extends ChartWidget
 {
     protected static ?int $sort = 1;
 
-    protected static ?string $heading = 'Monthly Total Interest by Country';
+    protected static ?string $heading = 'Monthly Total Investment by Country';
     public ?string $filter = null;
 
     public function __construct()
@@ -44,7 +44,7 @@ class MonthlyCountryInterestChart extends ChartWidget
                     return \Carbon\Carbon::parse($investment->deposit_date)->format('F') === $month;
                 });
 
-                return $monthlyInvestments->sum(function ($investment){
+                return $monthlyInvestments->sum(function ($investment) {
                     $capital = $investment->capital ?? 0;
                     $exchangeRate = ExchangeRateHelper::getExchangeRateForInvestment($investment);
                     return $capital / $exchangeRate;
@@ -80,10 +80,10 @@ class MonthlyCountryInterestChart extends ChartWidget
             ],
             'scales' => [
                 'x' => [
-                    'stacked' => true, 
+                    'stacked' => true,
                 ],
                 'y' => [
-                    'stacked' => true, 
+                    'stacked' => true,
                     'title' => [
                         'display' => true,
                         'text' => 'Total Interest (USD)',
@@ -92,5 +92,22 @@ class MonthlyCountryInterestChart extends ChartWidget
             ],
             'maintainAspectRatio' => true,
         ];
+    }
+
+    protected function getAvailableYears(): array
+    {
+        return Investment::select('year')->get()->groupBy('year')->keys()->toArray();
+    }
+
+    protected function getFilters(): ?array
+    {
+        $availableYears = $this->getAvailableYears();
+        $filterOptions = [];
+
+        foreach ($availableYears as $year) {
+            $filterOptions[$year] = $year;
+        }
+
+        return $filterOptions;
     }
 }

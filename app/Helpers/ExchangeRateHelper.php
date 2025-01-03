@@ -25,6 +25,9 @@ class ExchangeRateHelper
 
     public static function getExchangeRateForInvestment($investment): float | string {
         if ($investment->country->use_real_time_conversion) {
+            if($investment->country->converted_currency_quota < 1) {
+               return $investment->currency->currency_quota;
+            }
             return $investment->country->converted_currency_quota;
         } else {
             return $investment->currency->currency_quota ?? 1;

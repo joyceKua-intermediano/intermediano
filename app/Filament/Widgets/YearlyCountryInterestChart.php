@@ -10,6 +10,7 @@ class YearlyCountryInterestChart extends ChartWidget
 {
     public ?string $filter = null;
 
+    public ?string $headerTitle = '';
     public function __construct()
     {
         $this->filter = now()->year;
@@ -20,7 +21,7 @@ class YearlyCountryInterestChart extends ChartWidget
 
     protected function getData(): array
     {
-        // Adjust the query to include exchange rate logic
+        $activeFilter = $this->filter;
         $data = Investment::selectRaw(
             'countries.name as country_name, ' .
                 'SUM(capital / ' .
@@ -33,13 +34,12 @@ class YearlyCountryInterestChart extends ChartWidget
             ->join('currencies as currency', 'currency.id', '=', 'investments.currency_id')
             ->groupBy('investments.country_id', 'countries.name')
             ->orderByDesc('total_investment_usd')
-            ->whereYear('deposit_date', $this->filter)
+            ->whereYear('deposit_date', $activeFilter)
             ->get();
 
-        // Extract the country names and investment totals for the chart
         $labels = $data->pluck('country_name')->toArray();
         $values = $data->pluck('total_investment_usd')->toArray();
-
+        $this->headerTitle = "Total Investment by Country for {$activeFilter} - USD " . number_format($data->sum('total_investment_usd'), 2);
         return [
             'labels' => $labels,
             'datasets' => [
@@ -67,7 +67,8 @@ class YearlyCountryInterestChart extends ChartWidget
 
     protected function getOptions(): array
     {
-        // Calculate the total investment for all countries, considering the exchange rate
+        $activeFilter = $this->filter;
+
         $totalInvestment = Investment::selectRaw(
             'SUM(capital / ' .
                 'CASE ' .
@@ -77,11 +78,10 @@ class YearlyCountryInterestChart extends ChartWidget
         )
             ->join('countries', 'countries.id', '=', 'investments.country_id')
             ->join('currencies as currency', 'currency.id', '=', 'investments.currency_id')
-            ->whereYear('deposit_date', $this->filter)
+            ->whereYear('deposit_date', $activeFilter)
             ->first()
             ->total_investment_usd;
 
-        $currentYear = now()->year;
 
         return [
             'plugins' => [
@@ -94,15 +94,6 @@ class YearlyCountryInterestChart extends ChartWidget
                             'size' => 12,
                         ],
                     ],
-                ],
-                'title' => [
-                    'display' => true,
-                    'text' => "Total Investment by Country for {$currentYear} - USD " . number_format($totalInvestment, 2),
-                    'font' => [
-                        'size' => 16,
-                        'weight' => 'bold',
-                    ],
-                    'padding' => 20,
                 ],
             ],
             'scales' => [
@@ -117,5 +108,28 @@ class YearlyCountryInterestChart extends ChartWidget
             'cutout' => '40%',
             'maintainAspectRatio' => false,
         ];
+    }
+
+    protected function getAvailableYears(): array
+    {
+        return Investment::select('year')->get()->groupBy('year')->keys()->toArray();
+    }
+
+    protected function getFilters(): ?array
+    {
+        $availableYears = $this->getAvailableYears();
+        $filterOptions = [];
+
+        foreach ($availableYears as $year) {
+            $filterOptions[$year] = $year;
+        }
+
+        return $filterOptions;
+    }
+
+
+    public function getHeading(): string|null
+    {
+        return $this->headerTitle;
     }
 }
