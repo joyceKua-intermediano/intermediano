@@ -11,7 +11,7 @@ class DashboardChart extends ChartWidget
 {
     protected static ?int $sort = 1;
 
-    protected static ?string $heading = '2024 Investments';
+    protected static ?string $heading = 'Monthly total Investments';
 
     public ?string $filter = null;
 

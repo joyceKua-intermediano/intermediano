@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Investment extends Model
@@ -21,5 +22,11 @@ class Investment extends Model
     public function bank()
     {
         return $this->belongsTo(Bank::class);
+    }
+    protected static function booted()
+    {
+        static::creating(function ($investment) {
+            $investment->year = Carbon::parse($investment->deposit_date)->year;
+        });
     }
 }

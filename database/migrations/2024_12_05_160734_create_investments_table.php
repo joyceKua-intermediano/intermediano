@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('interest_rate', 10, 2);
             $table->date('deposit_date');
             $table->smallInteger('withdrawal_period');
+            $table->smallInteger('year')->index();
             $table->timestamps();
         });
     }
