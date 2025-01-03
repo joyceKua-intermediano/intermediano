@@ -53,10 +53,6 @@ class CountryInvestmentRanking extends BaseWidget
         ];
     }
 
-    
-    
-    
-    
     protected function getTableColumns(): array
     {
         return [
