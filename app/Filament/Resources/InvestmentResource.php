@@ -29,7 +29,7 @@ class InvestmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
 
-    protected static ?string $navigationGroup = 'Investments Overview';
+    protected static ?string $navigationGroup = 'Investments';
 
     protected static ?string $label = 'Investments Portfolio';
 

@@ -123,7 +123,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make()->label(__('Administration'))->collapsed(),
                 NavigationGroup::make()->label(__('Group Companies'))->collapsed(),
-                NavigationGroup::make()->label(__('Investments Overview'))->collapsed(),
+                NavigationGroup::make()->label(__('Investments'))->collapsed(),
                 NavigationGroup::make()->label(__('Recruitment'))->collapsed(),
                 NavigationGroup::make()->label(__('Sales')),
                 NavigationGroup::make()->label(__('Settings'))->collapsed(),

@@ -21,7 +21,7 @@ class CountryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
 
-    protected static ?string $navigationGroup = 'Investments Overview';
+    protected static ?string $navigationGroup = 'Investments';
 
     protected static ?string $label = 'Countries Overview';
 
