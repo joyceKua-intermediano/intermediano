@@ -11,14 +11,6 @@ class InvestmentWidget extends BaseWidget
 {
     protected function getStats(): array
     {
-        $getExchangeRate = function ($investment) {
-            if ($investment->country->use_real_time_conversion) {
-                return $investment->country->converted_currency_quota;
-                // return ExchangeRateHelper::getExchangeRate('USD', $investment->currency->currency_name);
-            } else {
-                return $investment->currency->currency_quota ?? 1;
-            }
-        };
 
         $getInterestRate = function ($investment) {
             if ($investment->rate_type === 'annual') {
@@ -29,16 +21,16 @@ class InvestmentWidget extends BaseWidget
             }
         };
 
-        $totalCapitalUsd = Investment::all()->sum(function ($investment) use ($getExchangeRate) {
+        $totalCapitalUsd = Investment::all()->sum(function ($investment) {
             $capital = $investment->capital ?? 0;
-            $exchangeRate = $getExchangeRate($investment);
+            $exchangeRate = ExchangeRateHelper::getExchangeRateForInvestment($investment);
             return $capital / $exchangeRate;
         });
 
-        $totalInterestUsd = Investment::all()->sum(function ($investment) use ($getExchangeRate, $getInterestRate) {
+        $totalInterestUsd = Investment::all()->sum(function ($investment) use ($getInterestRate) {
             $capital = $investment->capital ?? 0;
             $interestRate = $getInterestRate($investment);
-            $exchangeRate = $getExchangeRate($investment);
+            $exchangeRate = ExchangeRateHelper::getExchangeRateForInvestment($investment);
             $daysInMonth = 30;
             $timeInMonths = ($investment->withdrawal_period ?? 0) / $daysInMonth;
 
@@ -49,10 +41,10 @@ class InvestmentWidget extends BaseWidget
             return $monthlyInterest / $exchangeRate;
         });
 
-        $totalNetAmountUsd = Investment::all()->sum(function ($investment) use ($getExchangeRate, $getInterestRate) {
+        $totalNetAmountUsd = Investment::all()->sum(function ($investment) use ($getInterestRate) {
             $capital = $investment->capital ?? 0;
             $interestRate = $getInterestRate($investment);
-            $exchangeRate = $getExchangeRate($investment);
+            $exchangeRate = ExchangeRateHelper::getExchangeRateForInvestment($investment);
             $daysInMonth = 30;
             $timeInMonths = ($investment->withdrawal_period ?? 0) / $daysInMonth;
 
