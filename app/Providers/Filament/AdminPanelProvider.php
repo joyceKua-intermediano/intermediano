@@ -35,48 +35,34 @@ class AdminPanelProvider extends PanelProvider
             ->navigationItems([
                 NavigationItem::make('Administration')
                     ->icon('heroicon-o-document')
-                    ->group('Administration')
-                    ->sort(1),
-                NavigationItem::make('Investiment')
+                    ->group('Administration'),
+                NavigationItem::make('Companies')
                     ->icon('heroicon-o-document')
-                    ->group('Investiment')
-                    ->sort(1),
-                NavigationItem::make('Company')
-                    ->icon('heroicon-o-document')
-                    ->group('Company')
-                    ->sort(1),
+                    ->group('Group Companies'),
                 NavigationItem::make('Job Opening')
                     ->icon('heroicon-o-briefcase')
-                    ->group('Recruitment')
-                    ->sort(1),
+                    ->group('Recruitment'),
                 NavigationItem::make('Job Description')
                     ->icon('heroicon-o-clipboard-document-list')
-                    ->group('Recruitment')
-                    ->sort(2),
+                    ->group('Recruitment'),
                 NavigationItem::make('Application')
                     ->icon('heroicon-o-clock')
-                    ->group('Recruitment')
-                    ->sort(3),
+                    ->group('Recruitment'),
                 NavigationItem::make('CV Database')
                     ->icon('heroicon-o-list-bullet')
-                    ->group('Recruitment')
-                    ->sort(4),
+                    ->group('Recruitment'),
                 NavigationItem::make('Standard Resume')
                     ->icon('heroicon-o-clipboard-document-check')
-                    ->group('Recruitment')
-                    ->sort(5),
+                    ->group('Recruitment'),
                 NavigationItem::make('Tests')
                     ->icon('heroicon-o-book-open')
-                    ->group('Recruitment')
-                    ->sort(6),
+                    ->group('Recruitment'),
                 NavigationItem::make('Screening')
                     ->icon('heroicon-o-document')
-                    ->group('Recruitment')
-                    ->sort(7),
+                    ->group('Recruitment'),
                 NavigationItem::make('Recruitment Status')
                     ->icon('heroicon-o-funnel')
-                    ->group('Recruitment')
-                    ->sort(8),
+                    ->group('Recruitment'),
             ])
             ->colors([
                 'primary' => [
@@ -136,8 +122,8 @@ class AdminPanelProvider extends PanelProvider
             ]) 
             ->navigationGroups([
                 NavigationGroup::make()->label(__('Administration'))->collapsed(),
-                NavigationGroup::make()->label(__('Company'))->collapsed(),
-                NavigationGroup::make()->label(__('Investiment'))->collapsed(),
+                NavigationGroup::make()->label(__('Group Companies'))->collapsed(),
+                NavigationGroup::make()->label(__('Investments Overview'))->collapsed(),
                 NavigationGroup::make()->label(__('Recruitment'))->collapsed(),
                 NavigationGroup::make()->label(__('Sales')),
                 NavigationGroup::make()->label(__('Settings'))->collapsed(),

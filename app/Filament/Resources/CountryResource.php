@@ -21,7 +21,9 @@ class CountryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Investments Overview';
+
+    protected static ?string $label = 'Countries Overview';
 
     public static function form(Form $form): Form
     {
@@ -98,6 +100,7 @@ class CountryResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                // use realtime conversion column place in the Country model  due to filament limitation for updating  database using ToggleColumn
                 Tables\Columns\ToggleColumn::make('use_real_time_conversion')
                     ->label('Real-Time Conversion')
                     ->sortable()
@@ -110,11 +113,19 @@ class CountryResource extends Resource
                 Tables\Columns\TextColumn::make('exchange_rate')
                     ->label('Exchange Rate')
                     ->getStateUsing(function (Country $record) {
-                        $firstCurrency = $record->currencies()->first();
+                        $currencies = $record->currencies()->get();
+                        $exchangeRates = [];
 
-                        return $record->use_real_time_conversion
-                            ? $record->converted_currency_quota
-                            : $record->currencies()->where('currency_name', $firstCurrency->currency_name)->first()->currency_quota ?? $record->currency_name;
+                        if ($record->use_real_time_conversion) {
+                            foreach ($currencies as $currency) {
+                                $exchangeRates[] = $currency->converted_currency_quota;
+                            }
+                        } else {
+                            foreach ($currencies as $currency) {
+                                $exchangeRates[] =   $currency->currency_quota;
+                            }
+                        }
+                        return $exchangeRates;
                     }),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
