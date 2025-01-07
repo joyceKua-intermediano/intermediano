@@ -36,9 +36,6 @@ class AdminPanelProvider extends PanelProvider
                 NavigationItem::make('Administration')
                     ->icon('heroicon-o-document')
                     ->group('Administration'),
-                NavigationItem::make('Companies')
-                    ->icon('heroicon-o-document')
-                    ->group('Group Companies'),
                 NavigationItem::make('Job Opening')
                     ->icon('heroicon-o-briefcase')
                     ->group('Recruitment'),
@@ -122,7 +119,7 @@ class AdminPanelProvider extends PanelProvider
             ]) 
             ->navigationGroups([
                 NavigationGroup::make()->label(__('Administration'))->collapsed(),
-                NavigationGroup::make()->label(__('Group Companies'))->collapsed(),
+                NavigationGroup::make()->label(__('Intermediano Companies'))->collapsed(),
                 NavigationGroup::make()->label(__('Investments'))->collapsed(),
                 NavigationGroup::make()->label(__('Recruitment'))->collapsed(),
                 NavigationGroup::make()->label(__('Sales')),
