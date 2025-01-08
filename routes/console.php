@@ -13,26 +13,24 @@ Artisan::command('inspire', function () {
 
 
 Schedule::call(function () {
-    // Fetch all countries where real-time conversion is enabled
     $countries = Country::with('currencies')->get();
 
-    
-    // Log::info("Processing country {$countries}");
-
     foreach ($countries as $country) {
-        $currency = $country->currencies->first(); // Assuming a country has one currency
-        Log::info("Processing currency {$currency->currency_name}");
+        $currencies = $country->currencies;
 
-        // Get the exchange rate
-        $rate = ExchangeRateHelper::getExchangeRate('USD', $currency->currency_name);
+        $convertedCurrencies = [];
+        foreach($currencies as $currency) {
+            Log::info("Processing currency {$currency->currency_name}");
+                $rate = ExchangeRateHelper::getExchangeRate('USD', $currency->currency_name);
+                $convertedCurrencies[] = $rate;
+        }
         if (is_numeric($rate)) {
-            // Update the `converted_currency_real` field
             DB::table('countries')
                 ->where('id', $country->id)
-                ->update(['converted_currency_quota' =>$rate, 'updated_at' => now()]);
+                ->update(['converted_currency_quota' => json_encode($convertedCurrencies), 'updated_at' => now()]);
         } else {
-            // Log the error if the rate cannot be fetched
             Log::error("Failed to fetch exchange rate for {$country->name}: $rate");
         }
+
     }
 })->everySecond();

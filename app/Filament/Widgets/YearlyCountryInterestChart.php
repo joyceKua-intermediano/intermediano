@@ -26,7 +26,12 @@ class YearlyCountryInterestChart extends ChartWidget
             'countries.name as country_name, ' .
                 'SUM(capital / ' .
                 'CASE ' .
-                'WHEN countries.use_real_time_conversion = 1 THEN IFNULL(countries.converted_currency_quota, 1) ' .
+                'WHEN countries.use_real_time_conversion = 1 THEN ' .
+                    'CASE ' .
+                    'WHEN currency.converted_currency_quota IS NOT NULL AND currency.converted_currency_quota != 0 ' .
+                    'THEN currency.converted_currency_quota ' .
+                    'ELSE IFNULL(currency.currency_quota, 1) ' .
+                    'END ' .
                 'ELSE IFNULL(currency.currency_quota, 1) ' .
                 'END) as total_investment_usd'
         )
@@ -72,7 +77,7 @@ class YearlyCountryInterestChart extends ChartWidget
         $totalInvestment = Investment::selectRaw(
             'SUM(capital / ' .
                 'CASE ' .
-                'WHEN countries.use_real_time_conversion = 1 THEN IFNULL(countries.converted_currency_quota, 1) ' .
+                'WHEN countries.use_real_time_conversion = 1 THEN IFNULL(currency.converted_currency_quota, 1) ' .
                 'ELSE IFNULL(currency.currency_quota, 1) ' .
                 'END) as total_investment_usd'
         )

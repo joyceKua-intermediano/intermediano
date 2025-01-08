@@ -27,28 +27,33 @@ class CountryInvestmentRanking extends BaseWidget
     {
 
         return Investment::selectRaw('
-                investments.country_id, 
-                SUM(capital / 
+        investments.country_id, 
+        SUM(capital / 
+            CASE 
+                WHEN countries.use_real_time_conversion = 1 THEN 
                     CASE 
-                        WHEN countries.use_real_time_conversion = 1 THEN IFNULL(countries.converted_currency_quota, 1)
-                        ELSE IFNULL(currency.currency_quota, 1)
-                    END
-                ) as total_investment_usd
-            ')
+                        WHEN currency.converted_currency_quota IS NOT NULL AND currency.converted_currency_quota != 0 
+                        THEN currency.converted_currency_quota 
+                        ELSE IFNULL(currency.currency_quota, 1) 
+                    END 
+                ELSE IFNULL(currency.currency_quota, 1) 
+            END
+        ) as total_investment_usd
+    ')
             ->join('countries', 'countries.id', '=', 'investments.country_id')
             ->join('currencies as currency', 'currency.id', '=', 'investments.currency_id')
             ->groupBy('investments.country_id')
             ->orderByDesc('total_investment_usd');
     }
 
- 
+
     protected function getTableFilters(): array
     {
         return [
             SelectFilter::make('year')
-            ->label('Filter by Year')
-            ->default($this->filter)
-            ->options(fn() => Investment::distinct()->pluck('year', 'year')->toArray())
+                ->label('Filter by Year')
+                ->default($this->filter)
+                ->options(fn() => Investment::distinct()->pluck('year', 'year')->toArray())
 
         ];
     }
@@ -71,10 +76,9 @@ class CountryInvestmentRanking extends BaseWidget
     protected function getAvailableYears(): array
     {
         return Investment::select('year')
-        ->distinct()
-        ->orderBy('year', 'desc')
-        ->pluck('year')
-        ->toArray();;
-
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();;
     }
 }

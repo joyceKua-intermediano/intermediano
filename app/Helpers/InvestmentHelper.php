@@ -24,7 +24,7 @@ class InvestmentHelper
 
         if ($record->country->use_real_time_conversion) {
             //ExchangeRateHelper::getExchangeRate('USD', $record->currency->currency_name);
-            $exchangeRate = $record->country->converted_currency_quota; 
+            $exchangeRate = $record->currency->converted_currency_quota; 
         } else {
             $exchangeRate = $record->currency->currency_quota ?? 1;
         }

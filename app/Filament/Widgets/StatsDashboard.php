@@ -37,20 +37,20 @@ class StatsDashboard extends BaseWidget
             })->sortByDesc('total_investment_usd')->take(3);
         $stats = [];
         $indexRank = 1;
-        foreach ($investmentsPerCountry as $index => $investment) {
+        foreach ($investmentsPerCountry as $investment) {
             $stats[] = Stat::make(
                 $investment['country'],
                 number_format($investment['total_investment_usd'], 2) . ' USD'
             )
-                ->description('Total investments in ' . $investment['country'])
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->chartColor('success')
-                ->chart([2, 6, 1, 7, 9, 3, 5, 7, 1])
-                ->color($this->getColorByIndex($indexRank))
-                ->extraAttributes([
-                    'class' => $this->getColorByIndex($indexRank),
-                    'style' => 'color: white'
-                ]);
+            ->description('Total investments in ' . $investment['country'])
+            ->descriptionIcon('heroicon-m-arrow-trending-up')
+            ->chartColor('success')
+            ->chart([2, 6, 1, 7, 9, 3, 5, 7, 1])
+            ->color($this->getColorByIndex($indexRank))
+            ->extraAttributes([
+            'style' => 'color: white !important; background-color: ' . $this->getColorByIndex($indexRank) . ' !important;'
+
+            ]);
             $indexRank++;
         }
 
@@ -60,9 +60,9 @@ class StatsDashboard extends BaseWidget
     private function getColorByIndex(int $indexRank): string
     {
         $colors = [
-            1 => 'bg-yellow-500 text-white',
-            2 => 'bg-stone-500 text-white',
-            3 => 'bg-amber-500 text-white',
+            1 => '#DAA520',
+            2 => '#C0C0C0', 
+            3 => '#CE8946 ',
         ];
 
         return $colors[$indexRank] ?? 'bg-[#7D2B1D] text-white';

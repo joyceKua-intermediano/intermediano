@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignId('country_id')->constrained()->cascadeOnDelete();
             $table->string('currency_name');
             $table->decimal('currency_quota', 10, 2);
+            $table->decimal('converted_currency_quota', 10, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
 

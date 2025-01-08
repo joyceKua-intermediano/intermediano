@@ -7,11 +7,13 @@ use App\Filament\Resources\CompanyResource\RelationManagers;
 use App\Filament\Resources\CompanyResource\RelationManagers\ContactsRelationManager;
 use App\Models\Company;
 use App\Models\Contact;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
@@ -90,7 +92,7 @@ class CompanyResource extends Resource
                     Toggle::make("is_customer")->label(__("Customer")),
                     Repeater::make("contacts")->label(__('Contact Information'))->relationship()->schema([
                         Section::make()->schema([
-                            Forms\Components\TextInput::make('contact_name')->required()->maxLength(255)->label(__("Contact Name")),
+                            Forms\Components\TextInput::make('contact_name')->required()->maxLength(255)->label(__("Contact Name"))->reactive(),
                             Forms\Components\TextInput::make('surname')->maxLength(255)->label(__("Surname")),
                             Forms\Components\TextInput::make('email')->maxLength(255)->label(__("Email")),
                             Forms\Components\TextInput::make('linkedin')->maxLength(255)->label(__("Linkedin")),
@@ -98,17 +100,8 @@ class CompanyResource extends Resource
                             Forms\Components\TextInput::make('phone')->maxLength(255)->label(__("Phone")),
                             Forms\Components\TextInput::make('position')->maxLength(255)->label(__("Job Title")),
                             Forms\Components\TextInput::make('department')->maxLength(255)->label(__("Department")),
-                            Forms\Components\Toggle::make('is_main_contact')
-                            ->reactive()
-                            ->afterStateUpdated(function (Contact $contact, $state) {
-                                // dd($contact, $state);
-                                if ($contact && $state) {
-                                    DB::table('contacts')->where('id', '!=', $contact->id)->whereCompanyId($contact->company_id)->update(["is_main_contact" => 0]);
-                                    $contact->is_main_contact = true;
-                                    $contact->save();
-                                }
-                            })
-                            ->required()->label(__("Main Contact")),
+                            Forms\Components\Toggle::make('is_main_contact')->required()->label(__("Main Contact")),
+
                         ])->columns(4)
                     ])->columnSpanFull()
                 ])->columns(2)
