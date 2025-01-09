@@ -41,6 +41,23 @@ class InvestmentWidget extends BaseWidget
             return $monthlyInterest / $exchangeRate;
         });
 
+        $monthlyInterestInUsd = Investment::all()->sum(function ($investment) use ($getInterestRate) {
+            $capital = $investment->capital ?? 0;
+            $interestRate = $getInterestRate($investment);
+            $exchangeRate = ExchangeRateHelper::getExchangeRateForInvestment($investment);
+            $daysInMonth = 30;
+            $timeInMonths = ($investment->withdrawal_period ?? 0) / $daysInMonth;
+
+            $totalAmount = $capital * pow((1 + $interestRate), $timeInMonths);
+
+            $totalInterest = $totalAmount - $capital;
+
+            $monthlyInterest = $totalInterest / $timeInMonths;
+
+            return $monthlyInterest / $exchangeRate;
+        });
+
+        // totalNetAmountUsd is not currently used but could be utilized if requested.
         $totalNetAmountUsd = Investment::all()->sum(function ($investment) use ($getInterestRate) {
             $capital = $investment->capital ?? 0;
             $interestRate = $getInterestRate($investment);
@@ -64,8 +81,8 @@ class InvestmentWidget extends BaseWidget
                 ->icon('heroicon-o-arrow-trending-up')
                 ->color('primary'),
 
-            Stat::make('Total Net Amount (USD)', '$' . number_format($totalNetAmountUsd, 2))
-                ->description('Net amount in USD, including capital and interest')
+            Stat::make('Monthly Interest (USD)', '$' . number_format($monthlyInterestInUsd, 2))
+                ->description('Monthly Interest across all investments, excluding the withdrawal period')
                 ->icon('heroicon-o-calculator')
                 ->color('info'),
         ];
