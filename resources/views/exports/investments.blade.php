@@ -6,6 +6,7 @@
             <th>Bank</th>
             <th>Currency</th>
             <th>Capital</th>
+            <th>Capital in USD</th>
             <th>Interest Rate</th>
             <th>Monthly Interest</th>
             <th>Total Interest</th>
@@ -23,24 +24,27 @@
         @endphp
         @foreach ($investments as $investment)
             @php
-                $totalCapital += $investment->capital;
+               $exchangeRate = \App\Helpers\ExchangeRateHelper::getExchangeRateForInvestment($investment);
+                $totalCapital += $investment->capital / $exchangeRate;
 
                 $totalInterest = \App\Helpers\InvestmentHelper::convertToUSDOrDefault($investment, function (
                     $capital,
-                    $rate,
-                    $months,
+                    $interestRate,
+                    $timeInMonths,
                 ) {
-                    $totalAmount = $capital * pow(1 + $rate, $months);
-                    return $totalAmount - $capital;
+                    $totalAmount = $capital * pow(1 + $interestRate, $timeInMonths);
+                    $monthlyInterest = $totalAmount - $capital;
+                    return $monthlyInterest / $timeInMonths;
                 });
-                $overAllTotalInterest += (float) str_replace('USD ', '', $totalInterest);
-            @endphp
+                $overAllTotalInterest += (float) str_replace(',', '', str_replace('USD ', '', $totalInterest));
+                @endphp
             <tr>
                 <td>{{ $investment->id }}</td>
                 <td>{{ $investment->country->name ?? 'N/A' }}</td>
                 <td>{{ $investment->bank->bank_name ?? 'N/A' }}</td>
                 <td>{{ $investment->currency->currency_name ?? 'N/A' }}</td>
                 <td>{{ number_format($investment->capital, 2) }}</td>
+                <td>{{ number_format($investment->capital / $exchangeRate, 2) }}</td>
                 <td>
                     @if ($investment->rate_type === 'annual')
                         @php
@@ -92,9 +96,10 @@
     <tfoot>
         <tr>
             <td colspan="4">Total</td>
-            <td>{{ number_format($totalCapital, 2) }}</td>
             <td></td>
-            <td>{{ $overAllTotalInterest }}</td>
+            <td><b>USD {{ number_format($totalCapital, 2) }}</b></td>
+            <td></td>
+            <td> <b> USD {{ $overAllTotalInterest }}</b></td>
             <td></td>
             <td></td>
             <td></td>
