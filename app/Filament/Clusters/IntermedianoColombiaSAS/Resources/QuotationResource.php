@@ -2,6 +2,7 @@
 
 namespace App\Filament\Clusters\IntermedianoColombiaSAS\Resources;
 
+use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoColombiaSAS;
 use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\QuotationResource\Pages;
 use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\QuotationResource\RelationManagers;
