@@ -13,19 +13,24 @@ class Quotation extends Model
         'title',
         'company_id',
         'country_id',
+        'consultant_id',
         'currency_name',
         'exchange_rate',
         'exchange_acronym',
         'gross_salary',
         'fee',
+        'bank_fee',
         'bonus',
         'home_allowance',
         'transport_allowance',
         'medical_allowance',
+        'internet_allowance',
         'legal_grafication',
         'capped_amount',
         'uvt_amount',
         'dependent',
+        'is_payroll',
+        'is_integral',
         'cluster_name'
     ];
 
@@ -36,6 +41,11 @@ class Quotation extends Model
 
     public function company()
     {
-        return $this->belongsTo(IntermedianoCompany::class);
+        return $this->belongsTo(Company::class);
+    }
+
+    public function consultant()
+    {
+        return $this->belongsTo(Consultant::class);
     }
 }
