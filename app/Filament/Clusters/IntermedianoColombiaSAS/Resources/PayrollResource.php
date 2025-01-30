@@ -4,35 +4,38 @@ namespace App\Filament\Clusters\IntermedianoColombiaSAS\Resources;
 
 use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoColombiaSAS;
-use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\QuotationResource\Pages;
-use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\QuotationResource\RelationManagers;
+use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\PayrollResource\Pages;
+use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\PayrollResource\RelationManagers;
+use App\Models\Consultant;
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Carbon\Carbon;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
 use Filament\Forms\Components\Hidden;
-use Illuminate\Database\Eloquent\Builder;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
-use Carbon\Carbon;
-use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms\Get;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Set;
 use Filament\Tables\Filters\TernaryFilter;
 
-class QuotationResource extends Resource
+class PayrollResource extends Resource
 {
     protected static ?string $model = Quotation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Payroll';
 
     protected static ?string $cluster = IntermedianoColombiaSAS::class;
 
@@ -43,19 +46,26 @@ class QuotationResource extends Resource
                 Forms\Components\Select::make('is_integral')
                     ->live()
                     ->required()
-                    ->label('Type of Quotation')
+                    ->label('Type of Payroll')
+                    //utilize it when they request
+                    // ->afterStateUpdated(function (Get $get, Set $set) {
+                    //     if ($get('is_integral')) {
+                    //         $set('medical_allowance', 0);
+                    //         $set('transport_allowance', 0);
+                    //     }
+                    // })
                     ->options([
                         '0' => 'Ordinary',
                         '1' => 'Integral',
                     ]),
                 DatePicker::make('title')
-                    ->label('Date')
+                    ->label('Title')
                     ->displayFormat('Y-m-d')
                     ->placeholder('yy-mm-dd')
                     ->native(false)
                     ->required(),
                 Forms\Components\Select::make('company_id')
-                    ->label('Customer')
+                    ->label('Company')
                     ->relationship('company', 'name')
                     ->required(),
                 Forms\Components\Select::make('country_id')
@@ -66,14 +76,16 @@ class QuotationResource extends Resource
                     ->afterStateUpdated(function (callable $set, $state) {
                         if ($state) {
                             $annualSetup = \App\Models\CountryAnnualSetup::where('country_id', $state)->latest('year')->first();
-
                             if ($annualSetup) {
                                 $set('uvt_amount', $annualSetup->uvt_amount);
                                 $set('capped_amount', $annualSetup->capped_amount);
-                            }
+                            } 
                         }
                     }),
-
+                Forms\Components\Select::make('consultant_id')
+                    ->label('Consultant')
+                    ->relationship('consultant', 'name')
+                    ->required(),
                 Forms\Components\TextInput::make('currency_name')
                     ->label('Currency Name')
                     ->placeholder('Enter currency code (e.g., USD, EUR, BRL)')
@@ -155,6 +167,7 @@ class QuotationResource extends Resource
 
                         $component->state($cleanedState);
                     })
+                    // ->visible(fn(Get $get): bool => !$get('is_integral'))
                     ->default(0)
                     ->required(),
                 Forms\Components\TextInput::make('internet_allowance')
@@ -169,11 +182,12 @@ class QuotationResource extends Resource
                     ->default(0)
                     ->required(),
 
-                Forms\Components\TextInput::make('uvt_amount')
+
+                    Forms\Components\TextInput::make('uvt_amount')
                     ->default(0)
                     ->hidden(true)
                     ->label('UVT Amount'),
-                Forms\Components\TextInput::make('capped_amount')
+                    Forms\Components\TextInput::make('capped_amount')
                     ->default(0)
                     ->hidden(true)
                     ->label('Capped (LIMIT) Social Security'),
@@ -190,16 +204,17 @@ class QuotationResource extends Resource
                             $set('capped_amount', null);
                         } else {
                             $annualSetup = \App\Models\CountryAnnualSetup::where('country_id', $get('country_id'))->latest('year')->first();
-                            $set('capped_amount', $annualSetup->capped_amount);
+                            $set('capped_amount', $annualSetup->capped_amount ?? 0);
                         }
-                        $annualSetup = \App\Models\CountryAnnualSetup::where('country_id', $state)->latest('year')->first();
                     }),
 
                 Forms\Components\Hidden::make('cluster_name')
-                    ->default(self::getClusterName())
-                    ->label(self::getClusterName()),
+                    ->default(self::getClusterName()),
+                Forms\Components\Hidden::make('is_payroll')
+                    ->default(1),
             ]);
     }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -213,6 +228,10 @@ class QuotationResource extends Resource
                     ->dateTime('y-m-d')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('consultant.name')
+                    ->label('Consultant Name')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('country.name')
                     ->label('Country')
                     ->sortable()
@@ -224,20 +243,39 @@ class QuotationResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+
                 Filter::make('cluster_match')
                     ->label('Company Name')
                     ->query(fn(Builder $query): Builder => $query->where('cluster_name', self::getClusterName()))
                     ->default(),
                 Filter::make('is_payroll')
-                    ->label('Is Quotation')
-                    ->query(fn(Builder $query): Builder => $query->where('is_payroll', false))
+                    ->query(fn(Builder $query): Builder => $query->where('is_payroll', true))
                     ->default(),
                 TernaryFilter::make('is_integral')->label('Is Ternary Payroll?'),
+
+
+                SelectFilter::make('consultant_id')
+                    ->label('Consultant')
+                    ->options(Consultant::all()->pluck('name', 'id')),
+                Filter::make('Month')
+                    ->form([
+                        DatePicker::make('month')
+                            ->displayFormat('Y-m')
+                            ->placeholder('Select Month')
+                            ->extraInputAttributes(['type' => 'month'])
+
+                            ->native(),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['month']) {
+                            $query->whereMonth('title', Carbon::parse($data['month'])->month);
+                        }
+                    }),
             ])
 
             ->actions([
                 Tables\Actions\Action::make('view_quotation')
-                    ->label('View Quotation')
+                    ->label('View Payroll')
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
@@ -250,12 +288,21 @@ class QuotationResource extends Resource
                 ExportAction::make('export')
                     ->label('Export Details')
                     ->action(function ($record) {
-                        $isQuotation = true;
-                        $export = new QuotationExport($record, [], $isQuotation);
+
+                        $currentDate = Carbon::parse($record->title);
+                        $previousMonthDate = $currentDate->subMonth();
+
+                        $previousMonthRecord = Quotation::where('consultant_id', $record->consultant_id)
+                            ->whereNull('deleted_at')
+                            ->whereMonth('title', $previousMonthDate->month)
+                            ->whereYear('title', $previousMonthDate->year)
+                            ->first();
+
+                        $export = new QuotationExport($record, $previousMonthRecord);
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
-                        return Excel::download($export,  $transformTitle .  '_Quotation for ' . $companyName . '.xlsx');
+                        return Excel::download($export,  $transformTitle .  '_Payroll for ' . self::getClusterName() . ' ' . $record->consultant->name . '.xlsx');
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
@@ -269,7 +316,7 @@ class QuotationResource extends Resource
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);
                         return response()->streamDownload(
                             fn() => print($pdf->output()),
-                            Str::slug($transformTitle, '.') . '_Quotation for ' . $companyName . '.pdf'
+                            Str::slug($transformTitle, '.') . '_Payroll for ' . $companyName . ' ' . self::getClusterName() . '.pdf'
                         );
                     }),
                 Tables\Actions\ForceDeleteAction::make(),
@@ -285,6 +332,7 @@ class QuotationResource extends Resource
                 ]),
             ]);
     }
+
     public static function getRelations(): array
     {
         return [
@@ -295,12 +343,19 @@ class QuotationResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListQuotations::route('/'),
-            'create' => Pages\CreateQuotation::route('/create'),
-            'edit' => Pages\EditQuotation::route('/{record}/edit'),
+            'index' => Pages\ListPayrolls::route('/'),
+            'create' => Pages\CreatePayroll::route('/create'),
+            'edit' => Pages\EditPayroll::route('/{record}/edit'),
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
     protected static function getClusterName(): string
     {
         return class_basename(self::$cluster);
