@@ -4,55 +4,60 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromView;
+use Illuminate\Contracts\View\View;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class QuotationExport implements FromCollection, WithHeadings
+class QuotationExport implements FromView,  WithEvents
 {
     protected $record;
 
-    public function __construct($record)
+    public function __construct($record, $previousMonthRecord, $isQuotation = false)
     {
         $this->record = $record;
+        $this->previousMonthRecord = $previousMonthRecord;
+        $this->isQuotation = $isQuotation;
     }
 
-    public function collection()
+
+    public function view(): View
     {
-        return collect([
-            [
-                'Net Salary' => number_format($this->record->gross_salary - $this->record->deductions),
-                'Deductions' => number_format($this->record->deductions),
-                'Gross Salary' => number_format($this->record->gross_salary),
-                'Bonus' => number_format($this->record->bonus),
-                'Gross Monthly Salary' => number_format($this->record->gross_salary + $this->record->bonus),
-                'Payroll Costs' => number_format($this->record->payroll_costs),
-                'Provisions' => number_format($this->record->provisions),
-                'Gross Salary + Payroll Costs & Provisions' => number_format($this->record->gross_salary + $this->record->payroll_costs + $this->record->provisions),
-                'Fee' => number_format($this->record->fee),
-                'Banking Fee' => number_format($this->record->banking_fee),
-                'IRPJ' => number_format($this->record->irpj),
-                'Total Partial' => number_format($this->record->gross_salary + $this->record->payroll_costs + $this->record->provisions + $this->record->bonus),
-                'ISS' => number_format($this->record->iss),
-                'Gross Payroll, PR Costs, Fees & Taxes' => number_format($this->record->gross_salary + $this->record->payroll_costs + $this->record->fee + $this->record->taxes),
-            ],
+        $isIntegral = $this->record->is_integral;
+        $exportFile = $isIntegral ? 'exports.integral_quotation' : 'exports.quotation';
+        return view($exportFile, [
+            'record' => $this->record,
+            'previousMonthRecord' => $this->previousMonthRecord,
+            'isQuotation' => $this->isQuotation
         ]);
     }
 
-    public function headings(): array
+    public function registerEvents(): array
     {
         return [
-            'Net Salary',
-            'Deductions',
-            'Gross Salary',
-            'Bonus',
-            'Gross Monthly Salary',
-            'Payroll Costs',
-            'Provisions',
-            'Gross Salary + Payroll Costs & Provisions',
-            'Fee',
-            'Banking Fee',
-            'IRPJ',
-            'Total Partial',
-            'ISS',
-            'Gross Payroll, PR Costs, Fees & Taxes',
+            AfterSheet::class => function (AfterSheet $event) {
+                $cellRange = 'B1:D45';
+
+                $event->sheet->getDelegate()->getStyle($cellRange)->getBorders()->getAllBorders()
+                    ->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setARGB('4f4f4f');
+
+
+                $event->sheet->getDelegate()->getStyle($cellRange)->getBorders()->getTop()
+                    ->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setARGB('4f4f4f');
+                $event->sheet->getDelegate()->getStyle($cellRange)->getBorders()->getBottom()
+                    ->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setARGB('4f4f4f');
+                $event->sheet->getDelegate()->getStyle($cellRange)->getBorders()->getLeft()
+                    ->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setARGB('4f4f4f');
+                $event->sheet->getDelegate()->getStyle($cellRange)->getBorders()->getRight()
+                    ->setBorderStyle(Border::BORDER_THIN)
+                    ->getColor()->setARGB('4f4f4f');
+            },
         ];
     }
 }
