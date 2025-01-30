@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Http\Helpers\Helper;
+namespace App\Helpers;
 
 
 class ChartColorHelper
