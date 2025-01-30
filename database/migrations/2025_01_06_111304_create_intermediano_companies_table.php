@@ -14,8 +14,11 @@ return new class extends Migration
         Schema::create('intermediano_companies', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('register_number');
+            $table->string('contact_name');
+            $table->string('mobile_number');
+            $table->string('email');
             $table->string('address');
+            $table->string('tax_id');
             $table->foreignId('country_id')->constrained('countries')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();

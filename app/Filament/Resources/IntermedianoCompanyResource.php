@@ -16,27 +16,37 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class IntermedianoCompanyResource extends Resource
 {
     protected static ?string $model = IntermedianoCompany::class;
-    protected static ?string $navigationGroup = 'Companies';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Intermediano Group Companies';
 
+    protected static ?string $navigationGroup = 'Administration';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('register_number')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('address')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name')
                     ->required(),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('contact_name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('mobile_number')
+                    ->required()
+                    ->numeric(255),
+                Forms\Components\TextInput::make('email')
+                    ->required()
+                    ->email(),
+                Forms\Components\TextInput::make('address')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('tax_id')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -44,15 +54,21 @@ class IntermedianoCompanyResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('register_number')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('country.name')
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('contact_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('mobile_number')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('tax_id')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()

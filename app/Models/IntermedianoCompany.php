@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class IntermedianoCompany extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['name', 'register_number', 'address', 'country_id'];
+    protected $fillable = ['name', 'contact_name', 'mobile_number', 'email', 'address', 'tax_id', 'country_id'];
 
     public function country() 
     {
