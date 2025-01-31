@@ -102,7 +102,13 @@
             <td align="right">{{ number_format($record->transport_allowance / $record->exchange_rate, 2) }}</td>
 
         </tr>
+        <tr>
+            <td></td>
+            <th>Internet Allowance</th>
+            <td align="right">{{ number_format($record->internet_allowance, 2) }}</td>
+            <td align="right">{{ number_format($record->internet_allowance / $record->exchange_rate, 2) }}</td>
 
+        </tr>
 
         <tr>
             <td></td>
@@ -166,7 +172,7 @@
             <td></td>
             <th>Bank Fee</th>
             <td align="right">{{ number_format($quotationDetails['bankFee'], 2) }}</td>
-            <td align="right">{{ number_format($quotationDetails['bankFee'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['bankFee'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
         <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8 ">

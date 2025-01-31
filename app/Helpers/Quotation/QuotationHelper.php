@@ -6,19 +6,21 @@ if (!function_exists('calculateQuotation')) {
 
         $grossSalary = $record->gross_salary;
 
-        // Payroll costs
+        // Ordinary
         $totalGrossIncome =
             $record->gross_salary +
             $record->bonus +
             $record->home_allowance +
             $record->transport_allowance +
-            $record->medical_allowance;
-        $pensionFund = ($totalGrossIncome - $record->medical_allowance) * 0.12;
-        $healthFund = ($totalGrossIncome - $record->medical_allowance) * 0.085;
-        $icbfContribution = ($totalGrossIncome - $record->medical_allowance) * 0.03;
-        $senaContribution = ($totalGrossIncome - $record->medical_allowance) * 0.02;
-        $arlContribution = ($totalGrossIncome - $record->medical_allowance) * 0.0244;
-        $compensationFundContribution = ($totalGrossIncome - $record->medical_allowance) * 0.04;
+            $record->medical_allowance +
+            $record->internet_allowance;
+        $pensionFund = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.12;
+        $healthFund = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.085;
+        $icbfContribution = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.03;
+        $senaContribution = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.02;
+        $arlContribution = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.0244;
+        $compensationFundContribution = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.04;
+        
         $payrollCostsTotal =
             $pensionFund +
             $healthFund +
@@ -37,14 +39,14 @@ if (!function_exists('calculateQuotation')) {
         // accumulated provision
         if($previousMonthRecord) {
             $previousMonthGrossIncome = $previousMonthRecord->gross_salary +
-            $previousMonthRecord->bonus  +
+            $previousMonthRecord->bonus +
             $previousMonthRecord->home_allowance +
             $previousMonthRecord->transport_allowance +
-            $previousMonthRecord->medical_allowance;
+            $previousMonthRecord->medical_allowance +
+            $previousMonthRecord->internet_allowance;
         }else {
             $previousMonthGrossIncome = 0;
         };
-
 
         $accumulatedCesantias = (0.0833 * $previousMonthGrossIncome) + $cesantias;
         $accumulatedInterestDeCesantias = ((0.0833 * $previousMonthGrossIncome) * 0.12) + $interestDeCesantias;

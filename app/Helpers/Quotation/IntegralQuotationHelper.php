@@ -6,14 +6,23 @@ if (!function_exists('calculateIntegralQuotation')) {
 
         $grossSalary = $record->gross_salary;
 
-        // Payroll costs
-        $totalGrossIncome = $record->gross_salary + $record->bonus + $record->home_allowance;
-        $pensionFund = ((($totalGrossIncome - $record->home_allowance - $record->transport_allowance) * 0.70)) * 0.12;
-        $healthFund = (($totalGrossIncome - $record->home_allowance - $record->transport_allowance) * 0.70) * 0.085;
-        $icbfContribution = ($totalGrossIncome - $record->home_allowance - $record->transport_allowance) * 0.03;
-        $senaContribution = ($totalGrossIncome - $record->home_allowance - $record->transport_allowance) * 0.02;
-        $arlContribution = (($totalGrossIncome - $record->home_allowance - $record->transport_allowance) * 0.70) * 0.0244;
-        $compensationFundContribution = ($totalGrossIncome - $record->home_allowance - $record->transport_allowance) * 0.04;
+        // Integral
+        $totalGrossIncome =
+        $record->gross_salary +
+        $record->bonus +
+        $record->home_allowance +
+        $record->transport_allowance +
+        $record->medical_allowance +
+        $record->internet_allowance;
+        
+        $pensionFund = ((($totalGrossIncome - $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.70)) * 0.12;
+        $healthFund = (($totalGrossIncome - $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.70) * 0.085;
+        $icbfContribution = ($totalGrossIncome - $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.03;
+        
+        $senaContribution = ($totalGrossIncome - $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.02;
+        $arlContribution = (($totalGrossIncome -  $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.70) * 0.0244;
+        $compensationFundContribution = ($totalGrossIncome - $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.04;
+        
         $payrollCostsTotal =
             $pensionFund +
             $healthFund +
@@ -22,8 +31,8 @@ if (!function_exists('calculateIntegralQuotation')) {
             $arlContribution +
             $compensationFundContribution;
 
-        $vacation = 0.0417 * $totalGrossIncome;
-        $indemnization = 0.056 * $totalGrossIncome;
+        $vacation = 0.0417 * ( $record->gross_salary +  $record->bonus);
+        $indemnization = 0.056 * ($record->gross_salary +  $record->bonus);
         $provisionsTotal = $vacation + $indemnization;
         // accumulated provision
         if($previousMonthRecord) {
@@ -43,7 +52,7 @@ if (!function_exists('calculateIntegralQuotation')) {
         // end of accumulated provision
 
         $subTotalGrossPayroll = $totalGrossIncome + $provisionsTotal + $payrollCostsTotal;
-        $fee = $grossSalary * ($record->fee / 100);
+        $fee = $subTotalGrossPayroll * ($record->fee / 100);
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
         $municipalTax = 0.01 * $subTotal;
