@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Filament\Clusters\IntermedianoColombiaSAS\Resources\QuotationResource\Pages;
+
+use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\QuotationResource;
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
+
+class EditQuotation extends EditRecord
+{
+    protected static string $resource = QuotationResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
+    }
+}

@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+
 class ChartColorHelper
 {
     /**

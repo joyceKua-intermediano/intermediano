@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\IntermedianoCompanyResource\Pages;
-use App\Filament\Resources\IntermedianoCompanyResource\RelationManagers;
-use App\Models\IntermedianoCompany;
+use App\Filament\Resources\PartnerResource\Pages;
+use App\Filament\Resources\PartnerResource\RelationManagers;
+use App\Models\Partner;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,14 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class IntermedianoCompanyResource extends Resource
+class PartnerResource extends Resource
 {
-    protected static ?string $model = IntermedianoCompany::class;
+    protected static ?string $model = Partner::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'Intermediano Group Companies';
-
     protected static ?string $navigationGroup = 'Administration';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -29,24 +28,25 @@ class IntermedianoCompanyResource extends Resource
                     ->label('Country')
                     ->relationship('country', 'name')
                     ->required(),
+                Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->relationship('company', 'name')
+                    ->required(),
+
                 Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('contact_name')
+                    ->label('Contact Name')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('mobile_number')
                     ->required()
-                    ->numeric(255),
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('email')
-                    ->required()
-                    ->email(),
-                Forms\Components\TextInput::make('address')
+                    ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('tax_id')
+                Forms\Components\Textarea::make('address')
                     ->required()
-                    ->maxLength(255),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -55,21 +55,25 @@ class IntermedianoCompanyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('country.name')
+                    ->numeric()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('company.name')
+                    ->label('Company')
+                    ->numeric()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Contact')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('contact_name')
-                    ->searchable(),
+
+
                 Tables\Columns\TextColumn::make('mobile_number')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('tax_id')
-                    ->searchable(),
-
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -87,10 +91,7 @@ class IntermedianoCompanyResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -111,11 +112,9 @@ class IntermedianoCompanyResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListIntermedianoCompanies::route('/'),
-            'create' => Pages\CreateIntermedianoCompany::route('/create'),
-            'view' => Pages\ViewIntermedianoCompany::route('/{record}'),
-            'edit' => Pages\EditIntermedianoCompany::route('/{record}/edit'),
-            
+            'index' => Pages\ListPartners::route('/'),
+            'create' => Pages\CreatePartner::route('/create'),
+            'edit' => Pages\EditPartner::route('/{record}/edit'),
         ];
     }
 
