@@ -18,7 +18,10 @@ return new class extends Migration
             $table->foreignId('industry_field_id')->constrained()->cascadeOnDelete();
             $table->foreignId('intermediano_company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('partner_id')->constrained()->cascadeOnDelete();
             $table->string('position');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->boolean('status');
             $table->softDeletes();
             $table->timestamps();

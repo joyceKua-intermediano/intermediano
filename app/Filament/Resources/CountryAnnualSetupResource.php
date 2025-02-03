@@ -22,6 +22,7 @@ class CountryAnnualSetupResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $modelLabel = 'Countries Annual Setup';
+    protected static ?string $navigationGroup = 'Investments';
 
     protected static ?string $navigationParentItem = 'Countries Overviews';
     public static function form(Form $form): Form

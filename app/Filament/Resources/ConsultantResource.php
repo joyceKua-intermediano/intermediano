@@ -6,6 +6,7 @@ use App\Filament\Resources\ConsultantResource\Pages;
 use App\Filament\Resources\ConsultantResource\RelationManagers;
 use App\Models\Company;
 use App\Models\Consultant;
+use App\Models\IntermedianoCompany;
 use App\Models\Partner;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
@@ -22,6 +23,7 @@ class ConsultantResource extends Resource
     protected static ?string $model = Consultant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Administration';
 
     public static function form(Form $form): Form
     {
@@ -36,7 +38,6 @@ class ConsultantResource extends Resource
                     ->required(),
 
                 TextInput::make('mobile_number')
-                    ->numeric()
                     ->required(),
                 TextInput::make('email')
                     ->email()
@@ -49,10 +50,9 @@ class ConsultantResource extends Resource
                     ->label('Employeer')
                     ->options(function () {
                         // Fetch data from both models
-                        $companies = Company::pluck('name', 'id')->mapWithKeys(fn($name, $id) => ["company: $name" => "Company: $name"]);
+                        $companies = IntermedianoCompany::pluck('name', 'id')->mapWithKeys(fn($name, $id) => ["company: $name" => "Company: $name"]);
                         $partners = Partner::pluck('name', 'id')->mapWithKeys(fn($name, $id) => ["partner: $name" => "Partner: $name"]);
 
-                        // Merge and return
                         return $companies->merge($partners)->toArray();
                     })
                     ->searchable()
