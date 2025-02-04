@@ -39,8 +39,7 @@ class StaffTrackerResource extends Resource
                     ->label('Position'),
                 Forms\Components\Select::make('industry_field_id')
                     ->label('Industry Field')
-                    ->relationship('industry_field', 'name')
-                    ->required(),
+                    ->relationship('industry_field', 'name'),
 
                 Forms\Components\Select::make('intermediano_company_id')
                     ->label('Company')
@@ -80,6 +79,7 @@ class StaffTrackerResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('consultant.name')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('country.name')
                     ->numeric()

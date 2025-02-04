@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('country_id')->constrained()->cascadeOnDelete();
             $table->string('name')->unique();
-            $table->string('email');
-            $table->string('mobile_number');
-            $table->text('address');
+            $table->string('email')->nullable();
+            $table->string('mobile_number')->nullable();
+            $table->text('address')->nullable();
             $table->string('employeer')->nullable();
             $table->timestamps();
             $table->softDeletes();

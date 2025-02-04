@@ -37,14 +37,11 @@ class ConsultantResource extends Resource
                     ->relationship('country', 'name')
                     ->required(),
 
-                TextInput::make('mobile_number')
-                    ->required(),
+                TextInput::make('mobile_number'),
                 TextInput::make('email')
-                    ->email()
-                    ->required(),
+                    ->email(),
 
-                TextInput::make('address')
-                    ->required(),
+                TextInput::make('address'),
 
                 Forms\Components\Select::make('employeer')
                     ->label('Employeer')

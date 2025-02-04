@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('country_id')->constrained()->cascadeOnDelete();
             $table->foreignId('consultant_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('industry_field_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('industry_field_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('intermediano_company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('partner_id')->constrained()->cascadeOnDelete();
