@@ -20,6 +20,7 @@ class StaffTrackerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Administration';
+    protected static ?string $label = 'StaffTracker';
 
     public static function form(Form $form): Form
     {
@@ -65,8 +66,7 @@ class StaffTrackerResource extends Resource
                     ->after('start_date'),
                 Forms\Components\Select::make('partner_id')
                     ->label('Partner')
-                    ->relationship('partner', 'name')
-                    ->required(),
+                    ->relationship('partner', 'name'),
                 Forms\Components\Toggle::make('status')->label('Staff Status')->inline(false)
 
 

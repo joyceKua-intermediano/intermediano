@@ -33,9 +33,6 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->navigationItems([
-                NavigationItem::make('Administration')
-                    ->icon('heroicon-o-document')
-                    ->group('Administration'),
                 NavigationItem::make('Job Opening')
                     ->icon('heroicon-o-briefcase')
                     ->group('Recruitment'),

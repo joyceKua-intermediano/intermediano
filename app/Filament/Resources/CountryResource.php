@@ -36,21 +36,17 @@ class CountryResource extends Resource
 
                 Forms\Components\TextInput::make('income_tax_rate')
                     ->numeric()
-                    ->required()
                     ->label('Income Tax Rate (%)'),
 
                 Forms\Components\Repeater::make('currencies')
                     ->relationship('currencies')
                     ->schema([
                         Forms\Components\TextInput::make('currency_name')
-                            ->required()
                             ->label('Currency Name'),
                         Forms\Components\TextInput::make('currency_quota')
                             ->numeric()
-                            ->required()
                             ->label('Currency Quota'),
                     ])
-                    ->required()
                     ->label('Currencies'),
 
 
@@ -58,7 +54,6 @@ class CountryResource extends Resource
                     ->relationship('banks')
                     ->schema([
                         Forms\Components\TextInput::make('bank_name')
-                            ->required()
                             ->label('Bank Name'),
                     ])
                     ->label('Banks'),
