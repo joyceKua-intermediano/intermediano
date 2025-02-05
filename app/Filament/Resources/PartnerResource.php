@@ -71,7 +71,8 @@ class PartnerResource extends Resource
                     ->label('Company')
                     ->numeric()
                     ->sortable(),
-
+                Tables\Columns\TextColumn::make('partner_type')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('contact_name')
                     ->label('Contact')
                     ->sortable()
@@ -84,8 +85,7 @@ class PartnerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('partner_type')
-                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
