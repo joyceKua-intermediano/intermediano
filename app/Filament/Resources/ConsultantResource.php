@@ -48,7 +48,7 @@ class ConsultantResource extends Resource
                     ->options(function () {
                         // Fetch data from both models
                         $companies = IntermedianoCompany::pluck('name', 'id')->mapWithKeys(fn($name, $id) => ["company: $name" => "Company: $name"]);
-                        $partners = Partner::pluck('name', 'id')->mapWithKeys(fn($name, $id) => ["partner: $name" => "Partner: $name"]);
+                        $partners = Partner::pluck('partner_name', 'id')->mapWithKeys(fn($name, $id) => ["partner: $name" => "Partner: $name"]);
 
                         return $companies->merge($partners)->toArray();
                     })

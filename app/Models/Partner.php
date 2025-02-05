@@ -11,8 +11,9 @@ class Partner extends Model
 
     protected $fillable = [
         'country_id',
-        'company_id',
-        'name',
+        'partner_type',
+        'partner_name',
+        'contact_name',
         'mobile_number',
         'email',
         'address'    
@@ -23,8 +24,4 @@ class Partner extends Model
         return $this->belongsTo(Country::class);
     }
 
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
 }

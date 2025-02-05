@@ -65,7 +65,7 @@ class StaffTrackerResource extends Resource
                     ->after('start_date'),
                 Forms\Components\Select::make('partner_id')
                     ->label('Partner')
-                    ->relationship('partner', 'name'),
+                    ->relationship('partner', 'partner_name'),
                 Forms\Components\Toggle::make('status')->label('Staff Status')->inline(false)
 
 
@@ -101,7 +101,7 @@ class StaffTrackerResource extends Resource
                     ->dateTime('y-m-d')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('partner.name')
+                Tables\Columns\TextColumn::make('partner.partner_name')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),
