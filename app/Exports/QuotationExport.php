@@ -26,7 +26,17 @@ class QuotationExport implements FromView,  WithEvents
     public function view(): View
     {
         $isIntegral = $this->record->is_integral;
-        $exportFile = $isIntegral ? 'exports.integral_quotation' : 'exports.quotation';
+        switch (true) {
+            case  $this->record->cluster_name === 'IntermedianoColombiaSAS':
+                $exportFile = $isIntegral ? 'exports.integral_quotation' : 'exports.quotation';
+                break;
+            case  $this->record->cluster_name === 'IntermedianoEcuadorSAS':
+                $exportFile = 'exports.quotations.ecuador';
+                break;
+            default:
+                # code...
+                break;
+        }
         return view($exportFile, [
             'record' => $this->record,
             'previousMonthRecord' => $this->previousMonthRecord,
