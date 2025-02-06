@@ -34,7 +34,8 @@
         },
         "files": [
             "app/Helpers/Quotation/QuotationHelper.php",
-            "app/Helpers/Quotation/IntegralQuotationHelper.php"
+            "app/Helpers/Quotation/IntegralQuotationHelper.php",
+            "app/Helpers/Quotation/EcuadorQuotationHelper.php"
         ]
     },
     "autoload-dev": {
