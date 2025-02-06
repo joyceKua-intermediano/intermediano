@@ -20,6 +20,7 @@ class StaffTrackerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Administration';
+    protected static ?string $label = 'StaffTracker';
 
     public static function form(Form $form): Form
     {
@@ -38,8 +39,7 @@ class StaffTrackerResource extends Resource
                     ->label('Position'),
                 Forms\Components\Select::make('industry_field_id')
                     ->label('Industry Field')
-                    ->relationship('industry_field', 'name')
-                    ->required(),
+                    ->relationship('industry_field', 'name'),
 
                 Forms\Components\Select::make('intermediano_company_id')
                     ->label('Company')
@@ -65,8 +65,7 @@ class StaffTrackerResource extends Resource
                     ->after('start_date'),
                 Forms\Components\Select::make('partner_id')
                     ->label('Partner')
-                    ->relationship('partner', 'name')
-                    ->required(),
+                    ->relationship('partner', 'partner_name'),
                 Forms\Components\Toggle::make('status')->label('Staff Status')->inline(false)
 
 
@@ -80,6 +79,7 @@ class StaffTrackerResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('consultant.name')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('country.name')
                     ->numeric()
@@ -101,7 +101,7 @@ class StaffTrackerResource extends Resource
                     ->dateTime('y-m-d')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('partner.name')
+                Tables\Columns\TextColumn::make('partner.partner_name')
                     ->sortable(),
                 Tables\Columns\IconColumn::make('status')
                     ->boolean(),

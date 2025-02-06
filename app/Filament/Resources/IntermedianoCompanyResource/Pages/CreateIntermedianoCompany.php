@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateIntermedianoCompany extends CreateRecord
 {
     protected static string $resource = IntermedianoCompanyResource::class;
+
+    protected function getRedirectUrl(): string {
+        return $this->getResource()::getUrl('index');
+    }
 }

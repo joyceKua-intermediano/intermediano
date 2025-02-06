@@ -25,7 +25,7 @@
                 <td>{{ $staff->company->name }}</td>
                 <td>{{ $staff->start_date }}</td>
                 <td>{{ $staff->end_date }}</td>
-                <td>{{ $staff->partner->name }}</td>
+                <td>{{ $staff->partner->partner_name }}</td>
                 <td>{{ $staff->status === 1 ? 'On' : 'Off' }}</td>
                 <td>{{ $staff->created_at }}</td>
             </tr>

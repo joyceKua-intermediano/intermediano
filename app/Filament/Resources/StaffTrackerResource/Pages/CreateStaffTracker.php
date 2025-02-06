@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateStaffTracker extends CreateRecord
 {
     protected static string $resource = StaffTrackerResource::class;
+
+    protected function getRedirectUrl(): string {
+        return $this->getResource()::getUrl('index');
+    }
 }

@@ -24,16 +24,25 @@ class PartnerResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('partner_name')
+                    ->label('Partner Name')
+                    ->required(),
+
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name')
                     ->required(),
-                Forms\Components\Select::make('company_id')
-                    ->label('Company')
-                    ->relationship('company', 'name')
+
+                Forms\Components\Select::make('partner_type')
+                    ->label('Partner type')
+                    ->options([
+                        'commercial' => 'Commercial Partner',
+                        'operational' => 'Operational Partner',
+                        'both' => 'Both',
+                    ])
                     ->required(),
 
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('contact_name')
                     ->label('Contact Name')
                     ->required()
                     ->maxLength(255),
@@ -58,13 +67,15 @@ class PartnerResource extends Resource
                     ->numeric()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('company.name')
+                Tables\Columns\TextColumn::make('partner_name')
                     ->label('Company')
                     ->numeric()
                     ->sortable(),
-
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('partner_type')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('contact_name')
                     ->label('Contact')
+                    ->sortable()
                     ->searchable(),
 
 
@@ -74,6 +85,7 @@ class PartnerResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
