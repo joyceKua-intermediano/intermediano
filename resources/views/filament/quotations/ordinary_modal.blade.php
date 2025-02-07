@@ -295,7 +295,7 @@
                 </span>
                 <span class="text-gray-800">{{ number_format($quotationDetails['provisionsTotal'], 2) }}</span>
             </div>
-            <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['indemnization']  / $record->exchange_rate, 2) }}</span>
+            <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['provisionsTotal']  / $record->exchange_rate, 2) }}</span>
         </div>
     </div>
 </div>
