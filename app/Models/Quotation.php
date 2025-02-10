@@ -31,6 +31,7 @@ class Quotation extends Model
         'dependent',
         'is_payroll',
         'is_integral',
+        'payroll_cost_medical_insurance',
         'cluster_name'
     ];
 
