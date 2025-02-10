@@ -31,6 +31,7 @@ return new class extends Migration
             $table->decimal('legal_grafication', 15, 2)->default(0);
             $table->decimal('uvt_amount', 15, 2)->default(0);
             $table->decimal('capped_amount', 15, 2)->default(0);
+            $table->decimal('payroll_cost_medical_insurance', 15, 2)->default(0);
             $table->boolean('dependent')->default(0);
             $table->boolean('is_payroll')->default(0);
             $table->boolean('is_integral')->default(0);
