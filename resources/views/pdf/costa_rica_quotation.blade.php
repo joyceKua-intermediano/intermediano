@@ -316,7 +316,7 @@
         </tr>
         <tr class="highlight">
             <th class="p-4 textWeightBold">Payroll Costs</th>
-            <th class="p-4 text-left">COP</th>
+            <th class="p-4 text-left">CRC</th>
             <td class="p-4">USD</td>
         </tr>
         <tr class="">
@@ -384,7 +384,7 @@
         </tr>
         <tr class="highlight">
             <th class="p-4 textWeightBold">Provisions</th>
-            <td class="p-4">COP</td>
+            <td class="p-4">CRC</td>
             <td class="p-4">USD</td>
         </tr>
         <tr class="">
