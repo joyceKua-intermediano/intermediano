@@ -192,7 +192,7 @@
         </tr>
         <tr>
             <td></td>
-            <th>Service taxes - VAT 19%</th>
+            <th>Service taxes - VAT 13%</th>
             <td align="right">{{ number_format($quotationDetails['servicesTaxes'], 2) }}</td>
             <td align="right">{{ number_format($quotationDetails['servicesTaxes'] / $record->exchange_rate, 2) }}</td>
 
