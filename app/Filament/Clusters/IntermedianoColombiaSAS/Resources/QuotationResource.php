@@ -190,7 +190,7 @@ class QuotationResource extends Resource
                             $set('capped_amount', null);
                         } else {
                             $annualSetup = \App\Models\CountryAnnualSetup::where('country_id', $get('country_id'))->latest('year')->first();
-                            $set('capped_amount', $annualSetup->capped_amount);
+                            $set('capped_amount', $annualSetup->capped_amount ?? 0);
                         }
                         $annualSetup = \App\Models\CountryAnnualSetup::where('country_id', $state)->latest('year')->first();
                     }),
@@ -232,7 +232,21 @@ class QuotationResource extends Resource
                     ->label('Is Quotation')
                     ->query(fn(Builder $query): Builder => $query->where('is_payroll', false))
                     ->default(),
-                TernaryFilter::make('is_integral')->label('Is Ternary Payroll?'),
+                TernaryFilter::make('is_integral')->label('Is Integral Payroll?'),
+                Filter::make('Month')
+                ->form([
+                    DatePicker::make('month')
+                        ->displayFormat('Y-m')
+                        ->placeholder('Select Month')
+                        ->extraInputAttributes(['type' => 'month'])
+
+                        ->native(),
+                ])
+                ->query(function (Builder $query, array $data) {
+                    if ($data['month']) {
+                        $query->whereMonth('title', Carbon::parse($data['month'])->month);
+                    }
+                }),
             ])
 
             ->actions([

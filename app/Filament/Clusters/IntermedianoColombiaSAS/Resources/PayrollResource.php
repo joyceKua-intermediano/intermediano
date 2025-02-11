@@ -251,7 +251,7 @@ class PayrollResource extends Resource
                 Filter::make('is_payroll')
                     ->query(fn(Builder $query): Builder => $query->where('is_payroll', true))
                     ->default(),
-                TernaryFilter::make('is_integral')->label('Is Ternary Payroll?'),
+                TernaryFilter::make('is_integral')->label('Is Integral Payroll?'),
 
 
                 SelectFilter::make('consultant_id')
