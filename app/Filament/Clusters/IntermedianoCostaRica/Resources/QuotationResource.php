@@ -163,6 +163,7 @@ class QuotationResource extends Resource
                     ->required(),
                 Fieldset::make('PayrollCosts')
                     ->relationship('payrollCosts')
+                    ->label('Payroll Costs')
                     ->schema([
                         TextInput::make('medical_insurance')->label('Medical Insurance (%)'),
                     ]),
