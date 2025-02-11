@@ -265,22 +265,8 @@
                     class="recordAlignment">{{ number_format($quotationDetails['subTotal'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
-        <tr class="highlight">
-            <th class="p-4 textWeightBold">Municipal tax - ICA 1%</th>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['municipalTax'], 2) }}
-                </span>
-            </td>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment">USD</span>
-                <span
-                    class="recordAlignment">{{ number_format($quotationDetails['municipalTax'] / $record->exchange_rate, 2) }}</span>
-            </td>
-        </tr>
         <tr>
-            <th class="p-4">Service taxes - VAT 19%</th>
+            <th class="p-4">Service taxes - VAT 13%</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
                 <span class="recordAlignment">
@@ -310,9 +296,8 @@
 
 
         {{-- payroll --}}
-        <tr class="">
-            <th class="p-4 textWeightBold"></th>
-            <th class="p-4 text-left"></th>
+        <tr style="border: 2px solid white !important;">
+            <td colspan="3" style="padding-top: 50px;"></td>
         </tr>
         <tr class="highlight">
             <th class="p-4 textWeightBold">Payroll Costs</th>

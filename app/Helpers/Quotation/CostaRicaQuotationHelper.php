@@ -17,7 +17,7 @@ if (!function_exists('calculateCostaRicaQuotation')) {
 
         $employerTaxes = ($totalGrossIncome - $record->medical_allowance) * 0.2667;
         $insPolicy = ($totalGrossIncome - $record->medical_allowance) * 0.0196;
-        $medicalInsurance = ($totalGrossIncome - $record->medical_allowance) * $record->payroll_cost_medical_insurance / 100;
+        $medicalInsurance = ($totalGrossIncome - $record->medical_allowance) * $record->payrollCosts->medical_insurance / 100;
 
         $payrollCostsTotal =
             $employerTaxes +
@@ -52,7 +52,7 @@ if (!function_exists('calculateCostaRicaQuotation')) {
         // end of accumulated provision
 
         $subTotalGrossPayroll = $totalGrossIncome + $provisionsTotal + $payrollCostsTotal;
-        $fee = $subTotalGrossPayroll * ($record->fee / 100);
+        $fee = $record->is_fix_fee ? $subTotalGrossPayroll * ($record->fee / 100) : $record->fee;
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
         $municipalTax = 0 * $subTotal;

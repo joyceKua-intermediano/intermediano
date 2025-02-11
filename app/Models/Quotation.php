@@ -18,6 +18,7 @@ class Quotation extends Model
         'exchange_rate',
         'exchange_acronym',
         'gross_salary',
+        'is_fix_fee',
         'fee',
         'bank_fee',
         'bonus',
@@ -48,5 +49,10 @@ class Quotation extends Model
     public function consultant()
     {
         return $this->belongsTo(Consultant::class);
+    }
+
+    public function payrollCosts()
+    {
+        return $this->hasOne(PayrollCost::class);
     }
 }
