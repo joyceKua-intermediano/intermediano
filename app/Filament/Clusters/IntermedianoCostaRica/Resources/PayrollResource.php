@@ -99,8 +99,8 @@ class PayrollResource extends Resource
                     ->label('Type of fee')
                     ->required()
                     ->options([
-                        '0' => 'Fix Rate',
-                        '1' => 'Percentage Rate',
+                        '1' => 'Fix Rate',
+                        '0' => 'Percentage Rate',
                     ]),
                 Forms\Components\TextInput::make('fee')
                     ->required(),
