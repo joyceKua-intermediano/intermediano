@@ -26,6 +26,7 @@ use Filament\Tables\Filters\SelectFilter;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Forms\Components\Fieldset;
 use Illuminate\Support\Str;
 
 class PayrollResource extends Resource
@@ -94,7 +95,13 @@ class PayrollResource extends Resource
                         $component->state($cleanedState);
                     })
                     ->required(),
-
+                Forms\Components\Select::make('is_fix_fee')
+                    ->label('Type of fee')
+                    ->required()
+                    ->options([
+                        '0' => 'Fix Rate',
+                        '1' => 'Percentage Rate',
+                    ]),
                 Forms\Components\TextInput::make('fee')
                     ->required(),
 
@@ -165,8 +172,11 @@ class PayrollResource extends Resource
                     })
                     ->default(0)
                     ->required(),
-                Forms\Components\TextInput::make('payroll_cost_medical_insurance')
-                    ->label('Payroll Cost for Medical Insurance (%)'),
+                Fieldset::make('PayrollCosts')
+                    ->relationship('payrollCosts')
+                    ->schema([
+                        TextInput::make('medical_insurance')->label('Medical Insurance (%)'),
+                    ]),
 
                 Forms\Components\TextInput::make('uvt_amount')
                     ->default(0)

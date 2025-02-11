@@ -87,8 +87,8 @@ class QuotationResource extends Resource
                     })
                     ->required(),
                 Forms\Components\Select::make('is_fix_fee')
-                ->label('Type of fee')
-                ->required()
+                    ->label('Type of fee')
+                    ->required()
                     ->options([
                         '0' => 'Fix Rate',
                         '1' => 'Percentage Rate',
