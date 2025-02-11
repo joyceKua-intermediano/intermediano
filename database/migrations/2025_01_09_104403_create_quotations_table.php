@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('exchange_rate', 10, 2);
             $table->string('exchange_acronym');
             $table->decimal('gross_salary', 15, 2);
+            $table->boolean('is_fix_fee')->default(0);
             $table->decimal('fee', 15, 2);
             $table->decimal('bank_fee', 15, 2);
             $table->decimal('bonus', 15, 2)->default(0);
@@ -31,7 +32,6 @@ return new class extends Migration
             $table->decimal('legal_grafication', 15, 2)->default(0);
             $table->decimal('uvt_amount', 15, 2)->default(0);
             $table->decimal('capped_amount', 15, 2)->default(0);
-            $table->decimal('payroll_cost_medical_insurance', 15, 2)->default(0);
             $table->boolean('dependent')->default(0);
             $table->boolean('is_payroll')->default(0);
             $table->boolean('is_integral')->default(0);
