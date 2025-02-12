@@ -248,8 +248,8 @@
         <tr>
             <td></td>
             <th>FGTS and INSS over Vacation and 13th Salary</th>
-            {{-- <td align="right"> {{ number_format($quotationDetails['fgtsInss'], 2) }}</td>
-            <td align="right">{{ number_format($quotationDetails['fgtsInss'] / $record->exchange_rate, 2) }}</td> --}}
+            <td align="right"> {{ number_format($quotationDetails['fgtsInss'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['fgtsInss'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
 
