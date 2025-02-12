@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quotation_id')->constrained()->cascadeOnDelete();
             $table->decimal('medical_insurance', 15, 2)->default(0);
+            $table->decimal('meal', 15, 2)->default(0);
+            $table->decimal('transportation', 15, 2)->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
