@@ -12,7 +12,9 @@ class PayrollCost extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'medical_insurance'    
+        'medical_insurance',
+        'meal',
+        'transportation'
     ];
 
     public function quotation(): BelongsTo 
