@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCountryAnnualSetup extends CreateRecord
 {
     protected static string $resource = CountryAnnualSetupResource::class;
+
+    protected function getRedirectUrl(): string {
+        return $this->getResource()::getUrl('index');
+    }
 }
