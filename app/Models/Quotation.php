@@ -27,6 +27,8 @@ class Quotation extends Model
         'medical_allowance',
         'internet_allowance',
         'legal_grafication',
+        'family_allowance',
+        'food_allowance',
         'capped_amount',
         'uvt_amount',
         'dependent',
