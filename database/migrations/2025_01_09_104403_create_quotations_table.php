@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('country_id')->constrained()->cascadeOnDelete();
             $table->foreignId('consultant_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('currency_name');
-            $table->decimal('exchange_rate', 10, 2);
+            $table->decimal('exchange_rate', 10, 6);
             $table->string('exchange_acronym');
             $table->decimal('gross_salary', 15, 2);
             $table->boolean('is_fix_fee')->default(0);
@@ -30,6 +30,8 @@ return new class extends Migration
             $table->decimal('medical_allowance', 15, 2)->default(0);
             $table->decimal('internet_allowance', 15, 2)->default(0);
             $table->decimal('legal_grafication', 15, 2)->default(0);
+            $table->decimal('family_allowance', 15, 2)->default(0);
+            $table->decimal('food_allowance', 15, 2)->default(0);
             $table->decimal('uvt_amount', 15, 2)->default(0);
             $table->decimal('capped_amount', 15, 2)->default(0);
             $table->boolean('dependent')->default(0);
