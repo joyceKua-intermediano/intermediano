@@ -14,7 +14,8 @@ class PayrollCost extends Model
     protected $fillable = [
         'medical_insurance',
         'meal',
-        'transportation'
+        'transportation',
+        'uf_month'
     ];
 
     public function quotation(): BelongsTo 
