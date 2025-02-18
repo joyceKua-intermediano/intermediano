@@ -15,7 +15,8 @@ class PayrollCost extends Model
         'medical_insurance',
         'meal',
         'transportation',
-        'uf_month'
+        'uf_month',
+        'eps'
     ];
 
     public function quotation(): BelongsTo 
