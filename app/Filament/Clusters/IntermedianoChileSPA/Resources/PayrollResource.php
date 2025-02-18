@@ -290,7 +290,7 @@ class PayrollResource extends Resource
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        $pdfPage =  'pdf.costa_rica_quotation';
+                        $pdfPage =  'pdf.chile_quotation';
                         $companyName = $record->company->name;
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);

@@ -139,6 +139,18 @@
             </td>
         </tr>
         <tr class="">
+            <th class="p-4">Legal Gratification</th>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
+                <span class="recordAlignment">{{ number_format($record->legal_grafication, 2) }}</span>
+            </td>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment">USD</span>
+                <span
+                    class="recordAlignment">{{ number_format($record->legal_grafication / $record->exchange_rate, 2) }}</span>
+            </td>
+        </tr>
+        <tr class="">
             <th class="p-4">Gross Salary</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>

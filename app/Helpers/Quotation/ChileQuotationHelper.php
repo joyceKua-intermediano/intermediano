@@ -47,7 +47,6 @@ if (!function_exists('calculateChileQuotation')) {
         } else {
             $previousMonthGrossIncome = 0;
         };
-        dd(0.0833 * $previousMonthGrossIncome, $compensation, $noticePeriod);
         $accumulatedVacation = (0.058333 * $previousMonthGrossIncome) + $vacation;
         $accumulatedCompensation = (0.0833 * $previousMonthGrossIncome) + $compensation;
         $accumulatedNoticePeriod = (0.0833 * $previousMonthGrossIncome) + $noticePeriod;
