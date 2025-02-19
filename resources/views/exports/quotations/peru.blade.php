@@ -104,9 +104,9 @@
         </tr>
         <tr>
             <td></td>
-            <th>Internet Allowance</th>
-            <td align="right">{{ number_format($record->internet_allowance, 2) }}</td>
-            <td align="right">{{ number_format($record->internet_allowance / $record->exchange_rate, 2) }}</td>
+            <th>Family Allowance</th>
+            <td align="right">{{ number_format($record->family_allowance, 2) }}</td>
+            <td align="right">{{ number_format($record->family_allowance / $record->exchange_rate, 2) }}</td>
 
         </tr>
 
