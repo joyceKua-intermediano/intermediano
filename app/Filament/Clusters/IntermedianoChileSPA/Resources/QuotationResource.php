@@ -48,7 +48,7 @@ class QuotationResource extends Resource
                     ->required(),
                 Forms\Components\Hidden::make('country_id')
                     ->default(function () {
-                        return \App\Models\Country::where('name', 'Canada')->value('id');
+                        return \App\Models\Country::where('name', 'Chile')->value('id');
                     }),
 
                 Forms\Components\TextInput::make('currency_name')
