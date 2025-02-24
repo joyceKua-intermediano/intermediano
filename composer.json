@@ -40,7 +40,8 @@
             "app/Helpers/Quotation/BrasilQuotationHelper.php",
             "app/Helpers/Quotation/MexicoQuotationHelper.php",
             "app/Helpers/Quotation/ChileQuotationHelper.php",
-            "app/Helpers/Quotation/PeruQuotationHelper.php"
+            "app/Helpers/Quotation/PeruQuotationHelper.php",
+            "app/Helpers/Quotation/CanadaQuotationHelper.php"
         ]
     },
     "autoload-dev": {
