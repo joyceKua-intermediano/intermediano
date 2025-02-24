@@ -50,9 +50,19 @@ class PayrollResource extends Resource
                     ->label('Customer')
                     ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
                     ->required(),
-                Forms\Components\Hidden::make('country_id')
-                    ->default(function () {
-                        return \App\Models\Country::where('name', 'Canada')->value('id');
+                Forms\Components\Select::make('country_id')
+                    ->label('Country')
+                    ->relationship('country', 'name')
+                    ->required()
+                    ->reactive()
+                    ->afterStateUpdated(function (callable $set, $state) {
+                        if ($state) {
+                            $annualSetup = \App\Models\CountryAnnualSetup::where('country_id', $state)->latest('year')->first();
+                            if ($annualSetup) {
+                                $set('uvt_amount', $annualSetup->uvt_amount);
+                                $set('capped_amount', $annualSetup->capped_amount);
+                            }
+                        }
                     }),
                 Forms\Components\Select::make('consultant_id')
                     ->label('Consultant')
