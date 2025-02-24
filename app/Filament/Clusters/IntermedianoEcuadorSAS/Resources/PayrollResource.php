@@ -46,22 +46,12 @@ class PayrollResource extends Resource
                     ->native(false)
                     ->required(),
                 Forms\Components\Select::make('company_id')
-                    ->label('Company')
-                    ->relationship('company', 'name')
+                    ->label('Customer')
+                    ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
                     ->required(),
-                Forms\Components\Select::make('country_id')
-                    ->label('Country')
-                    ->relationship('country', 'name')
-                    ->required()
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set, $state) {
-                        if ($state) {
-                            $annualSetup = \App\Models\CountryAnnualSetup::where('country_id', $state)->latest('year')->first();
-                            if ($annualSetup) {
-                                $set('uvt_amount', $annualSetup->uvt_amount);
-                                $set('capped_amount', $annualSetup->capped_amount);
-                            } 
-                        }
+                Forms\Components\Hidden::make('country_id')
+                    ->default(function () {
+                        return \App\Models\Country::where('name', 'Ecuador')->value('id');
                     }),
                 Forms\Components\Select::make('consultant_id')
                     ->label('Consultant')
@@ -164,11 +154,11 @@ class PayrollResource extends Resource
                     ->required(),
 
 
-                    Forms\Components\TextInput::make('uvt_amount')
+                Forms\Components\TextInput::make('uvt_amount')
                     ->default(0)
                     ->hidden(true)
                     ->label('UVT Amount'),
-                    Forms\Components\TextInput::make('capped_amount')
+                Forms\Components\TextInput::make('capped_amount')
                     ->default(0)
                     ->hidden(true)
                     ->label('Capped (LIMIT) Social Security'),
