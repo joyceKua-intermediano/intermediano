@@ -49,7 +49,7 @@ class PayrollResource extends Resource
                     ->placeholder('yy-mm-dd')
                     ->native(false)
                     ->required(),
-                    Forms\Components\Select::make('company_id')
+                Forms\Components\Select::make('company_id')
                     ->label('Customer')
                     ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
                     ->required(),
