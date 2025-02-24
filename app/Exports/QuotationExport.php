@@ -52,6 +52,9 @@ class QuotationExport implements FromView,  WithEvents
             case  $this->record->cluster_name === 'IntermedianoCanada':
                 $exportFile = 'exports.quotations.canada';
                 break;
+            case  $this->record->cluster_name === 'IntermedianoUruguay':
+                $exportFile = 'exports.quotations.uruguay';
+                break;
 
             default:
                 # code...
