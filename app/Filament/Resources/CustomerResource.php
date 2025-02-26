@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
 use Illuminate\Validation\Rules\Unique;
+use Filament\Forms\Components\Repeater;
+use Filament\Tables\Filters\Filter;
 
 class CustomerResource extends Resource
 {
@@ -60,6 +62,20 @@ class CustomerResource extends Resource
                     ])->createOptionModalHeading(__("Filed of Industry Registration")),
                 Forms\Components\TextInput::make('number_of_employees')->label(__("Number of employees"))->numeric(),
                 Forms\Components\Hidden::make("is_customer")->default(1),
+                Repeater::make("contacts")->label(__('Contact Information'))->relationship()->schema([
+                    Section::make()->schema([
+                        Forms\Components\TextInput::make('contact_name')->required()->maxLength(255)->label(__("Contact Name"))->reactive(),
+                        Forms\Components\TextInput::make('surname')->maxLength(255)->label(__("Surname")),
+                        Forms\Components\TextInput::make('email')->maxLength(255)->label(__("Email")),
+                        Forms\Components\TextInput::make('linkedin')->maxLength(255)->label(__("Linkedin")),
+                        Forms\Components\TextInput::make('mobile')->maxLength(255)->label(__("Mobile")),
+                        Forms\Components\TextInput::make('phone')->maxLength(255)->label(__("Phone")),
+                        Forms\Components\TextInput::make('position')->maxLength(255)->label(__("Job Title")),
+                        Forms\Components\TextInput::make('department')->maxLength(255)->label(__("Department")),
+                        Forms\Components\Toggle::make('is_main_contact')->required()->label(__("Main Contact")),
+
+                    ])->columns(4)
+                ])->columnSpanFull()
             ]);
     }
 
@@ -112,6 +128,10 @@ class CustomerResource extends Resource
             ])->defaultSort('id', 'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Filter::make('is_customer')
+                    ->label('Customer')
+                    ->query(fn(Builder $query): Builder => $query->where('is_customer', true))
+                    ->default()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
