@@ -56,7 +56,7 @@ class QuotationResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('company_id')
                     ->label('Customer')
-                    ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
+                    ->relationship('company', 'name')
                     ->required(),
                 Forms\Components\Hidden::make('country_id')
                     ->default(function () {
