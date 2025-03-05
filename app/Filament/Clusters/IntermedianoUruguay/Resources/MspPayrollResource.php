@@ -85,7 +85,7 @@ class MspPayrollResource extends Resource
                             ->label('Other Expense (Banking Fee, Reimbursement)')
                             ->numeric(),
                     ])
-                    ->default( $firstRecord->data)
+                    ->default( $firstRecord->data ?? null)
                     ->orderable('order')
                     ->columnSpanFull()
                     ->columns(1)
