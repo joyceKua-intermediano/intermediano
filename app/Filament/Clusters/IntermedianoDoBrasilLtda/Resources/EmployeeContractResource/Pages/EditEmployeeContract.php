@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources\EmployeeContractResource\Pages;
+
+use App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources\EmployeeContractResource;
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
+
+class EditEmployeeContract extends EditRecord
+{
+    protected static string $resource = EmployeeContractResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+            Actions\ForceDeleteAction::make(),
+            Actions\RestoreAction::make(),
+        ];
+    }
+    protected function getRedirectUrl(): string {
+        return $this->getResource()::getUrl('index');
+    }
+}
