@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Carbon\Carbon;
 
-class Employee extends Authenticatable
+class Employee extends Authenticatable implements FilamentUser
 {
     use SoftDeletes;
 
@@ -64,5 +66,16 @@ class Employee extends Authenticatable
     public function getVacationBalance(): float
     {
         return $this->getAccruedVacation() - $this->getTakenVacation();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $panel->getId() == 'employee';
+    }
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
     }
 }
