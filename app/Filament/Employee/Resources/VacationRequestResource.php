@@ -6,6 +6,7 @@ use App\Filament\Employee\Resources\VacationRequestResource\Pages;
 use App\Filament\Employee\Resources\VacationRequestResource\RelationManagers;
 use App\Filament\Employee\Widgets\EmployeeVacationOverview;
 use App\Helpers\VacationBalanceHelper;
+use App\Models\Contract;
 use App\Models\VacationRequest;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -29,6 +30,8 @@ class VacationRequestResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $employeeCompanyId = Contract::where('employee_id', auth()->user()->id)->value('company_id');
+
         return $form
             ->schema([
                 DatePicker::make('start_date')->required(),
@@ -36,6 +39,8 @@ class VacationRequestResource extends Resource
                 TextInput::make('number_of_days')->required()->numeric()->maxValue(round(static::getVacationBalance(), 2)),
                 Forms\Components\Hidden::make('employee_id')
                     ->default(auth()->user()->id),
+                Forms\Components\Hidden::make('company_id')
+                    ->default($employeeCompanyId),
             ]);
     }
 
@@ -47,13 +52,13 @@ class VacationRequestResource extends Resource
                 TextColumn::make('end_date')->sortable(),
                 TextColumn::make('number_of_days')->sortable(),
                 BadgeColumn::make('status')
-                ->sortable()
-                ->colors([
-                    'primary' => fn ($state) => $state === 'pending',
-                    'success' => fn ($state) => $state === 'approved',
-                    'danger' => fn ($state) => $state === 'rejected',
-                ])
-                ->formatStateUsing(fn ($state) => ucfirst($state)),
+                    ->sortable()
+                    ->colors([
+                        'primary' => fn($state) => $state === 'pending',
+                        'success' => fn($state) => $state === 'approved',
+                        'danger' => fn($state) => $state === 'rejected',
+                    ])
+                    ->formatStateUsing(fn($state) => ucfirst($state)),
 
 
             ])
@@ -62,7 +67,7 @@ class VacationRequestResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->visible(fn($record) => $record->status !== 'approved'),
-                ])
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -92,5 +97,10 @@ class VacationRequestResource extends Resource
         return $vacationBalance;
     }
 
-
+    public static function getEloquentQuery(): Builder
+    {
+        $employeeId = auth()->user()->id;
+        $employeeVacationRequest = VacationRequest::where('employee_id',  $employeeId);
+        return $employeeVacationRequest;
+    }
 }

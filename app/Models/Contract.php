@@ -23,7 +23,8 @@ class Contract extends Model
         'gross_salary',
         'contract_type',
         'job_description',
-        'translated_job_description'
+        'translated_job_description',
+        'cluster_name'
     ];
 
     public function employee(): BelongsTo
@@ -66,4 +67,8 @@ class Contract extends Model
         return $this->hasMany(VacancyResource::class);
     }
     
+    public function socialSecurityInfos(): BelongsTo
+    {
+        return $this->belongsTo(SocialSecurityInfo::class, 'employee_id', 'employee_id');
+    }
 }
