@@ -1,0 +1,158 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.header {
+    width: 100%;
+    background-color: #742e26;
+    color: white;
+    padding: 10px;
+    display: table;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1000;
+}
+
+.header img {
+    height: 60px;
+    width: auto;
+    display: table-cell;
+    vertical-align: bottom;
+}
+
+.header-title {
+    display: table-cell;
+    text-align: right;
+    vertical-align: bottom;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.footer {
+    border-top: 1px solid #742e26;
+    background-color:#742e26; 
+    opacity: .8;
+    background-color: white;
+    width: 100%;
+    color: white;
+    padding: 10px;
+    display: table;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    z-index: 1000;
+}
+
+.footer img {
+    height: 50px;
+    /* Height as per the uploaded image */
+    width: auto;
+}
+
+.footer-title {
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font-weight: normal;
+    display: table-cell;
+    vertical-align: bottom;
+    padding-left: 20px !important;
+    color: #752e25 !important;
+}
+
+.footer-title b,
+.footer-title p {
+    font-size: 10px;
+    margin: 0;
+    line-height: 1.2;
+    /* Ensure no extra space is added */
+    padding: 0;
+}
+
+main {
+    /* margin-top: 80px; */
+    /* Adjust to account for the fixed header */
+    padding: 10px;
+    page-break-after: always;
+}
+
+table {
+    margin-top: 20px;
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: auto;
+    /* Allow table to break across pages */
+}
+
+table tr {
+    page-break-inside: avoid;
+    /* Prevent rows from breaking across pages */
+}
+
+table th,
+table td {
+    padding: 2px 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+    word-wrap: break-word;
+}
+
+p {
+    word-spacing: 6px;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+@media print {
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        z-index: 1000;
+    }
+
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        z-index: 1000;
+    }
+
+    main {
+        margin: 100px 10px 10px;
+        /* Adjust margins for printing */
+    }
+
+    @page {
+        margin: 100px 20px 20px;
+        /* Adjust margins for printing */
+    }
+
+    @page :first {
+        margin: 100px
+    }
+
+    table {
+        margin: 0 auto;
+        /* Center table horizontally */
+        width: 90%;
+        /* Adjust table width for printing */
+    }
+
+    table tr {
+        page-break-inside: avoid;
+        /* Ensure rows don't break across pages */
+    }
+}
