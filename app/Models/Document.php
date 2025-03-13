@@ -27,4 +27,9 @@ class Document extends Model
     {
         return $this->hasMany(BankingDetail::class);
     }
+
+    public function socialSecurityInfos()
+    {
+        return $this->hasMany(SocialSecurityInfo::class);
+    }
 }

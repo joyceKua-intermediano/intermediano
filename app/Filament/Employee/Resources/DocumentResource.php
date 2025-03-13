@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
 
 class DocumentResource extends Resource
 {
@@ -84,8 +85,24 @@ class DocumentResource extends Resource
                     ->columnSpanFull()
                     ->columns(2)
                     ->grid(2)
-                    ->orderable('id') // Allow reordering
-                    ->defaultItems(0), // Start with no items by default
+                    ->orderable('id')
+                    ->defaultItems(0),
+
+                Repeater::make('socialSecurityInfos')
+                    ->relationship('socialSecurityInfos')
+                    ->schema([
+                        Forms\Components\Hidden::make('employee_id')
+                            ->default(auth()->user()->id),
+                        TextInput::make('health_fund')->required(),
+                        TextInput::make('pension_fund')->required(),
+                        TextInput::make('severance_fund')->required(),
+
+                    ])
+                    ->columnSpanFull()
+                    ->columns(2)
+                    ->grid(2)
+                    ->orderable('id')
+                    ->defaultItems(0),
             ]);
     }
 
