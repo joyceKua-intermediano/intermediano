@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Document extends Model
+{
+
+    protected $fillable = [
+        'employee_id',
+        'personal_id',
+        'tax_id',
+        'organism',
+        'expiration',
+        'other',
+        'is_driver_license',
+        'has_insurance',
+        'category',
+    ];
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
+
+    public function bankingDetails()
+    {
+        return $this->hasMany(BankingDetail::class);
+    }
+}

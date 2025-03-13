@@ -15,7 +15,8 @@
         "mokhosh/filament-kanban": "^2.9",
         "pxlrbt/filament-excel": "^2.3",
         "spatie/laravel-permission": "^6.9",
-        "spatie/laravel-welcome-notification": "^2.4"
+        "spatie/laravel-welcome-notification": "^2.4",
+        "stichoza/google-translate-php": "^5.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

@@ -49,5 +49,17 @@ class Company extends Model
         $main_contact = Contact::whereCompanyId($this->id)->where("is_main_contact", 1)->first();
         return $main_contact?->contact_name . " " . $main_contact?->surname;
     }
+    public function mspPayrolls()
+    {
+        return $this->belongsToMany(MspPayroll::class, 'msp_payroll_company');
+    }
     
+    public  function customers()
+    {
+        return $this->hasMany(Customer::class);
+    }
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class);
+    }
 }

@@ -49,7 +49,7 @@ class LeadsKanbanBoard extends KanbanBoard
         return __('Sales');
     }
 
-    protected function getEditModalFormSchema(null|int $recordId): array
+    protected function getEditModalFormSchema(null|int|string $recordId): array
     {
         return [
             // TextInput::make('lead'),
