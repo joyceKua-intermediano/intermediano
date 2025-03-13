@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('contract_type')->nullable();
             $table->text('job_description')->nullable();
             $table->text('translated_job_description')->nullable();
+            $table->string('cluster_name');
             $table->softDeletes();
             $table->timestamps();
         });
