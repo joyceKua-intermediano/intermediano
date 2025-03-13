@@ -96,4 +96,11 @@ class VacationRequestResource extends Resource
     {
         return false;
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $customerCompanyID = auth()->user()->company_id;
+        $getEmployeeContract = VacationRequest::where('company_id',  $customerCompanyID);
+        return $getEmployeeContract;
+    }
 }
