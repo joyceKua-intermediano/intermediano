@@ -11,6 +11,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -82,6 +83,10 @@ class EmployeeResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Filter::make('cluster_match')
+                ->label('Company Name')
+                ->query(fn(Builder $query): Builder => $query->where('company', self::getClusterName()))
+                ->default(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

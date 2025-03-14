@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\RichEditor;
 use Carbon\Carbon;
-use Stichoza\GoogleTranslate\GoogleTranslate;
+use Filament\Tables\Filters\Filter;
 
 class EmployeeContractResource extends Resource
 {
@@ -67,7 +67,10 @@ class EmployeeContractResource extends Resource
                     ->maxLength(255)
                     ->default(null),
                 RichEditor::make('job_description')->columnSpanFull(),
-                RichEditor::make('translated_job_description')->columnSpanFull()
+                RichEditor::make('translated_job_description')->columnSpanFull(),
+                Forms\Components\Hidden::make('cluster_name')
+                    ->default(self::getClusterName())
+                    ->label(self::getClusterName()),
             ]);
     }
 
@@ -104,6 +107,10 @@ class EmployeeContractResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Filter::make('cluster_match')
+                    ->label('Company Name')
+                    ->query(fn(Builder $query): Builder => $query->where('cluster_name', self::getClusterName()))
+                    ->default(),
                 SelectFilter::make('contract_type')
                     ->options([
                         'customer' => 'Customer',
@@ -134,29 +141,29 @@ class EmployeeContractResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('pdf')
-                ->label('Download Contract')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->action(function ($record) {
-                    $pdfPage = $record->end_date == null ? 'pdf.contract.undefined_employee' : 'pdf.contract.defined_employee';
-                    $year = date('Y', strtotime($record->created_at));
-                    $formattedId = sprintf('%04d', $record->id);
-                
-                    $contractTitle = $year . '.' . $formattedId;
-                    $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
-                    $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
-                
-                    $pdf = Pdf::loadView($pdfPage, [
-                        'record' => $record,
-                        'poNumber' => $contractTitle,
-                        'company' => 'Intermediano do Brasil Ltda.',
-                    ]);
-                
-                    return response()->streamDownload(
-                        fn() => print($pdf->output()),
-                        $fileName . '.pdf'
-                    );
-                }),
-                
+                    ->label('Download Contract')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function ($record) {
+                        $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
+                        $year = date('Y', strtotime($record->created_at));
+                        $formattedId = sprintf('%04d', $record->id);
+
+                        $contractTitle = $year . '.' . $formattedId;
+                        $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
+                        $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
+
+                        $pdf = Pdf::loadView($pdfPage, [
+                            'record' => $record,
+                            'poNumber' => $contractTitle,
+                            'company' => 'Intermediano do Brasil Ltda.',
+                        ]);
+
+                        return response()->streamDownload(
+                            fn() => print($pdf->output()),
+                            $fileName . '.pdf'
+                        );
+                    }),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -189,5 +196,10 @@ class EmployeeContractResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    protected static function getClusterName(): string
+    {
+        return class_basename(self::$cluster);
     }
 }

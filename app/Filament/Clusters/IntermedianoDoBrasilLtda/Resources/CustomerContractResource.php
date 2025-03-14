@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Filament\Tables\Filters\Filter;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class CustomerContractResource extends Resource
@@ -65,6 +66,9 @@ class CustomerContractResource extends Resource
                 Forms\Components\TextInput::make('gross_salary')
                     ->maxLength(255)
                     ->default(null),
+                Forms\Components\Hidden::make('cluster_name')
+                    ->default(self::getClusterName())
+                    ->label(self::getClusterName()),
             ]);
     }
 
@@ -101,6 +105,10 @@ class CustomerContractResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Filter::make('cluster_match')
+                    ->label('Company Name')
+                    ->query(fn(Builder $query): Builder => $query->where('cluster_name', self::getClusterName()))
+                    ->default(),
                 SelectFilter::make('contract_type')
                     ->options([
                         'customer' => 'Customer',
@@ -163,5 +171,9 @@ class CustomerContractResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+    protected static function getClusterName(): string
+    {
+        return class_basename(self::$cluster);
     }
 }
