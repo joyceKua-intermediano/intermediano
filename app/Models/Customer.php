@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Customer extends Authenticatable
+class Customer extends Authenticatable implements FilamentUser
 {
     use SoftDeletes;
 
@@ -16,5 +17,16 @@ class Customer extends Authenticatable
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $panel->getId() == 'customer';
+    }
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
     }
 }
