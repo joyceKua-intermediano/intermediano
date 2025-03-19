@@ -197,6 +197,16 @@ class PersonalInformationResource extends Resource
     }
     public static function canCreate(): bool
     {
-        return PersonalInformation::count() === 0;
+
+        $employeeId = auth()->user()->id;
+        $employeePersonalInformation = PersonalInformation::where('employee_id',  $employeeId);
+        return $employeePersonalInformation->count() === 0;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $employeeId = auth()->user()->id;
+        $employeePersonalInformation = PersonalInformation::where('employee_id',  $employeeId);
+        return $employeePersonalInformation;
     }
 }

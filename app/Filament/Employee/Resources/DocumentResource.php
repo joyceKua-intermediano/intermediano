@@ -5,7 +5,6 @@ namespace App\Filament\Employee\Resources;
 use App\Filament\Employee\Resources\DocumentResource\Pages;
 use App\Filament\Employee\Resources\DocumentResource\RelationManagers;
 use App\Models\Document;
-use App\Models\PersonalInformation;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -44,10 +43,12 @@ class DocumentResource extends Resource
                 Forms\Components\TextInput::make('other')
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\Toggle::make('is_driver_license')
+                Forms\Components\Toggle::make('has_insurance')
+                    ->label('Health Insurance')
                     ->inline(false)
                     ->required(),
-                Forms\Components\Toggle::make('has_insurance')
+                Forms\Components\Toggle::make('is_driver_license')
+                    ->label('Driver License')
                     ->inline(false)
                     ->required(),
                 Forms\Components\TextInput::make('category')
@@ -170,6 +171,15 @@ class DocumentResource extends Resource
     }
     public static function canCreate(): bool
     {
-        return PersonalInformation::count() === 0;
+        $employeeId = auth()->user()->id;
+        $employeePersonalInformation = Document::where('employee_id',  $employeeId);
+        return $employeePersonalInformation->count() === 0;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $employeeId = auth()->user()->id;
+        $employeePersonalInformation = Document::where('employee_id',  $employeeId);
+        return $employeePersonalInformation;
     }
 }
