@@ -18,7 +18,8 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->boolean('is_local')->default(1);
             $table->string('work_visa')->nullable();
-            $table->string('residence')->nullable();
+            $table->string('nationality')->nullable();
+            $table->string('city')->nullable();
             $table->string('country')->nullable();
             $table->string('state')->nullable();
             $table->string('address')->nullable();
