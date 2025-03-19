@@ -195,4 +195,8 @@ class PersonalInformationResource extends Resource
             'edit' => Pages\EditPersonalInformation::route('/{record}/edit'),
         ];
     }
+    public static function canCreate(): bool
+    {
+        return PersonalInformation::count() === 0;
+    }
 }

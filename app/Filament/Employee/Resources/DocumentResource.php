@@ -5,6 +5,7 @@ namespace App\Filament\Employee\Resources;
 use App\Filament\Employee\Resources\DocumentResource\Pages;
 use App\Filament\Employee\Resources\DocumentResource\RelationManagers;
 use App\Models\Document;
+use App\Models\PersonalInformation;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -166,5 +167,9 @@ class DocumentResource extends Resource
             'create' => Pages\CreateDocument::route('/create'),
             'edit' => Pages\EditDocument::route('/{record}/edit'),
         ];
+    }
+    public static function canCreate(): bool
+    {
+        return PersonalInformation::count() === 0;
     }
 }
