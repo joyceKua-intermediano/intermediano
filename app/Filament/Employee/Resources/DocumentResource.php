@@ -76,10 +76,10 @@ class DocumentResource extends Resource
                             ->required(),
                         FileUpload::make('file_path')
                             ->label('File')
-                            ->directory('employees/documents') // Storage directory
-                            ->preserveFilenames() // Optional: Preserve original filenames
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf']) // Restrict file types
-                            ->maxSize(2048) // Max file size in KB
+                            ->directory('employees/documents')
+                            ->preserveFilenames()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
+                            ->maxSize(2048)
                             ->required(),
                     ])
                     ->columnSpanFull()
