@@ -32,7 +32,7 @@ class Employee extends Authenticatable implements FilamentUser
 
     public function documents()
     {
-        return $this->hasMany(BankingDetail::class);
+        return $this->hasMany(Document::class);
     }
 
     public function contract()

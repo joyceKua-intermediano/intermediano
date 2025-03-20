@@ -11,23 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('banking_details', function (Blueprint $table) {
+        Schema::create('employee_files', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->foreignId('document_id')->constrained()->cascadeOnDelete();
-            $table->string('bank_name')->nullable();
-            $table->string('branch_name')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('account_type')->nullable();
+            $table->string('document_type');
+            $table->string('file_path');
+            $table->string('original_file_name'); 
             $table->timestamps();
         });
     }
+
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('banking_details');
+        Schema::dropIfExists('employee_files');
     }
 };

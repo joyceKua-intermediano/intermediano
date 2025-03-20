@@ -49,17 +49,19 @@ class PersonalInformationResource extends Resource
                     ->required()
                     ->default('single'),
                 Forms\Components\DatePicker::make('date_of_birth'),
-
-                Forms\Components\TextInput::make('residence')
+                Forms\Components\TextInput::make('nationality')
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\TextInput::make('country')
+                Forms\Components\TextInput::make('address')
+                    ->maxLength(255)
+                    ->default(null),
+                Forms\Components\TextInput::make('city')
                     ->maxLength(255)
                     ->default(null),
                 Forms\Components\TextInput::make('state')
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\TextInput::make('address')
+                Forms\Components\TextInput::make('country')
                     ->maxLength(255)
                     ->default(null),
                 Forms\Components\TextInput::make('postal_code')
@@ -138,7 +140,7 @@ class PersonalInformationResource extends Resource
                     ->boolean(),
                 Tables\Columns\TextColumn::make('work_visa')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('residence')
+                Tables\Columns\TextColumn::make('nationality')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('country')
                     ->searchable(),
@@ -192,5 +194,19 @@ class PersonalInformationResource extends Resource
             'create' => Pages\CreatePersonalInformation::route('/create'),
             'edit' => Pages\EditPersonalInformation::route('/{record}/edit'),
         ];
+    }
+    public static function canCreate(): bool
+    {
+
+        $employeeId = auth()->user()->id;
+        $employeePersonalInformation = PersonalInformation::where('employee_id',  $employeeId);
+        return $employeePersonalInformation->count() === 0;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $employeeId = auth()->user()->id;
+        $employeePersonalInformation = PersonalInformation::where('employee_id',  $employeeId);
+        return $employeePersonalInformation;
     }
 }

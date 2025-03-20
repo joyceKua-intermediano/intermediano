@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 use Filament\Forms\Components\RichEditor;
 use Carbon\Carbon;
 use Filament\Tables\Filters\Filter;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class EmployeeContractResource extends Resource
 {
@@ -41,13 +42,6 @@ class EmployeeContractResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('employee_id')
                     ->relationship(name: 'employee', titleAttribute: 'name')
-                    ->required(),
-                Forms\Components\Select::make('quotation_id')
-                    ->relationship(
-                        'quotation',
-                        'title',
-                        fn(Builder $query) => $query->where('cluster_name', 'IntermedianoDoBrasilLtda')
-                    )
                     ->required(),
                 Forms\Components\TextInput::make('country_work')
                     ->maxLength(255)
@@ -147,7 +141,10 @@ class EmployeeContractResource extends Resource
                         $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
-
+                        $tr = new GoogleTranslate();
+                        $tr->setSource();
+                        $tr->setTarget('en');
+                        $record->translatedPosition = $tr->translate($record->job_title ?? "");
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';

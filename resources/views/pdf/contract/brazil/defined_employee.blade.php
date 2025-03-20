@@ -20,13 +20,18 @@ $customerEmail = $record->companyContact->email;
 $customerName = $record->companyContact->contact_name;
 $customerPosition = $record->companyContact->position;
 $employeeName = $record->employee->name;
-$employeeNationality = $record->personalInformation->country ?? null;
+$employeeNationality = $record->personalInformation->nationality ?? null;
 $employeeCivilStatus = $record->personalInformation->civil_status ?? null;
 $employeeJobTitle = $record->job_title ?? null;
 $employeeGrossSalary = $record->gross_salary;
+$employeeReferringGrossSalary = $employeeGrossSalary / 1.4;
+$employeePositionTrustSalary = $employeeGrossSalary - $employeeReferringGrossSalary;
 $jobDescription = $record->job_description;
 $translatedJobDescription = $record->translated_job_description;
 $employeeAddress = $record->personalInformation->address ?? null;
+$employeeCity = $record->personalInformation->city ?? null;
+$employeeState = $record->personalInformation->state ?? null;
+$employeePostal = $record->personalInformation->postal_code ?? null;
 $employeeEducation = $record->personalInformation->education_attainment ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
@@ -39,8 +44,7 @@ $countryWork = $record->country_work ?? null;
 <body>
     <!-- Content Section -->
     @include('pdf.contract.layout.header')
-
-    <main style="">
+    <main>
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -48,7 +52,7 @@ $countryWork = $record->country_work ?? null;
                     <p>Through this instrument and in accordance with the law,</p>
                     <p><b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA, </b>a Brazilian company, enrolled under the fiscal registration number 46.427.519/0001-51, located at Avenida das Américas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, Zip Code: 22.631-002, herein referred to simply as, represented hereby by its legal representative in accordance with his Articles of Association, herein referred to simply as EMPLOYER.</p>
                     <p>And</p>
-                    <p>{{ $employeeName }}, {{ $employeeNationality }}, {{ $employeeCivilStatus }}, {{ $employeeEducation }}, holder of Identification Card no. {{ $personalId }}, registered with the CPF under no. {{ $personalTaxId }}, residing and domiciled at {{ $employeeAddress }} , hereinafter referred to simply as the EMPLOYEE</p>
+                    <p>{{ $employeeName }}, {{ $employeeNationality }}, {{ $employeeCivilStatus }}, {{ $employeeEducation }}, holder of Identification Card no. {{ $personalId }}, registered with the CPF under no. {{ $personalTaxId }}, residing and domiciled at {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeState }}, {{ $employeePostal }}, hereinafter referred to simply as the EMPLOYEE</p>
                     <p>To Sign this <b>INDIVIDUAL AGREEMENT OF EMPLOYMENT FOR A FIXED TERM,</b> pursuant to Decree-Law no. 5452/1943 (Labour Code – CLT) and the following agreed clauses:</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
@@ -57,7 +61,7 @@ $countryWork = $record->country_work ?? null;
                     <p><b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA, </b>uma empresa brasileira, inscrita sob o número de registro fiscal 46.427.519/0001-51, localizado na Avenida das Américas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, doravante denominada simplesmente de EMPREGADORA;</p>
                     <br><br><b></b>
                     <p>e</p>
-                    <p>{{ $employeeName }}, {{ $employeeNationality }}, {{ $employeeCivilStatus }}, {{ $employeeEducation }}, portador(a) da Carteira de Identidade nº {{ $personalId }}, inscrito(a) no CPF sob o nº {{ $personalTaxId }}, residente e domiciliado(a) à {{ $employeeAddress }}, doravante denominado(a) simplesmente EMPREGADO(A);</p>
+                    <p>{{ $employeeName }}, {{ $employeeNationality }}, {{ $employeeCivilStatus }}, {{ $employeeEducation }}, portador(a) da Carteira de Identidade nº {{ $personalId }}, inscrito(a) no CPF sob o nº {{ $personalTaxId }}, residente e domiciliado(a) à {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeState }}, {{ $employeePostal }}, doravante denominado(a) simplesmente EMPREGADO(A);</p>
                     <p>Firmam o presente <b>CONTRATO INDIVIDUAL DE TRABALHO POR PRAZO DETERMINADO</b>, nos termos do Decreto-Lei n° 5.452/1943 (Consolidação das Leis do Trabalho – CLT) e das seguintes cláusulas, assim pactuadas:</p>
                 </td>
             </tr>
@@ -65,14 +69,12 @@ $countryWork = $record->country_work ?? null;
                 <td style="width: 50%; vertical-align: top;">
                     <b>Clause 1 – Position</b>
                     
-                    <p>The EMPLOYEE undertakes to provide her services to the EMPLOYER, in the capacity of EMPLOYEE in the position of {{ $employeeJobTitle }} with the duties being defined in the job description attached and integrating the staff of the EMPLOYER.</p>
+                    <p>The EMPLOYEE undertakes to provide her services to the EMPLOYER, in the capacity of EMPLOYEE in the position of {{ $record->translatedPosition }} with the duties being defined in the job description attached and integrating the staff of the EMPLOYER.</p>
                    <br>
-                    <p>First Paragraph: The EMPLOYEE shall provide her services to satisfactorily support and comply with the obligations and objectives of the EMPLOYER.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Cláusula 1ª – Da Função</b>
                     <p>O EMPREGADO obriga-se a prestar seus serviços para a EMPREGADORA, na qualidade de EMPREGADO e na função de {{ $employeeJobTitle }} aquelas previstas na anexa descrição do cargo, desse modo integrando o quadro de colaboradores da EMPREGADORA.</p>
-                    <p>Parágrafo Primeiro: O EMPREGADO prestará seus serviços visando o satisfatório atendimento e cumprimento das obrigações e fins da EMPREGADORA.</p>
                 </td>
             </tr>
         </table>
@@ -84,11 +86,14 @@ $countryWork = $record->country_work ?? null;
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
+                    <p>First Paragraph: The EMPLOYEE shall provide her services to satisfactorily support and comply with the obligations and objectives of the EMPLOYER.</p>
+
                     <p>Second Paragraph: The aforementioned services are inherent to the EMPLOYEE and may not be transferred in respect of the responsibilities of its execution thereof to another person who has not been previously employed for such purpose.</p>
                     <p>Third Paragraph: The EMPLOYEE undertakes to provide her services in strict compliance with civil, criminal, taxation, employment, social security and environmental legislation. The EMPLOYEE shall be liable for acting or failing to act, in violation of such legislation.</p>
                     <p>Fourth Paragraph: The EMPLOYER reserves the right to transfer the EMPLOYEE to another post or job for which it considers that she/he is better suited, always provided that this is compatible with her/his personal situation and subject to the applicable adjustments to this Agreement and to the respective record at the CTPS.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
+                    <p>Parágrafo Primeiro: O EMPREGADO prestará seus serviços visando o satisfatório atendimento e cumprimento das obrigações e fins da EMPREGADORA.</p>
                     <p>Parágrafo Segundo: Os serviços mencionados acima são inerentes ao EMPREGADO, não podendo transferir sua responsabilidade na execução para outrem que não esteja previamente contratado para esse fim.</p>
                     <p>Parágrafo Terceiro: O EMPREGADO se compromete a executar seus serviços em estrito atendimento à legislação cível, criminal, tributária, trabalhista, previdenciária e ambiental, sob pena de ser responsabilizada por atos ou omissões que venham a infringir tais normas.</p>
                     <p>Parágrafo Quarto: A EMPREGADORA reserva-se o direito de proceder à transferência do EMPREGADO para outro cargo ou função, sobre a qual entenda que esta demonstre melhor capacidade de adaptação, desde que compatível com sua condição pessoal e mediante os devidos ajustes no presente Contrato e respectiva anotação na CTPS.</p>
@@ -164,11 +169,11 @@ $countryWork = $record->country_work ?? null;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Clause 5 – Remuneration</b>
-                    <p>For the provision of services, the EMPLOYEE shall be entitled to a gross salary of R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }}), to be paid monthly by the EMPLOYER, no later than the 5th business day of the month following the provision of services. This amount includes a 40% bonus for a position of trust, in the sum of R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }}), as well as R$ R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }}) related to the gross monthly salary.</p>
+                    <p>For the provision of services, the EMPLOYEE shall be entitled to a gross salary of R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), to be paid monthly by the EMPLOYER, no later than the 5th business day of the month following the provision of services. This amount includes a 40% bonus for a position of trust, in the sum of R$ {{ $employeePositionTrustSalary }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), as well as R$ R$ {{ $employeeReferringGrossSalary }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) related to the gross monthly salary.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Cláusula 5ª – Da Remuneração</b>
-                    <p>Pela prestação de seus serviços, o EMPREGADO fará jus a um salário bruto de R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }}), a ser pago mensalmente pela EMPREGADORA, até o 5º dia útil do mês subsequente à prestação dos serviços. Este valor inclui uma gratificação de 40% correspondente ao cargo de confiança, no montante de R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }}), além de R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }}) referente ao salário bruto mensal."</p>
+                    <p>Pela prestação de seus serviços, o EMPREGADO fará jus a um salário bruto de R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), a ser pago mensalmente pela EMPREGADORA, até o 5º dia útil do mês subsequente à prestação dos serviços. Este valor inclui uma gratificação de 40% correspondente ao cargo de confiança, no montante de R$ {{ $employeePositionTrustSalary }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), além de R$ {{ $employeeReferringGrossSalary }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) referente ao salário bruto mensal."</p>
                 </td>
             </tr>
         </table>
