@@ -23,9 +23,14 @@ class Document extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    public function bankingDetails()
+    public function bankingDetail()
     {
-        return $this->hasMany(BankingDetail::class);
+        return $this->hasOne(BankingDetail::class);
+    }
+
+    public function employeeFiles()
+    {
+        return $this->hasMany(EmployeeFile::class);
     }
 
     public function socialSecurityInfos()

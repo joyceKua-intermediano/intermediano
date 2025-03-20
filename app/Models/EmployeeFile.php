@@ -4,17 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BankingDetail extends Model
+class EmployeeFile extends Model
 {
-
     protected $fillable = [
         'employee_id',
-        'bank_name',
-        'branch_name',
-        'account_number',
-        'account_type',
+        'document_type',
+        'file_path',
+        'original_file_name'
     ];
-
     public function employee()
     {
         return $this->belongsTo(Employee::class);
