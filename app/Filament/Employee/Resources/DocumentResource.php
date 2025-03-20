@@ -16,6 +16,8 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Get;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class DocumentResource extends Resource
 {
@@ -54,9 +56,22 @@ class DocumentResource extends Resource
                 Forms\Components\TextInput::make('category')
                     ->maxLength(255)
                     ->default(null),
-
+                Forms\Components\Fieldset::make('BankingDetail')
+                    ->relationship('bankingDetail')
+                    ->schema([
+                        Forms\Components\Hidden::make('employee_id')
+                            ->default(auth()->user()->id),
+                        Forms\Components\TextInput::make('bank_name'),
+                        Forms\Components\TextInput::make('branch_name'),
+                        Forms\Components\TextInput::make('account_number'),
+                        Forms\Components\Select::make('account_type')
+                            ->options([
+                                'Savings' => 'Savings',
+                                'Checking' => 'Checking',
+                            ])
+                    ]),
                 Repeater::make('documents')
-                    ->relationship('bankingDetails')
+                    ->relationship('employeeFiles')
                     ->schema([
                         Forms\Components\Hidden::make('employee_id')
                             ->default(auth()->user()->id),
@@ -78,11 +93,15 @@ class DocumentResource extends Resource
                             ->required(),
                         FileUpload::make('file_path')
                             ->label('File')
-                            ->directory('employees/documents')
-                            ->preserveFilenames()
+                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
-                            ->maxSize(2048)
-                            ->required(),
+                            ->maxSize(5120)
+                            ->required()
+                            ->storeFileNamesIn('original_file_name')
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
+                                $documentType = $get('document_type') ?? 'unknown';
+                                return auth()->user()->name . '_' . $documentType . '.' . $file->extension();
+                            }),
                     ])
                     ->columnSpanFull()
                     ->columns(2)
