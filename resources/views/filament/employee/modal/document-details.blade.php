@@ -23,11 +23,11 @@
         </div>
         <div>
             <span class="font-medium text-gray-600">Driver License:</span>
-            <span class="text-gray-800">{{ $record->document->is_driver_license ? 'Yes' : 'No' }}</span>
+            <span class="text-gray-800">{{ $record->document && $record->document->is_driver_license ? 'Yes' : 'No' }}</span>
         </div>
         <div>
             <span class="font-medium text-gray-600">Has Insurance:</span>
-            <span class="text-gray-800">{{ $record->document->has_insurance ? 'Yes' : 'No' }}</span>
+            <span class="text-gray-800">{{ $record->document && $record->document->has_insurance ? 'Yes' : 'No' }}</span>
         </div>
         <div>
             <span class="font-medium text-gray-600">Category:</span>
