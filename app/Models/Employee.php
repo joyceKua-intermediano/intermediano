@@ -30,10 +30,16 @@ class Employee extends Authenticatable implements FilamentUser
         return $this->hasMany(Dependent::class);
     }
 
-    public function documents()
+    public function document()
     {
-        return $this->hasMany(Document::class);
+        return $this->hasOne(Document::class);
     }
+
+    public function bankDetail()
+    {
+        return $this->hasOne(BankingDetail::class);
+    }
+
 
     public function contract()
     {
@@ -42,6 +48,10 @@ class Employee extends Authenticatable implements FilamentUser
     public function vacationRequests()
     {
         return $this->hasMany(VacationRequest::class, 'employee_id');
+    }
+    public function employeeFiles()
+    {
+        return $this->hasMany(EmployeeFile::class);
     }
     public function getAccruedVacation()
     {
