@@ -26,7 +26,7 @@ return new class extends Migration
             $table->text('translated_job_description')->nullable();
             $table->string('cluster_name');
             $table->boolean('is_sent_to_employee')->default(0);
-            $table->string('signature')->nullable();
+            $table->string('signature')->default('Pending Signature');
             $table->softDeletes();
             $table->timestamps();
         });

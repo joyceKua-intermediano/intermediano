@@ -107,10 +107,10 @@ class EmployeeContractResource extends Resource
                     ->sortable()
                     ->colors([
                         'success' => fn($state) => $state !== null,
-                        'warning' => fn($state) => $state === null,
+                        'warning' => fn($state) => $state == 'Pending Signature',
                     ])
                     ->label('Signature Status')
-                    ->formatStateUsing(fn($state) => $state !== null ? 'Signed' : 'Pending Signature'),
+                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
