@@ -44,7 +44,8 @@ $personalTaxId = $record->document->tax_id ?? null;
 $countryWork = $record->country_work ?? null;
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
-
+$signaturePath = 'signatures/employee_' . $record->id . '.webp';
+$signatureExists = Storage::disk('public')->exists($signaturePath);
 @endphp
 <body>
 
@@ -329,7 +330,9 @@ $jobDescription = $record->job_description;
 
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
+                            @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            @endif
                         </div>
 
                         <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
@@ -360,7 +363,9 @@ $jobDescription = $record->job_description;
                     </div>
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
+                            @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            @endif
                         </div>
                         <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
 

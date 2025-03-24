@@ -45,7 +45,8 @@ $formatterLocal = new \NumberFormatter('pt_BR', \NumberFormatter::SPELLOUT);
 $personalId = $record->document->personal_id ?? null;
 $personalTaxId = $record->document->tax_id ?? null;
 $countryWork = $record->country_work ?? null;
-
+$signaturePath = 'signatures/employee_' . $record->id . '.webp';
+$signatureExists = Storage::disk('public')->exists($signaturePath);
 @endphp
 <body>
     <!-- Content Section -->
@@ -74,9 +75,9 @@ $countryWork = $record->country_work ?? null;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Clause 1 – Position</b>
-                    
+
                     <p>The EMPLOYEE undertakes to provide her services to the EMPLOYER, in the capacity of EMPLOYEE in the position of {{ $record->translatedPosition }} with the duties being defined in the job description attached and integrating the staff of the EMPLOYER.</p>
-                   <br>
+                    <br>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Cláusula 1ª – Da Função</b>
@@ -345,7 +346,9 @@ $countryWork = $record->country_work ?? null;
 
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
+                            @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            @endif
                         </div>
 
                         <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
@@ -376,7 +379,9 @@ $countryWork = $record->country_work ?? null;
                     </div>
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
+                            @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            @endif
                         </div>
                         <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
 
