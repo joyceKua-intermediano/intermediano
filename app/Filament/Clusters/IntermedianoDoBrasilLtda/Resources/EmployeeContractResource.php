@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\RichEditor;
 use Carbon\Carbon;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Filters\Filter;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
@@ -98,6 +99,18 @@ class EmployeeContractResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ToggleColumn::make('is_sent_to_employee')
+                    ->label('Sent to Employee')
+                    ->sortable()
+                    ->toggleable(),
+                BadgeColumn::make('signature')
+                    ->sortable()
+                    ->colors([
+                        'success' => fn($state) => $state !== null,
+                        'warning' => fn($state) => $state == 'Pending Signature',
+                    ])
+                    ->label('Signature Status')
+                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -117,14 +130,14 @@ class EmployeeContractResource extends Resource
                     ->options([
                         'defined' => 'Defined Period Contract',
                         'undefined' => 'Undefined Period Contract',
-                        'both' => 'Both', // Option to show all records
+                        'both' => 'Both',
                     ])
-                    ->query(function (Builder $query, $state) { // $state will now be a string or null
+                    ->query(function (Builder $query, $state) {
                         switch ($state['value']) {
                             case 'defined':
-                                return $query->whereNot('end_date', null); // Defined period contracts
+                                return $query->whereNot('end_date', null);
                             case 'undefined':
-                                return $query->where('end_date', null); // Undefined period contracts
+                                return $query->where('end_date', null);
                             case 'both':
                             default:
                                 return $query;
@@ -153,6 +166,7 @@ class EmployeeContractResource extends Resource
                             'record' => $record,
                             'poNumber' => $contractTitle,
                             'company' => 'Intermediano do Brasil Ltda.',
+                            'is_pdf' => true
                         ]);
 
                         return response()->streamDownload(

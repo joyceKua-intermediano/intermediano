@@ -24,7 +24,8 @@ class Contract extends Model
         'contract_type',
         'job_description',
         'translated_job_description',
-        'cluster_name'
+        'cluster_name',
+        'signature',
     ];
 
     public function employee(): BelongsTo
