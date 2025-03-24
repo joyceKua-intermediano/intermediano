@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Document</title>
+    @if($is_pdf)
     <link rel="stylesheet" href="css/contract.css">
+
+    @else
+    <link rel="stylesheet" href="{{ asset('css/contract.css') }}">
+    @endif
 </head>
 
 @php
@@ -36,6 +41,7 @@ $employeeEducation = $record->personalInformation->education_attainment ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
+$formatterLocal = new \NumberFormatter('pt_BR', \NumberFormatter::SPELLOUT);
 $personalId = $record->document->personal_id ?? null;
 $personalTaxId = $record->document->tax_id ?? null;
 $countryWork = $record->country_work ?? null;
@@ -169,11 +175,11 @@ $countryWork = $record->country_work ?? null;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Clause 5 – Remuneration</b>
-                    <p>For the provision of services, the EMPLOYEE shall be entitled to a gross salary of R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), to be paid monthly by the EMPLOYER, no later than the 5th business day of the month following the provision of services. This amount includes a 40% bonus for a position of trust, in the sum of R$ {{ $employeePositionTrustSalary }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), as well as R$ R$ {{ $employeeReferringGrossSalary }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) related to the gross monthly salary.</p>
+                    <p>For the provision of services, the EMPLOYEE shall be entitled to a gross salary of R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), to be paid monthly by the EMPLOYER, no later than the 5th business day of the month following the provision of services. This amount includes a 40% bonus for a position of trust, in the sum of R$ {{ $employeePositionTrustSalary }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), as well as R$ {{ $employeeReferringGrossSalary }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) related to the gross monthly salary.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Cláusula 5ª – Da Remuneração</b>
-                    <p>Pela prestação de seus serviços, o EMPREGADO fará jus a um salário bruto de R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), a ser pago mensalmente pela EMPREGADORA, até o 5º dia útil do mês subsequente à prestação dos serviços. Este valor inclui uma gratificação de 40% correspondente ao cargo de confiança, no montante de R$ {{ $employeePositionTrustSalary }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), além de R$ {{ $employeeReferringGrossSalary }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) referente ao salário bruto mensal."</p>
+                    <p>Pela prestação de seus serviços, o EMPREGADO fará jus a um salário bruto de R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} Reais), a ser pago mensalmente pela EMPREGADORA, até o 5º dia útil do mês subsequente à prestação dos serviços. Este valor inclui uma gratificação de 40% correspondente ao cargo de confiança, no montante de R$ {{ $employeePositionTrustSalary }} ({{ strtoupper($formatterLocal->format($employeePositionTrustSalary)) }} Reais), além de R$ {{ $employeeReferringGrossSalary }} ({{ strtoupper($formatterLocal->format($employeeReferringGrossSalary)) }} Reais) referente ao salário bruto mensal."</p>
                 </td>
             </tr>
         </table>
@@ -326,14 +332,27 @@ $countryWork = $record->country_work ?? null;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <p>Rio de Janeiro, {{ $currentDate }}</p>
-                    <div style="text-align: center;">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom:-50px">
-                        <div style="text-align:center; width: 70%; border-bottom: 1px solid black; margin: 30px auto 0;"></div>
+                    <div style="text-align: center; position: relative;">
+                        <div style="display: inline-block; position: relative;">
+                            <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        </div>
+
+                        <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
+
                         <b>INTERMEDIANO DO BRASIL</b> <br>
                         <b>APOIO ADMINISTRATIVO LTDA</b>
-                        <div style="text-align:center; width: 70%; border-bottom: 1px solid black; margin: 70px auto 0;"></div>
+                    </div>
+
+                    <div style="text-align: center; position: relative; margin-top: 40px">
+                        <div style="display: inline-block; position: relative;">
+                            <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        </div>
+
+                        <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
+
                         <b>{{ $employeeName }}</b>
                     </div>
+
                     <p style="margin-bottom: 30px">Witnesses:</p>
                     <div style="width: 90%; border-bottom: 1px solid black;"></div>
                     <p>Name:</p>
@@ -346,13 +365,22 @@ $countryWork = $record->country_work ?? null;
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p>Rio de Janeiro, {{ $currentDate }}</p>
-                    <div style="text-align: center;">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom:-50px">
-                        <div style="text-align:center; width: 70%; border-bottom: 1px solid black; margin: 30px auto 0;"></div>
+                    <div style="text-align: center; position: relative;">
+                        <div style="display: inline-block; position: relative;">
+                            <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        </div>
+                        <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
+
                         <b>INTERMEDIANO DO BRASIL</b> <br>
                         <b>APOIO ADMINISTRATIVO LTDA</b>
+                    </div>
+                    <div style="text-align: center; position: relative; margin-top: 40px">
+                        <div style="display: inline-block; position: relative;">
+                            <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        </div>
+                        <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
 
-                        <div style="text-align:center; width: 70%; border-bottom: 1px solid black; margin: 70px auto 0;"></div>
+
                         <b>{{ $employeeName }}</b>
                     </div>
                     <p style="margin-bottom: 30px">Testemunhas:</p>
