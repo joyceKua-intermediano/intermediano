@@ -17,6 +17,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class DocumentResource extends Resource
@@ -94,13 +95,20 @@ class DocumentResource extends Resource
                         FileUpload::make('file_path')
                             ->label('File')
                             ->directory(fn() => 'employees/' . auth()->id() . '/documents')
-                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'application/pdf'])
-                            ->maxSize(5120)
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->resize(50)
+                            ->optimize('webp')
                             ->required()
                             ->storeFileNamesIn('original_file_name')
                             ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
                                 $documentType = $get('document_type') ?? 'unknown';
-                                return auth()->user()->name . '_' . $documentType . '.' . $file->extension();
+                                $fileName = auth()->user()->name . '_' . $documentType . '.webp';
+                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
+
+                                if (Storage::disk('public')->exists($filePath)) {
+                                    Storage::disk('public')->delete($filePath);
+                                }
+                                return $fileName;
                             }),
                     ])
                     ->columnSpanFull()

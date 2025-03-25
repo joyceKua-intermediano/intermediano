@@ -106,7 +106,6 @@ class EmployeeContractResource extends Resource
                             ->required(),
                     ])
                     ->action(function ($record, $data) {
-                        // Save the signature path to the record
                         $record->update([
                             'signature' => $data['signature'],
                         ]);
