@@ -345,15 +345,15 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     </div>
 
                     <div style="text-align: center; position: relative; margin-top: 40px">
-                        <p style="text-align: left">{{ $employeeCity }}, {{ $currentDate }}</p>
 
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            <p style="text-align: left">{{ $employeeCity }}, {{ $currentDate }}</p>
                             @endif
                         </div>
 
-                        <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
+                        <div style="width: 70%; border-bottom: 1px solid black; margin: -10px auto 0; z-index:100"></div>
 
                         <b>{{ $employeeName }}</b>
                     </div>
@@ -381,14 +381,14 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     </div>
 
                     <div style="text-align: center; position: relative; margin-top: 40px">
-                        <p style="text-align: left">{{ $employeeCity }}, {{ $currentDate }}</p>
 
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            <p style="text-align: left">{{ $employeeCity }}, {{ $currentDate }}</p>        
                             @endif
                         </div>
-                        <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
+                        <div style="width: 70%; border-bottom: 1px solid black; margin: -10px auto 0; z-index:100"></div>
 
 
                         <b>{{ $employeeName }}</b>
