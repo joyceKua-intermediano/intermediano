@@ -89,6 +89,21 @@ class EmployeeExpensesResource extends Resource
 
                 Repeater::make('expenses')
                     ->schema([
+                        Forms\Components\TextInput::make('item')
+                            ->label('Item')
+                            ->disabled()
+                            ->default(function ($state, Forms\Components\Component $component) {
+                                if ($state !== null) {
+                                    return $state;
+                                }
+
+                                $repeater = $component->getContainer()->getParentComponent();
+                                $existingItems = $repeater->getState() ?? [];
+
+                                $savedItems = array_filter($existingItems, fn($item) => isset($item['item']));
+
+                                return count($savedItems) + 1;
+                            }),
                         Forms\Components\TextInput::make('description')
                             ->required()
                             ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
@@ -200,7 +215,13 @@ class EmployeeExpensesResource extends Resource
                     ->collapsed()
                     ->disableItemDeletion()
                     ->live()
-                    ->addable(fn($record) =>  $record && $record->created_by === 'customer' ? 'Add another expense' : null) // Disable "Add another expense" for non-customers
+                    ->addable(function ($get, $set, $context, $record) {
+                        if ($context === 'create') {
+                            return true;
+                        }
+                        return $record?->created_by === 'admin';
+                    })
+                    ->addActionLabel(fn($record) => $record?->created_by === 'admin' ? 'Add another expense' : null)
 
                     ->afterStateUpdated(function (Get $get, Set $set) {
                         self::updateExpenseTotals($get, $set);
@@ -286,39 +307,38 @@ class EmployeeExpensesResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
                 ExportAction::make('export')
-                ->label('Export Expenses')
-                ->action(function ($record) {
-                    $employee = $record->employee->name ?? 'N/A';
-                    $company = $record->company->name ?? 'N/A';
-                    $expenses = $record->expenses;
-                    $formattedDate = Carbon::parse($record->created_at)->format('m_Y');
+                    ->label('Export Expenses')
+                    ->action(function ($record) {
+                        $employee = $record->employee->name ?? 'N/A';
+                        $company = $record->company->name ?? 'N/A';
+                        $expenses = $record->expenses;
+                        $formattedDate = Carbon::parse($record->created_at)->format('m_Y');
 
-                    $isLocal = $record->type === 'local' ? $record->currency_name : 'USD';
-                    $formattedExpenses = array_map(function ($expense) use ($employee, $company, $record) {
-                        return [
-                            'Employee' => $employee,
-                            'Company' => $company,
-                            'Description' => $expense['description'] ?? 'N/A',
-                            'Date' => $expense['date'] ?? 'N/A',
-                            'Amount' => $expense['amount'] ?? 0,
-                            'Federal Amount' => $expense['federal_amount'] ?? 0,
-                            'State Amount' => $expense['state_amount'] ?? 0,
-                            'BRL (Include Taxes)' => $expense['brl_include_taxes'] ?? 0,
-                            'USD' => $expense['usd'] ?? 0,
-                            'Exchange Rate' => $expense['exchange_rate'] ?? 'N/A',
-                            'BRL' => $expense['brl'] ?? 0,
-                            'Status' => $record->status ==='approved' ? 'Approved' : $expense['status'],
-                            'Comments' => $expense['comments'] ?? '',
-                            // 'Local Total' => $expense['local_total'] ?? 0,
-                            // 'Abroad Total' => $expense['abroad_total'] ?? 0,
-                            // 'Grand Total' => $expense['grand_total'] ?? 0,
-                        ];
-                    }, $expenses);
-                    
-                    return Excel::download(new EmployeeExpensesExport($formattedExpenses),  'Expenses_'. $formattedDate .'_' . $isLocal . '_'. $employee.'.xlsx');
-                    
-                })
-            
+                        $isLocal = $record->type === 'local' ? $record->currency_name : 'USD';
+                        $formattedExpenses = array_map(function ($expense) use ($employee, $company, $record) {
+                            return [
+                                'Employee' => $employee,
+                                'Company' => $company,
+                                'Description' => $expense['description'] ?? 'N/A',
+                                'Date' => $expense['date'] ?? 'N/A',
+                                'Amount' => $expense['amount'] ?? 0,
+                                'Federal Amount' => $expense['federal_amount'] ?? 0,
+                                'State Amount' => $expense['state_amount'] ?? 0,
+                                'BRL (Include Taxes)' => $expense['brl_include_taxes'] ?? 0,
+                                'USD' => $expense['usd'] ?? 0,
+                                'Exchange Rate' => $expense['exchange_rate'] ?? 'N/A',
+                                'BRL' => $expense['brl'] ?? 0,
+                                'Status' => $record->status === 'approved' ? 'Approved' : $expense['status'],
+                                'Comments' => $expense['comments'] ?? '',
+                                // 'Local Total' => $expense['local_total'] ?? 0,
+                                // 'Abroad Total' => $expense['abroad_total'] ?? 0,
+                                // 'Grand Total' => $expense['grand_total'] ?? 0,
+                            ];
+                        }, $expenses);
+
+                        return Excel::download(new EmployeeExpensesExport($formattedExpenses),  'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
+                    })
+
             ]);
     }
 
