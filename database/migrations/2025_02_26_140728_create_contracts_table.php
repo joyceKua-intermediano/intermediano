@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('quotation_id')->constrained()->cascadeOnDelete()->nullable();
+            $table->foreignId('quotation_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('country_work')->nullable();
             $table->string('job_title')->nullable();
             $table->date('start_date')->nullable();
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('cluster_name');
             $table->boolean('is_sent_to_employee')->default(0);
             $table->string('signature')->default('Pending Signature');
+            $table->datetime('signed_contract')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
