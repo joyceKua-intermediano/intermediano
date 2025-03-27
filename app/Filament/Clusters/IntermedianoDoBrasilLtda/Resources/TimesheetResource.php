@@ -26,12 +26,84 @@ class TimesheetResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $cluster = IntermedianoDoBrasilLtda::class;
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Section::make('Month Selection')
+                    ->schema([
+                        Forms\Components\Select::make('year')
+                            ->options(function () {
+                                $years = range(now()->year - 1, now()->year + 1);
+                                return array_combine($years, $years);
+                            })
+
+                            ->disabled()->dehydrated(),
+
+                        Forms\Components\Select::make('month')
+                            ->options([
+                                1 => 'January',
+                                2 => 'February',
+                                3 => 'March',
+                                4 => 'April',
+                                5 => 'May',
+                                6 => 'June',
+                                7 => 'July',
+                                8 => 'August',
+                                9 => 'September',
+                                10 => 'October',
+                                11 => 'November',
+                                12 => 'December'
+                            ])
+                            ->disabled()->dehydrated(),
+
+                    ])
+                    ->columns(2),
+
+                Forms\Components\Section::make('Daily Hours')
+                    ->schema([
+                        Forms\Components\Grid::make(7)
+                            ->schema(function (\Filament\Forms\Get $get) {
+                                $year = $get('year') ?? now()->year;
+                                $month = $get('month') ?? now()->month;
+
+                                $daysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
+
+                                return collect(range(1, $daysInMonth))->map(function ($day) {
+                                    return Forms\Components\TextInput::make("days.{$day}")
+                                        ->label($day)
+                                        ->numeric()
+                                        ->minValue(0)
+                                        ->maxValue(24)
+                                        ->step(0.25)
+                                        ->disabled()->dehydrated()
+
+                                        ->suffix('hrs');
+                                })->toArray();
+                            }),
+                    ]),
+
+                Forms\Components\Section::make('Summary')
+                    ->schema([
+                        Forms\Components\TextInput::make('total_hours')
+                            ->label('Total Monthly Hours')
+                            ->numeric()
+                            ->disabled()
+                            ->dehydrated()
+                            ->afterStateHydrated(function ($component, $state, $record) {
+                                if (!$state && $record) {
+                                    $component->state(array_sum($record->days ?? []));
+                                }
+                            })->columnSpan(1),
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                'approved' => 'Approved',
+                                'rejected' => 'Rejected',
+                            ])->columnSpan(1),
+
+                        Forms\Components\Textarea::make('comments')
+                            ->columnSpan(2),
+                    ])->columns(4),
             ]);
     }
 
@@ -42,7 +114,7 @@ class TimesheetResource extends Resource
                 Tables\Columns\TextColumn::make('employee.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('month_year')
-                    ->sortable(['year', 'month']) // Specify the columns for sorting
+                    ->sortable(['year', 'month'])
                     ->label('Period')
                     ->getStateUsing(
                         fn($record) =>
@@ -70,7 +142,7 @@ class TimesheetResource extends Resource
                 Tables\Filters\SelectFilter::make('month')
                     ->options([
                         1 => 'January',
-                        2 => 'February', /* ... */
+                        2 => 'February',
                         12 => 'December'
                     ]),
                 Tables\Filters\SelectFilter::make('year')
