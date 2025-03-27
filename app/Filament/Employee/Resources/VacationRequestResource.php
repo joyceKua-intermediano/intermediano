@@ -24,7 +24,7 @@ class VacationRequestResource extends Resource
 {
     protected static ?string $model = VacationRequest::class;
     protected static ?string $label = 'Accured Vacation';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

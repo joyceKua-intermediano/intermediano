@@ -15,6 +15,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
+use App\Exports\TimesheetExport;
+use Maatwebsite\Excel\Facades\Excel;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 
 class TimesheetResource extends Resource
 {
@@ -145,7 +148,16 @@ class TimesheetResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
-
+                ExportAction::make('export')
+                    ->label('Export Timesheet')
+                    ->action(function ($record) {
+                        return Excel::download(
+                            new TimesheetExport($record),
+                            "timesheet-" . \Carbon\Carbon::create($record->year, $record->month)->format('F Y') . "-{$record->employee->name}.xlsx"
+                        );
+                    })
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
             ]);
     }
 
