@@ -349,7 +349,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
-                            <p style="text-align: left">{{ $employeeCity }}, {{ $currentDate }}</p>
+                            <p style="text-align: left">{{ $employeeCity }}, {{  \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                             @endif
                         </div>
 
@@ -385,8 +385,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
-                            <p style="text-align: left">{{ $employeeCity }}, {{ $currentDate }}</p>        
-                            @endif
+                            <p style="text-align: center">{{ $employeeCity }}, {{  \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>                            @endif
                         </div>
                         <div style="width: 70%; border-bottom: 1px solid black; margin: -10px auto 0; z-index:100"></div>
 
