@@ -75,6 +75,21 @@ class EmployeeExpensesResource extends Resource
 
                 Repeater::make('expenses')
                     ->schema([
+                        Forms\Components\TextInput::make('item')
+                            ->label('Item')
+                            ->disabled()
+                            ->default(function ($state, Forms\Components\Component $component) {
+                                if ($state !== null) {
+                                    return $state;
+                                }
+
+                                $repeater = $component->getContainer()->getParentComponent();
+                                $existingItems = $repeater->getState() ?? [];
+
+                                $savedItems = array_filter($existingItems, fn($item) => isset($item['item']));
+
+                                return count($savedItems) + 1;
+                            }),
                         Forms\Components\TextInput::make('description')
                             ->required()
                             ->disabled(fn($record) => $record && $record?->created_by !== 'customer')

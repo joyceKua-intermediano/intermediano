@@ -27,7 +27,6 @@ use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Section;
 use Maatwebsite\Excel\Facades\Excel;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
-use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class EmployeeExpensesResource extends Resource
 {
@@ -66,6 +65,21 @@ class EmployeeExpensesResource extends Resource
 
                 Repeater::make('expenses')
                     ->schema([
+                        Forms\Components\TextInput::make('item')
+                        ->label('Item')
+                        ->disabled()
+                        ->default(function ($state, Forms\Components\Component $component) {
+                            if ($state !== null) {
+                                return $state;
+                            }
+                            
+                            $repeater = $component->getContainer()->getParentComponent();
+                            $existingItems = $repeater->getState() ?? [];
+                            
+                            $savedItems = array_filter($existingItems, fn($item) => isset($item['item']));
+                            
+                            return count($savedItems) + 1;
+                        }),
                         Forms\Components\TextInput::make('description')
                             ->required(),
 
