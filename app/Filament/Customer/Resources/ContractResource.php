@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ContractResource extends Resource
 {
     protected static ?string $model = Contract::class;
-
+    protected static ?string $label = 'Intermediano Contract';
+    protected static ?string $pluralLabel = 'Intermediano Contract';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'Employee Contract';
 
     public static function form(Form $form): Form
     {
@@ -131,7 +131,7 @@ class ContractResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $customerCompanyID = auth()->user()->company_id;
-        $getEmployeeContract = Contract::where('company_id',  $customerCompanyID)->where('contract_type', 'employee');
+        $getEmployeeContract = Contract::where('company_id',  $customerCompanyID)->where('contract_type', 'customer');
         return $getEmployeeContract;
     }
     public static function canCreate(): bool
