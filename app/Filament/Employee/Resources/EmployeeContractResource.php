@@ -104,10 +104,13 @@ class EmployeeContractResource extends Resource
                                 return $fileName;
                             })
                             ->required(),
+                        Forms\Components\Hidden::make('signed_contract')
+                            ->default(now()->toDateTimeString()),
                     ])
                     ->action(function ($record, $data) {
                         $record->update([
                             'signature' => $data['signature'],
+                            'signed_contract'  => $data['signed_contract'],
                         ]);
                     }),
                 Tables\Actions\Action::make('pdf')
