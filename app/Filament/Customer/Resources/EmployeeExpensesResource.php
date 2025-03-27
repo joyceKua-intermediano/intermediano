@@ -318,7 +318,7 @@ class EmployeeExpensesResource extends Resource
                     ->action(function ($record) {
                         $employee = $record->employee->name ?? 'N/A';
                         $company = $record->company->name ?? 'N/A';
-                        $companyIntermediano = $record->employee->company ?? 'N/A'; // Get company from employee
+                        $companyIntermediano = $record->employee->company ?? 'N/A';
                         $costCenter = $record->cost_center ?? 'N/A';
                         $expenses = $record->expenses;
                         $formattedDate = Carbon::parse($record->created_at)->format('m_Y');
