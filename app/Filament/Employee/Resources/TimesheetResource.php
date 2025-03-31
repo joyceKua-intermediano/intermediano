@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
 use App\Exports\TimesheetExport;
+use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 
@@ -100,6 +101,37 @@ class TimesheetResource extends Resource
                 //                 }
                 //             }),
                 //     ]),
+                Forms\Components\Section::make(function (array $state): ?HtmlString {
+                    $status = $state['status'] ?? 'Unknown';
+
+                    $badgeColor = match (strtolower($status)) {
+                        'approved' => 'green',
+                        'pending' => 'orange',
+                        'rejected' => 'red',
+                        default => 'gray',
+                    };
+
+                    return new HtmlString(
+                        "<span>
+                            <span style='color: gray; margin-left: 10px;'>Review Status:</span>
+
+                            <span style='color: {$badgeColor}; margin-left: 10px;'> [{$status}]</span>
+                        </span>"
+                    );
+                })
+                    ->schema([
+                        Forms\Components\Hidden::make('status')
+                            ->default('pending')
+                            ->dehydrateStateUsing(fn($state) => 'pending'),
+
+                        Forms\Components\Textarea::make('comment')
+                            ->label('Reviewer Comments')
+                            ->disabled()
+                            ->dehydrated()
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(2)
+                    ->visible(fn($record) => $record && ($record->status !== 'pending' || $record->comments)),
             ]);
     }
 

@@ -11,6 +11,7 @@ use App\Models\Employee;
 use App\Models\Quotation;
 use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -163,7 +164,12 @@ class EmployeeExpensesResource extends Resource
                             ->hidden(fn(Get $get) => $get('../../type') !== 'abroad')
                             ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
                             ->dehydrated(),
-
+                        Placeholder::make('uploaded_invoice')
+                            ->label('Uploaded Invoice')
+                            ->content(fn($record) => $record && $record->expenses[0]['invoice']
+                                ? new HtmlString('<a href="' . asset('storage/' . $record->expenses[0]['invoice']) . '" target="_blank">
+                                 <img src="' . asset('storage/' . $record->expenses[0]['invoice']) . '" alt="Invoice" style="height: 150px;"> </a>')
+                                : 'No image uploaded yet.'),
                         Forms\Components\Select::make('status')
                             ->options([
                                 'pending' => 'Pending',
@@ -173,7 +179,7 @@ class EmployeeExpensesResource extends Resource
 
 
                         Forms\Components\Textarea::make('comments')
-                            ->columnSpan(3)->hidden(fn($record) => $record && $record?->created_by !== 'employee' && $getUserTable === 'customers'),
+                            ->columnSpan(2)->hidden(fn($record) => $record && $record?->created_by !== 'employee' && $getUserTable === 'customers'),
                     ])
                     ->columns(6)
                     ->itemLabel(function (array $state): ?HtmlString {
@@ -215,7 +221,7 @@ class EmployeeExpensesResource extends Resource
                 Forms\Components\Hidden::make('status')
                     ->default('approved'),
                 Section::make('Totals')
-                    ->columns(3)
+                    ->columns(1)
                     ->schema([
                         Forms\Components\TextInput::make('local_total')
                             ->label('Local Total (BRL)')
@@ -312,6 +318,8 @@ class EmployeeExpensesResource extends Resource
                     ->action(function ($record) {
                         $employee = $record->employee->name ?? 'N/A';
                         $company = $record->company->name ?? 'N/A';
+                        $companyIntermediano = $record->employee->company ?? 'N/A';
+                        $costCenter = $record->cost_center ?? 'N/A';
                         $expenses = $record->expenses;
                         $formattedDate = Carbon::parse($record->created_at)->format('m_Y');
 
@@ -337,7 +345,7 @@ class EmployeeExpensesResource extends Resource
                             ];
                         }, $expenses);
 
-                        return Excel::download(new EmployeeExpensesExport($formattedExpenses),  'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
+                        return Excel::download(new EmployeeExpensesExport($formattedExpenses, $companyIntermediano, $costCenter),  'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
                     })
             ]);
     }

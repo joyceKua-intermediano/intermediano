@@ -99,7 +99,7 @@ class TimesheetResource extends Resource
                                 'rejected' => 'Rejected',
                             ])->columnSpan(1),
 
-                        Forms\Components\Textarea::make('comments')
+                        Forms\Components\Textarea::make('comment')
                             ->columnSpan(2),
                     ])->columns(4),
             ]);
@@ -112,7 +112,7 @@ class TimesheetResource extends Resource
                 Tables\Columns\TextColumn::make('employee.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('month_year')
-                    ->sortable(['year', 'month']) // Specify the columns for sorting
+                    ->sortable(['year', 'month'])
                     ->label('Period')
                     ->getStateUsing(
                         fn($record) =>
