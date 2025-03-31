@@ -28,6 +28,7 @@ return new class extends Migration
             $table->boolean('is_sent_to_employee')->default(0);
             $table->string('signature')->default('Pending Signature');
             $table->datetime('signed_contract')->nullable();
+            $table->boolean('is_integral')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
