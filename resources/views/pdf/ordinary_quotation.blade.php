@@ -28,6 +28,11 @@
             padding: 10px 15px;
             text-align: left;
             border: 1px solid #ddd;
+            @if(empty($hideHeader)) font-size: inherit;
+            @else font-size: 13px;
+            padding: 6px 10px;
+
+            @endif
         }
 
         .table th {
@@ -499,9 +504,9 @@
 
     </table>
     @if(empty($hideHeader))
-        <div class="footer">
-            <p>Generated on {{ now()->format('F j, Y') }}</p>
-        </div>
+    <div class="footer">
+        <p>Generated on {{ now()->format('F j, Y') }}</p>
+    </div>
     @endif
 
 </body>
