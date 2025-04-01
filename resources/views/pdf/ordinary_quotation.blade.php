@@ -29,9 +29,8 @@
             text-align: left;
             border: 1px solid #ddd;
             @if(empty($hideHeader)) font-size: inherit;
-            @else font-size: 13px;
-            padding: 6px 10px;
-
+            @else font-size: 14px;
+            padding: 7px 10px;
             @endif
         }
 
