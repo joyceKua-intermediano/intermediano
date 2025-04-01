@@ -19,6 +19,7 @@ $customerCity = $record->company->city;
 $customerPhone = $record->companyContact->phone;
 $customerEmail = $record->companyContact->email;
 $customerName = $record->companyContact->contact_name;
+$customerSurname = $record->companyContact->surname;
 $customerPosition = $record->companyContact->position;
 $customerTranslatedPosition = $record->translatedPosition;
 
@@ -31,11 +32,11 @@ $customerTranslatedPosition = $record->translatedPosition;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">PARTNERSHIP AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “<b>Agreement</b>”) is made on {{ $formattedDate }} (the “<b>Effective Date</b>”), by and between <b>INTERMEDIANO COLOMBIA SAS</b> (the <b>“Provider”</b>), a Colombian company, NIT 901.389.463-5, located at Carrera 7B Bis #126-36, Bogotá, Colombia, duly represented by its legal representative; AND {{ $companyName }} (the “<b>Customer</b>”), with its principal place {{ $customerCity }} City, {{ $customerAddress }} duly represented by its authorized representative, (each, a “<b>Party</b>“ and together, the “<b>Parties</b>”).</p>
+                    <p>This Payroll and HR Service Agreement (the “<b>Agreement</b>”) is made on {{ $formattedDate }} (the “<b>Effective Date</b>”), by and between <b>INTERMEDIANO COLOMBIA SAS</b> (the <b>“Provider”</b>), a Colombian company, NIT 901.389.463-5, located at Avenida carrera 9# 115-30 Oficina 1745 Edificio Tierra Firme, duly represented by its legal representative; AND {{ $companyName }} (the “<b>Customer</b>”), with its principal place {{ $customerCity }} City, {{ $customerAddress }} duly represented by its authorized representative, (each, a “<b>Party</b>“ and together, the “<b>Parties</b>”).</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE PARCERIA</h4>
-                    <p>Este Contrato de servicios de nómina y recursos humanos (el "<b>Contrato</b>") se celebra el {{ $formattedDate }} e (la "<b>Fecha de entrada en vigencia</b>"), por y entre <b>INTERMEDIANO COLOMBIA SAS</b> <br> (el "<b>Proveedor</b>”), empresa de Colombia, NIT 901.389.463-5, ubicada en la Calle Carrera 7B Bis #126-36, Bogotá, Colombia, debidamente representada por su representante legal; Y {{ $companyName }} (el “<b>Cliente</b>") con sede principal en la Ciudad de {{ $customerCity }}, {{ $customerAddress }} debidamente representados por su representante autorizado, (cada uno, una “<b>Parte</b>” y en conjunto, las “<b>Partes</b>”).</p>
+                    <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE PARTNERSHIP</h4>
+                    <p>Este Contrato de servicios de nómina y recursos humanos (el "<b>Contrato</b>") se celebra el {{ $formattedDate }} e (la "<b>Fecha de entrada en vigencia</b>"), por y entre <b>INTERMEDIANO COLOMBIA SAS</b> <br> (el "<b>Proveedor</b>”), empresa de Colombia, NIT 901.389.463-5, ubicada en la Calle Avenida carrera 9# 115-30 Oficina 1745 Edificio Tierra Firme, debidamente representada por su representante legal; Y {{ $companyName }} (el “<b>Cliente</b>") con sede principal en la Ciudad de {{ $customerCity }}, {{ $customerAddress }} debidamente representados por su representante autorizado, (cada uno, una “<b>Parte</b>” y en conjunto, las “<b>Partes</b>”).</p>
                 </td>
             </tr>
             <tr>
@@ -846,7 +847,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
 
                     <div style="text-align: center; margin-top: -20px">
-                        <p>{{ $customerName }}</p>
+                        <p>{{ $customerName }} {{ $customerSurname }}</p>
                         <p style="margin-top: -20px">{{ $customerPosition }}</p>
                     </div>
                 </td>
@@ -857,7 +858,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                     <div style="width: 100%%; border-bottom: 1px solid black;"></div>
 
                     <div style="text-align: center; margin-top: -20px">
-                        <p>{{ $customerName }}</p>
+                        <p>{{ $customerName }} {{ $customerSurname }}</p>
                         <p style="margin-top: -20px">{{ $customerTranslatedPosition }}</p>
                     </div>
                 </td>
@@ -1025,7 +1026,7 @@ $customerTranslatedPosition = $record->translatedPosition;
     </main>
     @include('pdf.contract.layout.header')
     <main>
-        <table style="margin-top: 40px !important">
+        <table style="margin-top: 0px !important">
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>B) FEES AND PAYMENT TERMS</b>
@@ -1044,7 +1045,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        <div style="margin-top: 40px !important">
+        <div style="margin-top: -10px !important">
             @include($record->quotation->is_integral === 1 ? 'pdf.integral_quotation' : 'pdf.ordinary_quotation', ['record' => $record->quotation, 'hideHeader' => true])
         </div>
         @include('pdf.contract.layout.colombia_footer')
@@ -1083,7 +1084,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <b>C)  LOCAL LEGISLATION - PREVAILS</b>
+                    <b>C) LOCAL LEGISLATION - PREVAILS</b>
                     <p>The law that will govern the Worker’s engagement including their rights as an employee will be the law of the country where the Worker is providing the services. The Parties agree that all applicable law including but not limited to, labour and tax, and must be fully complied with the purposes of the local and global compliance guidelines.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
