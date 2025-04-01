@@ -122,18 +122,18 @@ class CustomerContractResource extends Resource
                     ->label('Download Contract')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        $pdfPage = 'pdf.contract.customer';
+                        $pdfPage = 'pdf.contract.brazil.customer';
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
 
                         $tr = new GoogleTranslate();
                         $tr->setSource();
                         $tr->setTarget('pt');
-                        $record->translatedPosition = $tr->translate($record->companyContact->position);
+                        $record->translatedPosition = $tr->translate($record->companyContact->position ?? "");
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee';
-                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'company' => 'Intermediano do Brasil Ltda.']);
+                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'company' => 'Intermediano do Brasil Ltda.', 'is_pdf' => true]);
                         return response()->streamDownload(
                             fn() => print($pdf->output()),
                             $fileName . '.pdf'
