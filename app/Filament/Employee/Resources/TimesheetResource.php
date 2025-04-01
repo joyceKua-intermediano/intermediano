@@ -212,4 +212,11 @@ class TimesheetResource extends Resource
     {
         return $record->status !== 'approved';
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $employeeId = auth()->user()->id;
+        $getEmployeeExpenses = MonthlyTimesheet::where('employee_id',  $employeeId);
+        return $getEmployeeExpenses;
+    }
 }
