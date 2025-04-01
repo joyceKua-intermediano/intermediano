@@ -46,7 +46,7 @@ class CustomerContractResource extends Resource
                     ->relationship(
                         'quotation',
                         'title',
-                        fn(Builder $query) => $query->where('cluster_name', 'IntermedianoColombiaSAS')
+                        fn(Builder $query) => $query->where('cluster_name', 'IntermedianoColombiaSAS')->where('is_payroll', '0')
                     )
                     ->required(),
                 Forms\Components\TextInput::make('country_work')
