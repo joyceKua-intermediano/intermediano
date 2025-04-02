@@ -12,7 +12,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
@@ -57,17 +59,6 @@ class EmployeeResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('vacation_accrued')
-                    ->label('Accrued Vacation')
-                    ->getStateUsing(fn($record) => round($record->getAccruedVacation(), 2)),
-                Tables\Columns\TextColumn::make('vacation_taken')
-                    ->label('Vacation Taken')
-                    ->getStateUsing(fn($record) => round($record->getTakenVacation(), 2)),
-                Tables\Columns\TextColumn::make('vacation_balance')
-                    ->getStateUsing(fn($record) => round($record->getVacationBalance(), 2))
-                    ->label('Vacation Balance'),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -83,13 +74,55 @@ class EmployeeResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
-                Filter::make('cluster_match')
-                ->label('Company Name')
-                ->query(fn(Builder $query): Builder => $query->where('company', self::getClusterName()))
-                ->default(),
+                // Filter::make('cluster_match')
+                //     ->label('Company Name')
+                //     ->query(fn(Builder $query): Builder => $query->where('company', self::getClusterName()))
+                //     ->default(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Action::make('Bank Details')
+                    ->modal()
+                    ->icon('heroicon-o-banknotes')
+                    ->color('primary')
+                    ->modalSubmitAction(false)
+                    ->modalWidth('sm')
+                    ->modalCancelAction(fn($action) => $action->label('Close'))
+                    ->modalContent(fn(Employee $record): View => view(
+                        'filament.employee.modal.bank-details',
+                        ['record' => $record],
+                    )),
+                Action::make('Vacation Details')
+                    ->modal()
+                    ->icon('heroicon-o-sun')
+                    ->color('secondary')
+                    ->modalSubmitAction(false)
+                    ->modalWidth('sm')
+                    ->modalCancelAction(fn($action) => $action->label('Close'))
+                    ->modalContent(fn(Employee $record): View => view(
+                        'filament.employee.modal.vacation-details',
+                        ['record' => $record],
+                    )),
+                Action::make('Personal Informations')
+                    ->modal()
+                    ->icon('heroicon-o-user-circle')
+                    ->color('info')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn($action) => $action->label('Close'))
+                    ->modalContent(fn(Employee $record): View => view(
+                        'filament.employee.modal.personal-details',
+                        ['record' => $record],
+                    )),
+                Action::make('Documents')
+                    ->modal()
+                    ->icon('heroicon-o-document-text')
+                    ->color('warning')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(fn($action) => $action->label('Close'))
+                    ->modalContent(fn(Employee $record): View => view(
+                        'filament.employee.modal.document-details',
+                        ['record' => $record],
+                    ))
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -118,13 +151,12 @@ class EmployeeResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        $employees = Employee::where('company',  self::getClusterName());
+        return $employees;
     }
     protected static function getClusterName(): string
     {
         return class_basename(self::$cluster);
     }
+
 }

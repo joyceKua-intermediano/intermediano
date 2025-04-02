@@ -95,14 +95,17 @@ class DocumentResource extends Resource
                         FileUpload::make('file_path')
                             ->label('File')
                             ->directory(fn() => 'employees/' . auth()->id() . '/documents')
-                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                             ->resize(50)
                             ->optimize('webp')
                             ->required()
                             ->storeFileNamesIn('original_file_name')
                             ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
                                 $documentType = $get('document_type') ?? 'unknown';
-                                $fileName = auth()->user()->name . '_' . $documentType . '.webp';
+                                $extension = $file->getMimeType() === 'application/pdf'
+                                    ? 'pdf'
+                                    : 'webp';
+                    
+                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
                                 $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
 
                                 if (Storage::disk('public')->exists($filePath)) {
@@ -199,14 +202,14 @@ class DocumentResource extends Resource
     public static function canCreate(): bool
     {
         $employeeId = auth()->user()->id;
-        $employeePersonalInformation = Document::where('employee_id',  $employeeId);
+        $employeePersonalInformation = Document::where('employee_id', $employeeId);
         return $employeePersonalInformation->count() === 0;
     }
 
     public static function getEloquentQuery(): Builder
     {
         $employeeId = auth()->user()->id;
-        $employeePersonalInformation = Document::where('employee_id',  $employeeId);
+        $employeePersonalInformation = Document::where('employee_id', $employeeId);
         return $employeePersonalInformation;
     }
 }
