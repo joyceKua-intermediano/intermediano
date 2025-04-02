@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -59,6 +60,14 @@ class EmployeeContractResource extends Resource
                     ->placeholder('dd-mm-yy')
                     ->native(false),
                 Forms\Components\TextInput::make('gross_salary')
+                    ->mask(RawJs::make(<<<'JS'
+                $money($input, '.', ',', 2)
+            JS))
+                    ->afterStateUpdated(function ($component, $state) {
+                        $cleanedState = preg_replace('/[^0-9\.]+/', '', $state);
+
+                        $component->state($cleanedState);
+                    })
                     ->maxLength(255)
                     ->default(null),
                 RichEditor::make('job_description')->columnSpanFull(),
@@ -192,7 +201,6 @@ class EmployeeContractResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-
         $contractCluster = Contract::where('cluster_name', self::getClusterName())->where('contract_type', 'employee');
         return $contractCluster;
     }
