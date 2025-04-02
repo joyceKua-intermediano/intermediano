@@ -28,7 +28,7 @@ $employeeName = $record->employee->name;
 $employeeNationality = $record->personalInformation->nationality ?? null;
 $employeeCivilStatus = $record->personalInformation->civil_status ?? null;
 $employeeJobTitle = $record->job_title ?? null;
-$employeeGrossSalary = number_format($record->gross_salary, 2);
+$employeeGrossSalary = $record->gross_salary;
 $employeeReferringGrossSalary = $employeeGrossSalary / 1.4;
 $employeePositionTrustSalary = $employeeGrossSalary - $employeeReferringGrossSalary;
 $employeeAddress = $record->personalInformation->address ?? null;
@@ -177,11 +177,11 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Clause 5 – Remuneration</b>
-                    <p>For the provision of services, the EMPLOYEE shall be entitled to a gross salary of R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), to be paid monthly by the EMPLOYER, no later than the 5th business day of the month following the provision of services. This amount includes a 40% bonus for a position of trust, in the sum of R$ {{ number_format($employeePositionTrustSalary, 2) }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), as well as R$ {{ number_format($employeeReferringGrossSalary, 2) }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) related to the gross monthly salary.</p>
+                    <p>For the provision of services, the EMPLOYEE shall be entitled to a gross salary of R$ {{ number_format($$employeeGrossSalary, 2) }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), to be paid monthly by the EMPLOYER, no later than the 5th business day of the month following the provision of services. This amount includes a 40% bonus for a position of trust, in the sum of R$ {{ number_format($employeePositionTrustSalary, 2) }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), as well as R$ {{ number_format($employeeReferringGrossSalary, 2) }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) related to the gross monthly salary.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Cláusula 5ª – Da Remuneração</b>
-                    <p>Pela prestação de seus serviços, o EMPREGADO fará jus a um salário bruto de R$ {{ $employeeGrossSalary }} ({{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} Reais), a ser pago mensalmente pela EMPREGADORA, até o 5º dia útil do mês subsequente à prestação dos serviços. Este valor inclui uma gratificação de 40% correspondente ao cargo de confiança, no montante de R$ {{ number_format($employeePositionTrustSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeePositionTrustSalary)) }} Reais), além de R$ {{ number_format($employeeReferringGrossSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeeReferringGrossSalary)) }} Reais) referente ao salário bruto mensal."</p>
+                    <p>Pela prestação de seus serviços, o EMPREGADO fará jus a um salário bruto de R$ {{ number_format($employeeGrossSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} Reais), a ser pago mensalmente pela EMPREGADORA, até o 5º dia útil do mês subsequente à prestação dos serviços. Este valor inclui uma gratificação de 40% correspondente ao cargo de confiança, no montante de R$ {{ number_format($employeePositionTrustSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeePositionTrustSalary)) }} Reais), além de R$ {{ number_format($employeeReferringGrossSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeeReferringGrossSalary)) }} Reais) referente ao salário bruto mensal."</p>
                 </td>
             </tr>
         </table>
