@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('partner_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('position');
             $table->date('start_date');
-            $table->date('end_date');
+            $table->date('end_date')->nullable();
             $table->boolean('status');
             $table->softDeletes();
             $table->timestamps();
