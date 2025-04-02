@@ -27,6 +27,7 @@ class Contract extends Model
         'cluster_name',
         'signature',
         'signed_contract',
+        'is_integral'
     ];
 
     public function employee(): BelongsTo

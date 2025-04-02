@@ -61,7 +61,6 @@ class StaffTrackerResource extends Resource
                     ->displayFormat('Y-m-d')
                     ->placeholder('yy-mm-dd')
                     ->native(false)
-                    ->required()
                     ->after('start_date'),
                 Forms\Components\Select::make('partner_id')
                     ->label('Partner')
