@@ -40,7 +40,7 @@ class CustomerContractResource extends Resource
                     ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
                     ->required(),
                 Forms\Components\Select::make('employee_id')
-                    ->relationship(name: 'employee', titleAttribute: 'name')
+                    ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoDoBrasilLtda'))
                     ->required(),
                 Forms\Components\Select::make('quotation_id')
                     ->relationship(
