@@ -105,16 +105,6 @@ class CustomerContractResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
-                Filter::make('cluster_match')
-                    ->label('Company Name')
-                    ->query(fn(Builder $query): Builder => $query->where('cluster_name', self::getClusterName()))
-                    ->default(),
-                SelectFilter::make('contract_type')
-                    ->options([
-                        'customer' => 'Customer',
-                        'employee' => 'Employee',
-                    ])
-                    ->default('customer')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -135,7 +125,7 @@ class CustomerContractResource extends Resource
                         $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee';
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'company' => 'Intermediano do Brasil Ltda.', 'is_pdf' => true]);
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             $fileName . '.pdf'
                         );
                     }),
@@ -167,10 +157,8 @@ class CustomerContractResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        $contractCluster = Contract::where('cluster_name', self::getClusterName())->where('contract_type', 'employee');
+        return $contractCluster;
     }
     protected static function getClusterName(): string
     {
