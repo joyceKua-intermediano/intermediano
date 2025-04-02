@@ -126,16 +126,16 @@ class EmployeeContractResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
-                Filter::make('cluster_match')
-                    ->label('Company Name')
-                    ->query(fn(Builder $query): Builder => $query->where('cluster_name', self::getClusterName()))
-                    ->default(),
-                SelectFilter::make('contract_type')
-                    ->options([
-                        'customer' => 'Customer',
-                        'employee' => 'Employee',
-                    ])
-                    ->default('employee'),
+                // Filter::make('cluster_match')
+                //     ->label('Company Name')
+                //     ->query(fn(Builder $query): Builder => $query->where('cluster_name', self::getClusterName()))
+                //     ->default(),
+                // SelectFilter::make('contract_type')
+                //     ->options([
+                //         'customer' => 'Customer',
+                //         'employee' => 'Employee',
+                //     ])
+                //     ->default('employee'),
 
                 SelectFilter::make('end_date')
                     ->label('Contract Period')
@@ -235,11 +235,17 @@ class EmployeeContractResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        $contractCluster = Contract::where('cluster_name',  self::getClusterName())->where('contract_type', 'employee');
+        return $contractCluster;
     }
+
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()
+    //         ->withoutGlobalScopes([
+    //             SoftDeletingScope::class,
+    //         ]);
+    // }
     protected static function getClusterName(): string
     {
         return class_basename(self::$cluster);
