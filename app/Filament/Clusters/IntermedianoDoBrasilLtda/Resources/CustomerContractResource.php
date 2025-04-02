@@ -157,7 +157,7 @@ class CustomerContractResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $contractCluster = Contract::where('cluster_name', self::getClusterName())->where('contract_type', 'employee');
+        $contractCluster = Contract::where('cluster_name', self::getClusterName())->where('contract_type', 'customer');
         return $contractCluster;
     }
     protected static function getClusterName(): string
