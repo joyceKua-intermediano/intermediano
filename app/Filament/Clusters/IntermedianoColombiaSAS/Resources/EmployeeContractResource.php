@@ -21,6 +21,7 @@ use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\RichEditor;
 use Stichoza\GoogleTranslate\GoogleTranslate;
+use Filament\Tables\Columns\BadgeColumn;
 
 class EmployeeContractResource extends Resource
 {
@@ -110,6 +111,18 @@ class EmployeeContractResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ToggleColumn::make('is_sent_to_employee')
+                    ->label('Sent to Employee')
+                    ->sortable()
+                    ->toggleable(),
+                BadgeColumn::make('signature')
+                    ->sortable()
+                    ->colors([
+                        'success' => fn($state) => $state !== null,
+                        'warning' => fn($state) => $state == 'Pending Signature',
+                    ])
+                    ->label('Signature Status')
+                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -173,6 +186,7 @@ class EmployeeContractResource extends Resource
                         }
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
+                        $record->translatedPosition = $tr->translate($record->job_title ?? "");
 
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
