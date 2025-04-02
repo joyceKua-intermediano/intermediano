@@ -42,7 +42,7 @@ class EmployeeContractResource extends Resource
                     ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
                     ->required(),
                 Forms\Components\Select::make('employee_id')
-                    ->relationship(name: 'employee', titleAttribute: 'name')
+                    ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoDoBrasilLtda'))
                     ->required(),
                 Forms\Components\TextInput::make('country_work')
                     ->maxLength(255)
