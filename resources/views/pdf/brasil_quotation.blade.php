@@ -28,6 +28,10 @@
             padding: 10px 15px;
             text-align: left;
             border: 1px solid #ddd;
+            @if(empty($hideHeader)) font-size: inherit;
+            @else font-size: 12px;
+            padding: 6px 10px;
+            @endif
         }
 
         .table th {
