@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MonthlyTimesheet extends Model
 {
     // Timesheet.php
-    protected $fillable = ['employee_id', 'year', 'month', 'days', 'total_hours', 'status', 'comment'];
+    protected $fillable = ['employee_id', 'company_id' ,'year', 'month', 'days', 'total_hours', 'status', 'comment'];
 
     protected $casts = [
         'days' => 'array',
@@ -16,6 +16,10 @@ class MonthlyTimesheet extends Model
 
     public function employee(){
         return $this->belongsTo(Employee::class);
+    }
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
     protected static function boot()
     {
