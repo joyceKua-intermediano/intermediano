@@ -14,6 +14,9 @@ $month = now()->format('F');
 $year = now()->format('Y');
 $currentDate = now()->format('[d/m/Y]');
 $companyName = $record->company->name;
+$contactName = $record->companyContact->contact_name;
+$contactSurname = $record->companyContact->surname;
+
 $customerAddress = $record->company->address;
 $customerPhone = $record->companyContact->phone;
 $customerEmail = $record->companyContact->email;
@@ -780,14 +783,14 @@ $customerTranslatedPosition = $record->translatedPosition;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>If to Customer:</b>
-                    <p>A/C: {{ $companyName }}</p>
+                    <p>A/C: {{ $contactName }} {{ $contactSurname }}</p>
                     <p>Address: {{ $customerAddress }} </p>
                     <p>Phone/Fax: {{ $customerPhone }}</p>
                     <p>E-mail: <a href="#">{{ $customerEmail }}</a> </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Se para o Cliente:</b>
-                    <p>A/C: {{ $companyName }}</p>
+                    <p>A/C: {{ $companyName }} {{ $contactSurname }}</p>
                     <p>Endereço: {{ $customerAddress }} </p>
                     <p>Telefone/Fax: {{ $customerPhone }}</p>
                     <p>E-mail: <a href="#">{{ $customerEmail }}</a> </p>
@@ -866,7 +869,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
 
                     <div style="text-align: center; margin-top: -20px">
-                        <p>{{ $customerName }}</p>
+                        <p>{{ $customerName }} {{ $contactSurname }}</p>
                         <p style="margin-top: -20px">{{ $customerPosition }}</p>
                     </div>
                 </td>
@@ -877,7 +880,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                     <div style="width: 100%%; border-bottom: 1px solid black;"></div>
 
                     <div style="text-align: center; margin-top: -20px">
-                        <p>{{ $customerName }}</p>
+                        <p>{{ $customerName }} {{ $contactSurname }}</p>
                         <p style="margin-top: -20px">{{ $customerTranslatedPosition }}</p>
                     </div>
                 </td>
@@ -1051,7 +1054,7 @@ $customerTranslatedPosition = $record->translatedPosition;
     </main>
     @include('pdf.contract.layout.header')
     <main>
-        <table style="margin-top: 40px !important">
+        <table style="margin-top: 0px !important">
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>B) FEES AND PAYMENT TERMS</b>
@@ -1066,7 +1069,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        <div style="margin-top: 40px !important">
+        <div style="margin-top: -10px !important">
             @include('pdf.brasil_quotation', ['record' => $record->quotation, 'hideHeader' => true])
         </div>
         @include('pdf.contract.layout.footer')
