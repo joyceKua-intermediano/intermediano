@@ -75,7 +75,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <b>Clause 1 – Post</b>
+                    <b>Clause 1 – Position</b>
                     <p>The EMPLOYEE undertakes to provide her services to the EMPLOYER, in the capacity of EMPLOYEE in the post of {{ $record->translatedPosition }}, her/his duties being defined in the job description attached and integrating the staff of the EMPLOYER.</p>
                     <br>
                 </td>
