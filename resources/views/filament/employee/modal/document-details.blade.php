@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <h2 class="text-lg font-semibold mt-6">Uploaded Files</h2>
+    <h2 class="text-lg font-semibold mt-6">Documents Uploaded Files</h2>
     <table class="min-w-full mt-4 border-collapse border border-gray-200">
         <thead>
             <tr>
@@ -71,6 +71,50 @@
                     </td>
                 </tr>
             @endforelse
+        </tbody>
+    </table>
+    <h2 class="text-lg font-semibold mt-6">Social Security Uploaded Files</h2>
+
+    <table class="min-w-full mt-4 border-collapse border border-gray-200">
+        <thead>
+            <tr>
+                <th class="border border-gray-300 px-4 py-2 text-left">Document Type</th>
+                <th class="border border-gray-300 px-4 py-2 text-left">File Name</th>
+                {{-- <th class="border border-gray-300 px-4 py-2 text-left">Actions</th> --}}
+            </tr>
+        </thead>
+        <tbody>
+
+                <tr>
+                    @if($record->socialSecurityInfo['health_fund_file'])
+                    <td class="border border-gray-300 px-4 py-2">Health Fund</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <a href="{{ Storage::url($record->socialSecurityInfo['health_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                            {{ basename($record->socialSecurityInfo['health_fund_file']) }}
+                        </a>
+                    </td>  
+                    @endif
+                </tr>
+                <tr>
+                    @if($record->socialSecurityInfo['pension_fund_file'])
+                    <td class="border border-gray-300 px-4 py-2">Pension Fund</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <a href="{{ Storage::url($record->socialSecurityInfo['pension_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                            {{ basename($record->socialSecurityInfo['health_fund_file']) }}
+                        </a>
+                    </td>  
+                    @endif
+                </tr>
+                <tr>
+                    @if($record->socialSecurityInfo['severance_fund_file'])
+                    <td class="border border-gray-300 px-4 py-2">Severance Fund</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <a href="{{ Storage::url($record->socialSecurityInfo['health_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                            {{ basename($record->socialSecurityInfo['severance_fund_file']) }}
+                        </a>
+                    </td>  
+                    @endif
+                </tr>
         </tbody>
     </table>
 </div>
