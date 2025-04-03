@@ -232,13 +232,13 @@ break;
                     <p>Salario</p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
-                    <p>COP {{ number_format($employeeGrossSalary, 2) }} {{ strtoupper($formatterLocal->format($employeeGrossSalary)) }}</p>
+                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'> {{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} </span> </p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
                     <p>Salary</p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
-                    <p>COP {{ number_format($employeeGrossSalary, 2) }} {{ strtoupper($formatter->format($employeeGrossSalary)) }}</p>
+                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'> {{ strtoupper($formatter->format($employeeGrossSalary)) }} </span> </p>
                 </td>
             </tr>
             <tr>
