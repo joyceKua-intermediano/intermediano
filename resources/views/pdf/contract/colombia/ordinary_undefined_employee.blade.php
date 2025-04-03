@@ -59,12 +59,31 @@ break;
 }
 
 @endphp
+<style>
+    .compact-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .compact-table td {
+        padding: 10px;
+        /* Reduced from typical 5px */
+        vertical-align: top;
+    }
+
+    .compact-table p {
+        margin: 1px 0;
+        /* Reduced from typical 5px */
+        font-size: 0.9em;
+    }
+
+</style>
 <body>
     <!-- Content Section -->
 
     @include('pdf.contract.layout.header')
     <main>
-        <table>
+        <table class="compact-table">
             <tr>
                 <td style="width: 50%; vertical-align: top;" colspan="2">
                     <p><b>CONTRATO DE TRABAJO A TERMINO INDEFINIDO</b> (Salario Ordinario)</p>

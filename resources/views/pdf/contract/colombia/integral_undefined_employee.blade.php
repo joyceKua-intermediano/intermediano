@@ -59,12 +59,32 @@ $employeeLocality = '';
 break;
 }
 @endphp
+
+<style>
+    .compact-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .compact-table td {
+        padding: 10px;
+        /* Reduced from typical 5px */
+        vertical-align: top;
+    }
+
+    .compact-table p {
+        margin: 1px 0;
+        /* Reduced from typical 5px */
+        font-size: 0.9em;
+    }
+
+</style>
 <body>
     <!-- Content Section -->
 
     @include('pdf.contract.layout.header')
     <main>
-        <table>
+        <table class="compact-table">
             <tr>
                 <td style="width: 50%; vertical-align: top;" colspan="2">
                     <p><b>CONTRATO DE TRABAJO A TERMINO INDEFINIDO</b>(Salario Integral)</p>
@@ -232,7 +252,7 @@ break;
                     <p>Salario</p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
-                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'> {{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} </span> </p>
+                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px; padding-bottom: 2px;'> {{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} </span> </p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
                     <p>Salary</p>
@@ -411,7 +431,7 @@ break;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>PARAGRAFO PRIMERO:</b> Este salario
-                        además de retribuir el trabajo ordinario, comprende el pago de prestaciones, recargos y beneficios tales como los concernientes al trabajo nocturno, extraordinario o de horas extras, en días de descanso obligatorio, sobresueldos, descansos dominicales y festivos, primas legales, la cesantía y sus intereses, los   suministros en especie, los subsidios y, en general toda clase de prestaciones legales.
+                        además de retribuir el trabajo ordinario, comprende el pago de prestaciones, recargos y beneficios tales como los concernientes al trabajo nocturno, extraordinario o de horas extras, en días de descanso obligatorio, sobresueldos, descansos dominicales y festivos, primas legales, la cesantía y sus intereses, los suministros en especie, los subsidios y, en general toda clase de prestaciones legales.
                     </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
@@ -1009,9 +1029,9 @@ break;
                         <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
                         <p style="text-align: center; margin-bottom: 0px">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
-                        @else 
+                        @else
                         <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
-                        
+
                         @endif
                         <div style="width: 100%; border-bottom: 1px solid black; padding-top: -80px"></div>
                         <p style="margin-top: -20px">{{ $employeeName }} <br> {{ $personalId }} de {{ $employeeState }}</p>
