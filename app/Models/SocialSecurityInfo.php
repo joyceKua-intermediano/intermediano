@@ -11,7 +11,10 @@ class SocialSecurityInfo extends Model
         'employee_id',
         'health_fund',
         'pension_fund',
-        'severance_fund'
+        'severance_fund',
+        'health_fund_file',
+        'pension_fund_file',
+        'severance_fund_file',
     ];
 
     public function employee()

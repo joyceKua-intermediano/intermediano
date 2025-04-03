@@ -126,8 +126,68 @@ class DocumentResource extends Resource
                         Forms\Components\Hidden::make('employee_id')
                             ->default(auth()->user()->id),
                         TextInput::make('health_fund')->required(),
+                        FileUpload::make('health_fund_file')
+                            ->label('File')
+                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
+                            ->resize(50)
+                            ->optimize('webp')
+                            ->storeFileNamesIn('original_file_name')
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
+                                $documentType = $get('document_type') ?? 'unknown';
+                                $extension = $file->getMimeType() === 'application/pdf'
+                                    ? 'pdf'
+                                    : 'webp';
+
+                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
+                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
+
+                                if (Storage::disk('public')->exists($filePath)) {
+                                    Storage::disk('public')->delete($filePath);
+                                }
+                                return $fileName;
+                            }),
                         TextInput::make('pension_fund')->required(),
+                        FileUpload::make('pension_fund_file')
+                            ->label('File')
+                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
+                            ->resize(50)
+                            ->optimize('webp')
+                            ->storeFileNamesIn('original_file_name')
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
+                                $documentType = $get('document_type') ?? 'unknown';
+                                $extension = $file->getMimeType() === 'application/pdf'
+                                    ? 'pdf'
+                                    : 'webp';
+
+                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
+                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
+
+                                if (Storage::disk('public')->exists($filePath)) {
+                                    Storage::disk('public')->delete($filePath);
+                                }
+                                return $fileName;
+                            }),
                         TextInput::make('severance_fund')->required(),
+                        FileUpload::make('severance_fund_file')
+                            ->label('File')
+                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
+                            ->resize(50)
+                            ->optimize('webp')
+                            ->storeFileNamesIn('original_file_name')
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
+                                $documentType = $get('document_type') ?? 'unknown';
+                                $extension = $file->getMimeType() === 'application/pdf'
+                                    ? 'pdf'
+                                    : 'webp';
+
+                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
+                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
+
+                                if (Storage::disk('public')->exists($filePath)) {
+                                    Storage::disk('public')->delete($filePath);
+                                }
+                                return $fileName;
+                            }),
 
                     ])
                     ->columnSpanFull()

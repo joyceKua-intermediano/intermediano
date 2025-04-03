@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('health_fund');
             $table->string('pension_fund');
             $table->string('severance_fund');
+            $table->string('health_fund_file');
+            $table->string('pension_fund_file');
+            $table->string('severance_fund_file');
             $table->timestamps();
         });
     }
