@@ -199,7 +199,8 @@ class QuotationResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Quotation title')
-                    ->dateTime('y-m-d')
+                    // ->dateTime('y-m-d')
+                    ->formatStateUsing(fn ($record) => $record->title . ' (' . ($record->is_integral ? 'Integral' : 'Ordinary') . ')')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('country.name')
