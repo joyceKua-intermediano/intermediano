@@ -86,7 +86,7 @@
         <tbody>
 
                 <tr>
-                    @if($record->socialSecurityInfo['health_fund_file'])
+                    @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['health_fund_file']))
                     <td class="border border-gray-300 px-4 py-2">Health Fund</td>
                     <td class="border border-gray-300 px-4 py-2">
                         <a href="{{ Storage::url($record->socialSecurityInfo['health_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
@@ -96,7 +96,8 @@
                     @endif
                 </tr>
                 <tr>
-                    @if($record->socialSecurityInfo['pension_fund_file'])
+                    @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['pension_fund_file']))
+
                     <td class="border border-gray-300 px-4 py-2">Pension Fund</td>
                     <td class="border border-gray-300 px-4 py-2">
                         <a href="{{ Storage::url($record->socialSecurityInfo['pension_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
@@ -106,13 +107,22 @@
                     @endif
                 </tr>
                 <tr>
-                    @if($record->socialSecurityInfo['severance_fund_file'])
+                    @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['severance_fund_file']))
                     <td class="border border-gray-300 px-4 py-2">Severance Fund</td>
                     <td class="border border-gray-300 px-4 py-2">
                         <a href="{{ Storage::url($record->socialSecurityInfo['health_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
                             {{ basename($record->socialSecurityInfo['severance_fund_file']) }}
                         </a>
                     </td>  
+                    @endif
+                </tr>
+                <tr>
+                    @if(!isset($record->socialSecurityInfo))
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-gray-500">
+                            No files uploaded yet.
+                        </td>
+                    </tr>
                     @endif
                 </tr>
         </tbody>
