@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('monthly_timesheets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained();
+            $table->foreignId('company_id')->constrained();
             $table->integer('year');
             $table->integer('month');
             $table->json('days');
