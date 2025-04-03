@@ -59,12 +59,31 @@ $employeeLocality = '';
 break;
 }
 @endphp
+<style>
+    .compact-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .compact-table td {
+        padding: 10px;
+        /* Reduced from typical 5px */
+        vertical-align: top;
+    }
+
+    .compact-table p {
+        margin: 1px 0;
+        /* Reduced from typical 5px */
+        font-size: 0.9em;
+    }
+
+</style>
 <body>
     <!-- Content Section -->
 
     @include('pdf.contract.layout.header')
     <main>
-        <table>
+        <table class="compact-table">
             <tr>
                 <td style="width: 50%; vertical-align: top;" colspan="2">
                     <p><b>CONTRATO DE TRABAJO A TERMINO FIJO</b> <br>(Salario Ordinario)</p>
@@ -232,13 +251,13 @@ break;
                     <p>Salario</p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
-                    <p>COP {{ number_format($employeeGrossSalary, 2) }} {{ strtoupper($formatterLocal->format($employeeGrossSalary)) }}</p>
+                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'> {{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} </span> </p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
                     <p>Salary</p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
-                    <p>COP {{ number_format($employeeGrossSalary, 2) }} {{ strtoupper($formatter->format($employeeGrossSalary)) }}</p>
+                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'> {{ strtoupper($formatter->format($employeeGrossSalary)) }} </span> </p>
                 </td>
             </tr>
             <tr>
