@@ -53,6 +53,10 @@ class Employee extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(EmployeeFile::class);
     }
+    public function socialSecurityInfo()
+    {
+        return $this->hasOne(SocialSecurityInfo::class);
+    }
     public function getAccruedVacation()
     {
         $contract = $this->contract;
