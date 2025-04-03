@@ -11,12 +11,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
 use App\Exports\TimesheetExport;
 use Maatwebsite\Excel\Facades\Excel;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use Illuminate\Database\Eloquent\Builder;
 
 class TimesheetResource extends Resource
 {
@@ -188,5 +187,12 @@ class TimesheetResource extends Resource
     public static function canEdit($record): bool
     {
         return false;
+    }
+    public static function getEloquentQuery(): Builder
+    {
+        $contractCluster = MonthlyTimesheet::whereHas('employee', function ($query) {
+            $query->where('company', 'IntermedianoDoBrasilLtda');
+        });
+        return $contractCluster;
     }
 }
