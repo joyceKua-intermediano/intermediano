@@ -93,6 +93,7 @@ class EmployeeExpensesResource extends Resource
                         Forms\Components\TextInput::make('item')
                             ->label('Item')
                             ->disabled()
+                            ->dehydrated()
                             ->default(function ($state, Forms\Components\Component $component) {
                                 if ($state !== null) {
                                     return $state;
@@ -139,7 +140,7 @@ class EmployeeExpensesResource extends Resource
                             ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
                             ->dehydrated(),
 
-                        Forms\Components\TextInput::make('brl_include_taxes')
+                        Forms\Components\TextInput::make('local_currency_include_taxes')
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 self::updateExpenseTotals($get, $set);
                             })
@@ -167,11 +168,11 @@ class EmployeeExpensesResource extends Resource
                             ->live(onBlur: true)
 
                             ->afterStateUpdated(function (Get $get, Set $set, $state) {
-                                $set('brl', ($get('usd') ?? 0) * $state);
+                                $set('local_currency', ($get('usd') ?? 0) * $state);
                                 self::updateExpenseTotals($get, $set);
                             }),
 
-                        Forms\Components\TextInput::make('brl')
+                        Forms\Components\TextInput::make('local_currency')
                             ->label('BRL')
                             ->disabled()
                             ->numeric()
@@ -182,9 +183,22 @@ class EmployeeExpensesResource extends Resource
                             ->label('Uploaded Invoice')
                             ->content(fn($record) => $record && $record->expenses[0]['invoice']
                                 ? new HtmlString('<a href="' . asset('storage/' . $record->expenses[0]['invoice']) . '" target="_blank">
-                                 <img src="' . asset('storage/' . $record->expenses[0]['invoice']) . '" alt="Invoice" style="height: 150px;"> </a>')
-                                : 'No image uploaded yet.'),
-                        Forms\Components\Select::make('status')
+                                    <img src="' . asset('storage/' . $record->expenses[0]['invoice']) . '" alt="Invoice" style="height: 150px;"></a>')
+                                : 'No image uploaded yet.')
+                            ->visible(fn(string $operation): bool => $operation === 'edit'),
+
+                        Forms\Components\FileUpload::make('invoice')
+                            ->label('Invoice File')
+                            ->disk('public')
+                            ->disablePreview()
+                            ->directory('invoices')
+                            ->visibility('public')
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->imagePreviewHeight(150)
+                            ->preserveFilenames()
+                            ->required()->visible(fn(string $operation): bool => $operation === 'create'),
+                        
+                            Forms\Components\Select::make('status')
                             ->options([
                                 'pending' => 'Pending',
                                 'approved' => 'Approved',
@@ -332,16 +346,16 @@ class EmployeeExpensesResource extends Resource
                                 'Amount' => $expense['amount'] ?? 0,
                                 'Federal Amount' => $expense['federal_amount'] ?? 0,
                                 'State Amount' => $expense['state_amount'] ?? 0,
-                                'BRL (Include Taxes)' => $expense['brl_include_taxes'] ?? 0,
+                                'BRL (Include Taxes)' => $expense['local_currency_include_taxes'] ?? 0,
                                 'USD' => $expense['usd'] ?? 0,
                                 'Exchange Rate' => $expense['exchange_rate'] ?? 'N/A',
-                                'BRL' => $expense['brl'] ?? 0,
+                                'BRL' => $expense['local_currency'] ?? 0,
                                 'Status' => $record->status === 'approved' ? 'Approved' : $expense['status'],
                                 'Comments' => $expense['comments'] ?? '',
                             ];
                         }, $expenses);
 
-                        return Excel::download(new EmployeeExpensesExport($formattedExpenses, $companyIntermediano, $costCenter),  'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
+                        return Excel::download(new EmployeeExpensesExport($formattedExpenses, $companyIntermediano, $costCenter), 'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
                     })
 
             ]);
@@ -361,9 +375,9 @@ class EmployeeExpensesResource extends Resource
                 // $localTotal += (float)($expense['amount'] ?? 0);
                 // $localTotal += (float)($expense['federal_amount'] ?? 0);
                 // $localTotal += (float)($expense['state_amount'] ?? 0);
-                $localTotal += (float)($expense['brl_include_taxes'] ?? 0);
+                $localTotal += (float) ($expense['local_currency_include_taxes'] ?? 0);
             } else {
-                $abroadTotal += (float)($expense['usd'] ?? 0);
+                $abroadTotal += (float) ($expense['usd'] ?? 0);
             }
         }
 
