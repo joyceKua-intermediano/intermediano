@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -40,8 +41,8 @@ class CustomerContractResource extends Resource
                     ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
                     ->required(),
                 Forms\Components\Select::make('employee_id')
-                ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoColombiaSAS'))
-                ->required(),
+                    ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoColombiaSAS'))
+                    ->required(),
                 Forms\Components\Select::make('quotation_id')
                     ->relationship(
                         'quotation',
@@ -64,12 +65,20 @@ class CustomerContractResource extends Resource
                     ->placeholder('dd-mm-yy')
                     ->native(false),
                 Forms\Components\TextInput::make('gross_salary')
+                    ->mask(RawJs::make(<<<'JS'
+                $money($input, '.', ',', 2)
+            JS))
+                    ->afterStateUpdated(function ($component, $state) {
+                        $cleanedState = preg_replace('/[^0-9\.]+/', '', $state);
+
+                        $component->state($cleanedState);
+                    })
                     ->maxLength(255)
                     ->default(null),
-                    
+
                 Forms\Components\Hidden::make('cluster_name')
-                ->default(self::getClusterName())
-                ->label(self::getClusterName()),
+                    ->default(self::getClusterName())
+                    ->label(self::getClusterName()),
             ]);
     }
 
@@ -126,7 +135,7 @@ class CustomerContractResource extends Resource
                         $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee';
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'company' => 'Intermediano Colombia S.A.S', 'is_pdf' => true]);
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             $fileName . '.pdf'
                         );
                     }),
