@@ -393,4 +393,12 @@ class EmployeeExpensesResource extends Resource
             'edit' => Pages\EditEmployeeExpenses::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $contractCluster = EmployeeExpenses::whereHas('employee', function ($query) {
+            $query->where('company', 'IntermedianoDoBrasilLtda');
+        });
+        return $contractCluster;
+    }
 }
