@@ -267,6 +267,7 @@ class EmployeeExpensesResource extends Resource
                 ExportAction::make('export')
                     ->label('Export Expenses')
                     ->action(function ($record) {
+                        $currency =  getCurrencyByCompany($record->employee->company);
                         $employee = $record->employee->name ?? 'N/A';
                         $company = $record->company->name ?? 'N/A';
                         $companyIntermediano = $record->employee->company ?? 'N/A';
@@ -275,8 +276,9 @@ class EmployeeExpensesResource extends Resource
                         $formattedDate = Carbon::parse($record->created_at)->format('m_Y');
 
                         $isLocal = $record->type === 'local' ? $record->currency_name : 'USD';
-                        $formattedExpenses = array_map(function ($expense) use ($employee, $company, $record) {
+                        $formattedExpenses = array_map(function ($expense) use ($employee, $company, $record, $currency) {
                             return [
+                                'currency' => $currency,
                                 'Employee' => $employee,
                                 'Company' => $company,
                                 'Description' => $expense['description'] ?? 'N/A',
