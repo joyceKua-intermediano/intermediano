@@ -179,4 +179,10 @@ class TimesheetResource extends Resource
             'edit' => Pages\EditTimesheet::route('/{record}/edit'),
         ];
     }
+    public static function getEloquentQuery(): Builder
+    {
+        $customerCompanyID = auth()->user()->company_id;
+        $getEmployeeContract = MonthlyTimesheet::where('company_id',  $customerCompanyID);
+        return $getEmployeeContract;
+    }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources;
+namespace App\Filament\Clusters\IntermedianoColombiaSAS\Resources;
 
-use App\Filament\Clusters\IntermedianoDoBrasilLtda;
-use App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources\TimesheetResource\Pages;
-use App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources\TimesheetResource\RelationManagers;
+use App\Filament\Clusters\IntermedianoColombiaSAS;
+use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\TimesheetResource\Pages;
+use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\TimesheetResource\RelationManagers;
 use App\Models\MonthlyTimesheet;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -16,15 +16,14 @@ use App\Exports\TimesheetExport;
 use Maatwebsite\Excel\Facades\Excel;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
-
 class TimesheetResource extends Resource
 {
     protected static ?string $model = MonthlyTimesheet::class;
     protected static ?string $label = 'Employee Timesheet';
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $cluster = IntermedianoDoBrasilLtda::class;
+    protected static ?string $cluster = IntermedianoColombiaSAS::class;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -105,7 +104,6 @@ class TimesheetResource extends Resource
                     ])->columns(4),
             ]);
     }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -165,6 +163,7 @@ class TimesheetResource extends Resource
                     ->color('success')
             ]);
     }
+
     public static function getRelations(): array
     {
         return [
@@ -191,8 +190,9 @@ class TimesheetResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $contractCluster = MonthlyTimesheet::whereHas('employee', function ($query) {
-            $query->where('company', 'IntermedianoDoBrasilLtda');
+            $query->where('company', 'IntermedianoColombiaSAS');
         });
         return $contractCluster;
     }
+    
 }
