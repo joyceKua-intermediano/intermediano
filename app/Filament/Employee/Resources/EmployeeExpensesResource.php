@@ -69,6 +69,7 @@ class EmployeeExpensesResource extends Resource
                         Forms\Components\TextInput::make('item')
                             ->label('Item')
                             ->disabled()
+                            ->dehydrated()
                             ->default(function ($state, Forms\Components\Component $component) {
                                 if ($state !== null) {
                                     return $state;
@@ -103,7 +104,7 @@ class EmployeeExpensesResource extends Resource
                             ->numeric()
                             ->hidden(fn(Get $get) => $get('../../type') !== 'local'),
 
-                        Forms\Components\TextInput::make('brl_include_taxes')
+                        Forms\Components\TextInput::make('local_currency_include_taxes')
 
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 self::updateExpenseTotals($get, $set);
@@ -121,9 +122,9 @@ class EmployeeExpensesResource extends Resource
                             ->numeric()
                             ->hidden(fn(Get $get) => $get('../../type') !== 'abroad')
                             ->reactive()
-                            ->afterStateUpdated(fn(Get $get, Set $set, $state) => $set('brl', ($get('usd') ?? 0) * $state)),
+                            ->afterStateUpdated(fn(Get $get, Set $set, $state) => $set('local_currency', ($get('usd') ?? 0) * $state)),
 
-                        Forms\Components\TextInput::make('brl')
+                        Forms\Components\TextInput::make('local_currency')
                             ->label('BRL')
                             ->disabled()
                             ->numeric()
@@ -268,6 +269,8 @@ class EmployeeExpensesResource extends Resource
                     ->action(function ($record) {
                         $employee = $record->employee->name ?? 'N/A';
                         $company = $record->company->name ?? 'N/A';
+                        $companyIntermediano = $record->employee->company ?? 'N/A';
+                        $costCenter = $record->cost_center ?? 'N/A';
                         $expenses = $record->expenses;
                         $formattedDate = Carbon::parse($record->created_at)->format('m_Y');
 
@@ -281,10 +284,10 @@ class EmployeeExpensesResource extends Resource
                                 'Amount' => $expense['amount'] ?? 0,
                                 'Federal Amount' => $expense['federal_amount'] ?? 0,
                                 'State Amount' => $expense['state_amount'] ?? 0,
-                                'BRL (Include Taxes)' => $expense['brl_include_taxes'] ?? 0,
+                                'BRL (Include Taxes)' => $expense['local_currency_include_taxes'] ?? 0,
                                 'USD' => $expense['usd'] ?? 0,
                                 'Exchange Rate' => $expense['exchange_rate'] ?? 'N/A',
-                                'BRL' => $expense['brl'] ?? 0,
+                                'BRL' => $expense['local_currency'] ?? 0,
                                 'Status' => $record->status === 'approved' ? 'Approved' : $expense['status'],
                                 'Comments' => $expense['comments'] ?? '',
                                 // 'Local Total' => $expense['local_total'] ?? 0,
@@ -292,8 +295,8 @@ class EmployeeExpensesResource extends Resource
                                 // 'Grand Total' => $expense['grand_total'] ?? 0,
                             ];
                         }, $expenses);
+                        return Excel::download(new EmployeeExpensesExport($formattedExpenses, $companyIntermediano, $costCenter),  'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
 
-                        return Excel::download(new EmployeeExpensesExport($formattedExpenses),  'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
                     })
             ]);
     }
@@ -312,7 +315,7 @@ class EmployeeExpensesResource extends Resource
                 // $localTotal += (float)($expense['amount'] ?? 0);
                 // $localTotal += (float)($expense['federal_amount'] ?? 0);
                 // $localTotal += (float)($expense['state_amount'] ?? 0);
-                $localTotal += (float)($expense['brl_include_taxes'] ?? 0);
+                $localTotal += (float)($expense['local_currency_include_taxes'] ?? 0);
             } else {
                 $abroadTotal += (float)($expense['usd'] ?? 0);
             }
