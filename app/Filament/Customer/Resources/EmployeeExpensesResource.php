@@ -46,6 +46,7 @@ class EmployeeExpensesResource extends Resource
             ->schema([
                 Forms\Components\Select::make('employee_id')
                     ->columnSpan(2)
+                    ->required()
                     ->relationship(name: 'employee', titleAttribute: 'name')
                     ->options(function () {
                         $customerId = auth()->user()->id;
