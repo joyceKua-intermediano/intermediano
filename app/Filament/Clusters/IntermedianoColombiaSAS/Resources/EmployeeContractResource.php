@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
 use Filament\Forms\Components\RichEditor;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Support\RawJs;
 
 class EmployeeContractResource extends Resource
 {
@@ -66,6 +67,14 @@ class EmployeeContractResource extends Resource
                     ->placeholder('dd-mm-yy')
                     ->native(false),
                 Forms\Components\TextInput::make('gross_salary')
+                    ->mask(RawJs::make(<<<'JS'
+                $money($input, '.', ',', 2)
+            JS))
+                    ->afterStateUpdated(function ($component, $state) {
+                        $cleanedState = preg_replace('/[^0-9\.]+/', '', $state);
+
+                        $component->state($cleanedState);
+                    })
                     ->maxLength(255)
                     ->default(null),
                 RichEditor::make('job_description')->columnSpanFull(),
@@ -201,7 +210,7 @@ class EmployeeContractResource extends Resource
                         ]);
 
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             $fileName . '.pdf'
                         );
                     }),
@@ -235,7 +244,7 @@ class EmployeeContractResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $contractCluster = Contract::where('cluster_name',  self::getClusterName())->where('contract_type', 'employee');
+        $contractCluster = Contract::where('cluster_name', self::getClusterName())->where('contract_type', 'employee');
         return $contractCluster;
     }
 
