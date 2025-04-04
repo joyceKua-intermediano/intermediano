@@ -61,10 +61,10 @@ class EmployeeExpensesExport implements
             'Amount',
             'Federal Amount',
             'State Amount',
-            'BRL (Include Taxes)',
+            "{$this->data[0]['currency']} (Include Taxes)",
             'USD',
             'Exchange Rate',
-            'BRL',
+            "{$this->data[0]['currency']}",
             'Status',
             'Comments',
         ];
@@ -97,10 +97,10 @@ class EmployeeExpensesExport implements
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $lastRow = count($this->data) + 5; 
+                $lastRow = count($this->data) + 5;
 
                 $event->sheet->setCellValue("H" . ($lastRow + 1), $this->totalBRL);
-                $event->sheet->setCellValue("G" . ($lastRow + 1), "Total BRL:");
+                $event->sheet->setCellValue("G" . ($lastRow + 1), "Total {$this->data[0]['currency']} :");
 
                 $event->sheet->getStyle("G" . ($lastRow + 1) . ":H" . ($lastRow + 1))->applyFromArray([
                     'font' => ['bold' => true],
