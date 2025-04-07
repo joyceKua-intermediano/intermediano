@@ -8,5 +8,6 @@ class IntermedianoPeruSAC extends Cluster
 {
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
     protected static ?string $navigationGroup = 'Intermediano Group Companies';
-    protected static ?int $navigationSort = 9;
+    protected static ?string $navigationLabel = 'Intermediano Peru SAC';
+    protected static ?int $navigationSort = 8;
 }
