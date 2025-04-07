@@ -8,7 +8,7 @@ class IntermedianoCanada extends Cluster
 {
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
     protected static ?string $navigationGroup = 'Intermediano Group Companies';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
     protected static ?string $navigationLabel = 'Gate Intermediano Inc';
 
 }

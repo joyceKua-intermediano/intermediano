@@ -8,6 +8,6 @@ class IntermedianoMexicoSC extends Cluster
 {
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
     protected static ?string $navigationGroup = 'Intermediano Group Companies';
-    protected static ?string $navigationLabel = 'Intermediano SA DE CV (Mexico)';
-    protected static ?int $navigationSort = 8;
+    protected static ?string $navigationLabel = 'Intermediano Mexico SA de CV';
+    protected static ?int $navigationSort = 7;
 }
