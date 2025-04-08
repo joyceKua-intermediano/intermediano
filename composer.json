@@ -46,7 +46,8 @@
             "app/Helpers/Quotation/CanadaQuotationHelper.php",
             "app/Helpers/Quotation/UruguayQuotationHelper.php",
             "app/Helpers/Quotation/PanamaQuotationHelper.php",
-            "app/Helpers/Quotation/NicaraguaQuotationHelper.php"
+            "app/Helpers/Quotation/NicaraguaQuotationHelper.php",
+            "app/Helpers/Quotation/HongkongQuotationHelper.php"
         ]
     },
     "autoload-dev": {
