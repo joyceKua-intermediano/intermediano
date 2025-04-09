@@ -4,6 +4,7 @@ namespace App\Filament\Employee\Resources;
 
 use App\Filament\Employee\Resources\TimesheetResource\Pages;
 use App\Filament\Employee\Resources\TimesheetResource\RelationManagers;
+use App\Models\Contract;
 use App\Models\MonthlyTimesheet;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -30,12 +31,16 @@ class TimesheetResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $contractDetails = Contract::where('employee_id', auth()->user()->id)->where('contract_type', 'employee')->first();
+
         return $form
             ->schema([
                 Forms\Components\Section::make('Month Selection')
                     ->schema([
                         Forms\Components\Hidden::make('employee_id')
                             ->default(auth()->user()->id),
+                        Forms\Components\Hidden::make('company_id')
+                            ->default($contractDetails->company_id),
                         Forms\Components\Select::make('year')
                             ->options(function () {
                                 $years = range(now()->year - 1, now()->year + 1);
@@ -145,8 +150,8 @@ class TimesheetResource extends Resource
                     ->getStateUsing(
                         fn($record) =>
                         $record->year && $record->month
-                            ? \Carbon\Carbon::create($record->year, $record->month)->format('F Y')
-                            : 'Invalid Date'
+                        ? \Carbon\Carbon::create($record->year, $record->month)->format('F Y')
+                        : 'Invalid Date'
                     ),
                 Tables\Columns\TextColumn::make('total_hours')
                     ->sortable()
@@ -216,7 +221,7 @@ class TimesheetResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $employeeId = auth()->user()->id;
-        $getEmployeeExpenses = MonthlyTimesheet::where('employee_id',  $employeeId);
+        $getEmployeeExpenses = MonthlyTimesheet::where('employee_id', $employeeId);
         return $getEmployeeExpenses;
     }
 }
