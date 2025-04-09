@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources;
+namespace App\Filament\Clusters\IntermedianoHongkong\Resources;
 
-use App\Exports\EmployeeExpensesExport;
-use App\Filament\Clusters\IntermedianoDoBrasilLtda;
-use App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources\EmployeeExpensesResource\Pages;
-use App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources\EmployeeExpensesResource\RelationManagers;
+use App\Filament\Clusters\IntermedianoHongkong;
+use App\Filament\Clusters\IntermedianoHongkong\Resources\EmployeeExpensesResource\Pages;
+use App\Filament\Clusters\IntermedianoHongkong\Resources\EmployeeExpensesResource\RelationManagers;
 use App\Models\Company;
 use App\Models\EmployeeExpenses;
 use App\Models\Contract;
@@ -30,14 +29,15 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
 use Filament\Forms\Components\Placeholder;
 
+
 class EmployeeExpensesResource extends Resource
 {
     protected static ?string $model = EmployeeExpenses::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 4;
 
-    protected static ?string $cluster = IntermedianoDoBrasilLtda::class;
-    protected static ?int $navigationSort = 5;
+    protected static ?string $cluster = IntermedianoHongkong::class;
 
     public static function form(Form $form): Form
     {
@@ -55,7 +55,7 @@ class EmployeeExpensesResource extends Resource
                         $customerId = auth()->user()->id;
 
                         return Employee::whereHas('contract', function ($query) {
-                            $query->where('cluster_name', 'IntermedianoDoBrasilLtda');
+                            $query->where('cluster_name', 'IntermedianoHongkong');
                         })->pluck('name', 'id');
                     })->disabled(fn($record) => $record && $record?->created_by !== 'user'),
                 Forms\Components\Select::make('company_id')
@@ -65,7 +65,7 @@ class EmployeeExpensesResource extends Resource
                         $customerId = auth()->user()->id;
 
                         return Company::whereHas('contracts', function ($query) {
-                            $query->where('cluster_name', 'IntermedianoDoBrasilLtda');
+                            $query->where('cluster_name', 'IntermedianoHongkong');
                         })->pluck('name', 'id');
                     })->disabled(fn($record) => $record && $record?->created_by !== 'user'),
                 Forms\Components\TextInput::make('cost_center')
@@ -73,7 +73,6 @@ class EmployeeExpensesResource extends Resource
 
                 Forms\Components\Select::make('type')
                     ->required()
-
                     ->options([
                         'local' => 'Local',
                         'abroad' => 'Abroad',
@@ -185,6 +184,7 @@ class EmployeeExpensesResource extends Resource
                             ->label('Uploaded Invoice')
                             ->content(function ($state) {
                                 if (is_array($state) && !empty($state)) {
+                                    // Extract the first value from the associative array
                                     $invoicePath = asset('storage/' . reset($state));
                                     return new HtmlString(
                                         '<a href="' . $invoicePath . '" target="_blank">
@@ -206,6 +206,7 @@ class EmployeeExpensesResource extends Resource
                             ->imagePreviewHeight(150)
                             ->preserveFilenames()
                             ->required()->visible(fn(string $operation): bool => $operation === 'create'),
+
                         Forms\Components\Select::make('status')
                             ->options([
                                 'pending' => 'Pending',
@@ -291,7 +292,6 @@ class EmployeeExpensesResource extends Resource
             ])->columns(8);
     }
 
-
     public static function table(Table $table): Table
     {
         return $table
@@ -371,7 +371,6 @@ class EmployeeExpensesResource extends Resource
             ]);
     }
 
-
     public static function updateExpenseTotals(Get $get, Set $set): void
     {
         $expenses = $get('expenses') ?? [];
@@ -395,6 +394,13 @@ class EmployeeExpensesResource extends Resource
         $set('abroad_total', number_format($abroadTotal, 2, '.', ''));
         $set('grand_total', number_format($type === 'local' ? $localTotal : $abroadTotal, 2, '.', ''));
     }
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
@@ -403,11 +409,10 @@ class EmployeeExpensesResource extends Resource
             'edit' => Pages\EditEmployeeExpenses::route('/{record}/edit'),
         ];
     }
-
     public static function getEloquentQuery(): Builder
     {
         $contractCluster = EmployeeExpenses::whereHas('employee', function ($query) {
-            $query->where('company', 'IntermedianoDoBrasilLtda');
+            $query->where('company', 'IntermedianoHongkong');
         });
         return $contractCluster;
     }

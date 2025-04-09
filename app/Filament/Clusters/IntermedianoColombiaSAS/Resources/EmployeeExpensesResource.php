@@ -71,6 +71,7 @@ class EmployeeExpensesResource extends Resource
                     ->columnSpan(2)->disabled(fn($record) => $record && $record?->created_by !== 'customer'),
 
                 Forms\Components\Select::make('type')
+                    ->required()
                     ->options([
                         'local' => 'Local',
                         'abroad' => 'Abroad',
@@ -178,12 +179,19 @@ class EmployeeExpensesResource extends Resource
                             ->hidden(fn(Get $get) => $get('../../type') !== 'abroad')
                             ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
                             ->dehydrated(),
-                        Placeholder::make('uploaded_invoice')
+                        Placeholder::make('invoice')
                             ->label('Uploaded Invoice')
-                            ->content(fn($record) => $record && $record->expenses[0]['invoice']
-                                ? new HtmlString('<a href="' . asset('storage/' . $record->expenses[0]['invoice']) . '" target="_blank">
-                                    <img src="' . asset('storage/' . $record->expenses[0]['invoice']) . '" alt="Invoice" style="height: 150px;"></a>')
-                                : 'No image uploaded yet.')
+                            ->content(function ($state) {
+                                if (is_array($state) && !empty($state)) {
+                                    $invoicePath = asset('storage/' . reset($state));
+                                    return new HtmlString(
+                                        '<a href="' . $invoicePath . '" target="_blank">
+                                            <img src="' . $invoicePath . '" alt="Invoice" style="height: 150px;">
+                                         </a>'
+                                    );
+                                }
+                                return 'No image uploaded yet.';
+                            })
                             ->visible(fn(string $operation): bool => $operation === 'edit'),
 
                         Forms\Components\FileUpload::make('invoice')
