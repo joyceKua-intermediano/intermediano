@@ -94,6 +94,7 @@ class TimesheetResource extends Resource
                                 }
                             })->columnSpan(1),
                         Forms\Components\Select::make('status')
+                            ->required()
                             ->options([
                                 'approved' => 'Approved',
                                 'rejected' => 'Rejected',
@@ -117,8 +118,8 @@ class TimesheetResource extends Resource
                     ->getStateUsing(
                         fn($record) =>
                         $record->year && $record->month
-                            ? \Carbon\Carbon::create($record->year, $record->month)->format('F Y')
-                            : 'Invalid Date'
+                        ? \Carbon\Carbon::create($record->year, $record->month)->format('F Y')
+                        : 'Invalid Date'
                     ),
                 Tables\Columns\TextColumn::make('total_hours')
                     ->sortable()
@@ -182,7 +183,11 @@ class TimesheetResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $customerCompanyID = auth()->user()->company_id;
-        $getEmployeeContract = MonthlyTimesheet::where('company_id',  $customerCompanyID);
+        $getEmployeeContract = MonthlyTimesheet::where('company_id', $customerCompanyID);
         return $getEmployeeContract;
+    }
+    public static function canCreate(): bool
+    {
+        return false;
     }
 }
