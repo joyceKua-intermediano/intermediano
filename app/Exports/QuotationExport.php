@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class QuotationExport implements FromView,  WithEvents
+class QuotationExport implements FromView, WithEvents
 {
     protected $record;
 
@@ -27,38 +27,43 @@ class QuotationExport implements FromView,  WithEvents
     {
         $isIntegral = $this->record->is_integral;
         switch (true) {
-            case  $this->record->cluster_name === 'IntermedianoColombiaSAS':
+            case $this->record->cluster_name === 'IntermedianoColombiaSAS':
                 $exportFile = $isIntegral ? 'exports.integral_quotation' : 'exports.quotation';
                 break;
-            case  $this->record->cluster_name === 'IntermedianoEcuadorSAS':
+            case $this->record->cluster_name === 'IntermedianoEcuadorSAS':
                 $exportFile = 'exports.quotations.ecuador';
                 break;
-            case  $this->record->cluster_name === 'IntermedianoCostaRica':
+            case $this->record->cluster_name === 'IntermedianoCostaRica':
                 $exportFile = 'exports.quotations.costa_rica';
                 break;
 
-            case  $this->record->cluster_name === 'IntermedianoDoBrasilLtda':
+            case $this->record->cluster_name === 'IntermedianoDoBrasilLtda':
                 $exportFile = 'exports.quotations.brasil';
                 break;
-            case  $this->record->cluster_name === 'IntermedianoMexicoSC':
+            case $this->record->cluster_name === 'IntermedianoMexicoSC':
                 $exportFile = 'exports.quotations.mexico';
                 break;
-            case  $this->record->cluster_name === 'IntermedianoChileSPA':
+            case $this->record->cluster_name === 'IntermedianoChileSPA':
                 $exportFile = 'exports.quotations.chile';
                 break;
-            case  $this->record->cluster_name === 'IntermedianoPeruSAC':
+            case $this->record->cluster_name === 'IntermedianoPeruSAC':
                 $exportFile = 'exports.quotations.peru';
                 break;
-            case  $this->record->cluster_name === 'IntermedianoCanada':
+            case $this->record->cluster_name === 'IntermedianoCanada':
                 $exportFile = 'exports.quotations.canada';
                 break;
-            case  $this->record->cluster_name === 'IntermedianoUruguay':
+            case $this->record->cluster_name === 'IntermedianoUruguay':
                 $exportFile = 'exports.quotations.uruguay';
                 break;
-            case  $this->record->cluster_name === 'PartnerUruguay' &&  $this->record->country->name === 'Panama':
+            case $this->record->cluster_name === 'IntermedianoHongkong':
+                $exportFile = 'exports.quotations.hongkong';
+                break;
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Panama':
                 $exportFile = 'exports.quotations.panama';
                 break;
-
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Nicaragua':
+                $exportFile = 'exports.quotations.nicaragua';
+                break;
             default:
                 # code...
                 break;
