@@ -166,12 +166,19 @@ class EmployeeExpensesResource extends Resource
                             ->hidden(fn(Get $get) => $get('../../type') !== 'abroad')
                             ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
                             ->dehydrated(),
-                        Placeholder::make('uploaded_invoice')
+                        Placeholder::make('invoice')
                             ->label('Uploaded Invoice')
-                            ->content(fn($record) => $record && $record->expenses[0]['invoice']
-                                ? new HtmlString('<a href="' . asset('storage/' . $record->expenses[0]['invoice']) . '" target="_blank">
-                                    <img src="' . asset('storage/' . $record->expenses[0]['invoice']) . '" alt="Invoice" style="height: 150px;"></a>')
-                                : 'No image uploaded yet.')
+                            ->content(function ($state) {
+                                if (is_array($state) && !empty($state)) {
+                                    $invoicePath = asset('storage/' . reset($state));
+                                    return new HtmlString(
+                                        '<a href="' . $invoicePath . '" target="_blank">
+                                            <img src="' . $invoicePath . '" alt="Invoice" style="height: 150px;">
+                                         </a>'
+                                    );
+                                }
+                                return 'No image uploaded yet.';
+                            })
                             ->visible(fn(string $operation): bool => $operation === 'edit'),
 
                         Forms\Components\FileUpload::make('invoice')
@@ -184,9 +191,10 @@ class EmployeeExpensesResource extends Resource
                             ->imagePreviewHeight(150)
                             ->preserveFilenames()
                             ->required()->visible(fn(string $operation): bool => $operation === 'create'),
-
+                        Forms\Components\Hidden::make('invoice')
+                            ->default(fn(Get $get) => (array) $get('invoice')),
                         Forms\Components\Select::make('status')
-                        ->default(fn(string $operation) => $operation === 'create' ? 'approved' : null)
+                            ->default(fn(string $operation) => $operation === 'create' ? 'approved' : null)
                             ->options([
                                 'pending' => 'Pending',
                                 'approved' => 'Approved',
@@ -195,8 +203,7 @@ class EmployeeExpensesResource extends Resource
 
 
                         Forms\Components\Textarea::make('comments')
-                            ->visible(fn(string $operation): bool => $operation === 'create')
-                            ->columnSpan(2)->hidden(fn($record) => $record && $record?->created_by !== 'employee' && $getUserTable === 'customers'),
+                            ->columnSpan(2),
                     ])
                     ->columns(6)
                     ->itemLabel(function (array $state): ?HtmlString {
@@ -224,7 +231,7 @@ class EmployeeExpensesResource extends Resource
                     ->collapsed()
                     ->disableItemDeletion()
                     ->live()
-                    ->addable(fn($record) => $record && $record->created_by === 'customer' ? 'Add another expense' : null)
+                    ->addable(fn($operation) => $operation === 'create' ? 'Add another expense' : null)
 
                     ->afterStateUpdated(function (Get $get, Set $set) {
                         self::updateExpenseTotals($get, $set);
@@ -333,7 +340,7 @@ class EmployeeExpensesResource extends Resource
                 ExportAction::make('export')
                     ->label('Export Expenses')
                     ->action(function ($record) {
-                        $currency =  getCurrencyByCompany($record->employee->company);
+                        $currency = getCurrencyByCompany($record->employee->company);
                         $employee = $record->employee->name ?? 'N/A';
                         $company = $record->company->name ?? 'N/A';
                         $companyIntermediano = $record->employee->company ?? 'N/A';
