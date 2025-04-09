@@ -25,6 +25,7 @@ class EmployeeResource extends Resource
     protected static ?string $model = Employee::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $cluster = IntermedianoHongkong::class;
 
@@ -77,10 +78,10 @@ class EmployeeResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
-                Filter::make('cluster_match')
-                    ->label('Company Name')
-                    ->query(fn(Builder $query): Builder => $query->where('company', self::getClusterName()))
-                    ->default(),
+                // Filter::make('cluster_match')
+                //     ->label('Company Name')
+                //     ->query(fn(Builder $query): Builder => $query->where('company', self::getClusterName()))
+                //     ->default(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -155,5 +156,11 @@ class EmployeeResource extends Resource
     protected static function getClusterName(): string
     {
         return class_basename(self::$cluster);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $contractCluster = Employee::where('company', self::getClusterName());
+        return $contractCluster;
     }
 }

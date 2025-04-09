@@ -31,7 +31,7 @@ class PayrollResource extends Resource
 {
     protected static ?string $model = Quotation::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?int $navigationSort = 5;
     protected static ?string $cluster = IntermedianoHongkong::class;
     protected static ?string $label = 'Payroll';
 
