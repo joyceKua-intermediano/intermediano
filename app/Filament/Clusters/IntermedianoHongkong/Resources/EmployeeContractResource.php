@@ -27,6 +27,7 @@ class EmployeeContractResource extends Resource
 {
     protected static ?string $model = Contract::class;
     protected static ?string $label = 'Employee Contract';
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $cluster = IntermedianoHongkong::class;
