@@ -177,7 +177,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Clause 5 – Remuneration</b>
-                    <p>For the provision of services, the EMPLOYEE shall be entitled to a gross salary of R$ {{ number_format($$employeeGrossSalary, 2) }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), to be paid monthly by the EMPLOYER, no later than the 5th business day of the month following the provision of services. This amount includes a 40% bonus for a position of trust, in the sum of R$ {{ number_format($employeePositionTrustSalary, 2) }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), as well as R$ {{ number_format($employeeReferringGrossSalary, 2) }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) related to the gross monthly salary.</p>
+                    <p>For the provision of services, the EMPLOYEE shall be entitled to a gross salary of R$ {{ number_format($employeeGrossSalary, 2) }} ({{ strtoupper($formatter->format($employeeGrossSalary)) }} Reais), to be paid monthly by the EMPLOYER, no later than the 5th business day of the month following the provision of services. This amount includes a 40% bonus for a position of trust, in the sum of R$ {{ number_format($employeePositionTrustSalary, 2) }} ({{ strtoupper($formatter->format($employeePositionTrustSalary)) }} Reais), as well as R$ {{ number_format($employeeReferringGrossSalary, 2) }} ({{ strtoupper($formatter->format($employeeReferringGrossSalary)) }} Reais) related to the gross monthly salary.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Cláusula 5ª – Da Remuneração</b>
@@ -332,7 +332,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
-                            <p style="text-align: left">{{ $employeeCity }}, {{  \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                            <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
                             @endif
                         </div>
@@ -367,7 +367,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
-                            <p style="text-align: left">{{ $employeeCity }}, {{  \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                            <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                             @endif
                         </div>
 
@@ -394,26 +394,19 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
 
     @include('pdf.contract.layout.header')
     <div style="border: 1px solid rgb(188, 188, 188); margin: 0px 10px 0 10px; padding: 20px; page-break-after: always;">
-
-        <b style="text-align: center">ANNEX I</b>
-        <b>ANNEX TO THE INDIVIDUAL EMPLOYMENT CONTRACT FOR A FIXED TERM</b>
-        <b>JOB DESCRIPTION</b>
-        <p style="margin-top: 20px"></p>
-
+        <p style="text-align: center; font-weight: bold;">ANNEX I</p>
+        <p style="font-weight: bold; margin-bottom: -15px;">ANNEX TO THE INDIVIDUAL EMPLOYMENT CONTRACT FOR A FIXED TERM</p>
+        <p style="font-weight: bold;">JOB DESCRIPTION</p>
         <p>The non-exhaustive list of key responsibilities includes:</p>
-        {!! $jobDescription !!}
         {!! $jobDescription !!}
 
     </div>
     @include('pdf.contract.layout.header')
     <div style="border: 1px solid rgb(188, 188, 188); margin: 20px 10px 0 10px; padding: 20px;">
-        <b style="text-align: center">ANEXO I</b>
-        <b>ANEXO AO CONTRATO INDIVIDUAL DE TRABALHO POR PRAZO DETERMINADO</b>
-        <b>DESCRIÇÃO DAS FUNÇÕES</b>
-        <p style="margin-top: 20px"></p>
-
+        <p style="text-align: center; font-weight: bold;">ANEXO I</p>
+        <p style="font-weight: bold; margin-bottom: -15px;">ANEXO AO CONTRATO INDIVIDUAL DE TRABALHO POR PRAZO DETERMINADO</p>
+        <p style="font-weight: bold;">DESCRIÇÃO DAS FUNÇÕES</p>
         <p>A lista não exaustiva de responsabilidades principais inclui:</p>
-        {!! $translatedJobDescription !!}
         {!! $translatedJobDescription !!}
 
     </div>
