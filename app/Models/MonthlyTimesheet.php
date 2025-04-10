@@ -21,6 +21,11 @@ class MonthlyTimesheet extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class);
+    }
     protected static function boot()
     {
         parent::boot();
