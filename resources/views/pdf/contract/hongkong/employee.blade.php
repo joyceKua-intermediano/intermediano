@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Document</title>
+    @if($is_pdf)
     <link rel="stylesheet" href="css/contract.css">
+
+    @else
+    <link rel="stylesheet" href="{{ asset('css/contract.css') }}">
+    @endif
 </head>
 
 @php
@@ -28,6 +33,7 @@ $customerEmail = $record->companyContact->email;
 $customerName = $record->companyContact->contact_name;
 $customerPosition = $record->companyContact->position;
 $customerTranslatedPosition = $record->translatedPosition;
+$employeeCity = $record->personalInformation->city ?? null;
 
 $employeeName = $record->employee->name;
 $employeeCountryWork = $record->country_work;
@@ -36,6 +42,8 @@ $employeeStartDate = \Carbon\Carbon::parse($record->start_date)->format('d m Y')
 $employeeEndDate = \Carbon\Carbon::parse($record->end_date)->format('d m Y');
 $employeeGrossSalary = $record->gross_salary;
 $employeeJobDescription = $record->job_description;
+$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
+$signatureExists = Storage::disk('public')->exists($signaturePath);
 @endphp
 
 <style>
@@ -57,11 +65,19 @@ $employeeJobDescription = $record->job_description;
         line-height: 1.5;
     }
 
+    .non-pdf p {
+        line-height: 1.7 !important;
+    }
+
+    .non-pdf .clause-header b span {
+        margin-bottom: 20px !important;
+    }
+
 </style>
 <body>
 
     @include('pdf.contract.layout.header')
-    <main class="main-container">
+    <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <h4 style='text-align:center; text-decoration: underline; margin: 20px 0px'> SERVICE AGREEMENT</h4>
 
         <p> This Service Agreement (the “Agreement”) is made on [DATE] (the “Effective Date”), by
@@ -109,7 +125,7 @@ $employeeJobDescription = $record->job_description;
     </main>
 
     @include('pdf.contract.layout.header')
-    <main class="main-container">
+    <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <p> to comply with all global and local laws, decrees, regulations, resolutions, decisions, norms
             andother provisions considered by law concerning the provision of the service and labour
             matters, in particular, but not limited to, those related to the protection of the environment,
@@ -157,10 +173,7 @@ $employeeJobDescription = $record->job_description;
     </main>
 
     @include('pdf.contract.layout.header')
-    <main class="main-container">
-
-
-
+    <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <p class='clause-header'> <b> <span>GDPR DATA PROTECTION</span> </b></p>
         <p> Any information containing personal data shall be handled in accordance with all
             applicable privacy laws and regulations, including without limitation the GDPR
@@ -208,7 +221,7 @@ $employeeJobDescription = $record->job_description;
     </main>
 
     @include('pdf.contract.layout.header')
-    <main class="main-container">
+    <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <p> Upon termination of this Agreement or at its termination, Provider undertakes to:
         </p>
         <p> return to Customer the day of termination of this Agreement, all equipment, promotional
@@ -252,7 +265,7 @@ $employeeJobDescription = $record->job_description;
 
 
     @include('pdf.contract.layout.header')
-    <main class="main-container">
+    <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <p> Communication between the Parties- All warnings, communications, notifications and
             mailing resulting from the performance of this Agreement shall be done in writing, with
             receipt confirmation, by mail with notice of receipt, by e-mail with notice of receipt or by
@@ -292,16 +305,33 @@ $employeeJobDescription = $record->job_description;
             <tr style="border: none;">
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>INTERMEDIANO HONG KONG LIMITED</h4>
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+
+                    <div style="text-align: center; position: relative; height: 100px;">
+                        <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+
+                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">Fernando Gutierrez</p>
                     </div>
-                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="margin-top: -30px"> Fernando Gutierrez</p>
+
+
                 </td>
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>{{ $companyName }}</h4>
-                    <div style="width: 100%; border-bottom: 1px solid black; margin-top: 60px"></div>
-                    <p style="margin-top: -30px"> {{ $customerName }}</p>
+                    <div style="display: inline-block; position: relative; height: 100px; width: 100%;">
+                        @if($signatureExists)
+                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+
+                        <p style="position: absolute; bottom: -12%;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                        @else
+                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 10px; margin-top: 40px; z-index: 1000; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        @endif
+                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">{{ $customerName }}</p>
+
+                    </div>
+
                 </td>
             </tr>
         </table>
@@ -312,7 +342,7 @@ $employeeJobDescription = $record->job_description;
 
     @include('pdf.contract.layout.header')
 
-    <main class='main-container'>
+    <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <h4 style='text-align:center; margin: 20px 0px'> ANNEX I</h4>
         <h4 style='text-align:center;'> Services </h4>
         <div>
@@ -330,7 +360,7 @@ $employeeJobDescription = $record->job_description;
 
     @include('pdf.contract.layout.header')
 
-    <main class='main-container' style='page-break-after: avoid'>
+    <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}" style='page-break-after: avoid'>
         <h4 style='text-align:center; margin: 20px 0px'> ANNEX II</h4>
         <div>
             <b>PRICE:</b>
