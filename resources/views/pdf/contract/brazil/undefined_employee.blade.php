@@ -44,7 +44,7 @@ $personalTaxId = $record->document->tax_id ?? null;
 $countryWork = $record->country_work ?? null;
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
-$signaturePath = 'signatures/employee_' . $record->id . '.webp';
+$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
 $signatureExists = Storage::disk('public')->exists($signaturePath);
 @endphp
 <body>
@@ -331,7 +331,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists)
-                            <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;">
                             <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
                             @endif
@@ -366,7 +366,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists)
-                            <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;margin: 0 auto;">
                             <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                             @endif
                         </div>
@@ -395,7 +395,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
     @include('pdf.contract.layout.header')
     <div style="border: 1px solid rgb(188, 188, 188); margin: 0px 10px 0 10px; padding: 20px; page-break-after: always;">
         <p style="text-align: center; font-weight: bold;">ANNEX I</p>
-        <p style="font-weight: bold; margin-bottom: -15px;">ANNEX TO THE INDIVIDUAL EMPLOYMENT CONTRACT FOR A FIXED TERM</p>
+        <p style="font-weight: bold;">ANNEX TO THE INDIVIDUAL EMPLOYMENT CONTRACT FOR A FIXED TERM</p>
         <p style="font-weight: bold;">JOB DESCRIPTION</p>
         <p>The non-exhaustive list of key responsibilities includes:</p>
         {!! $jobDescription !!}
@@ -404,7 +404,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
     @include('pdf.contract.layout.header')
     <div style="border: 1px solid rgb(188, 188, 188); margin: 20px 10px 0 10px; padding: 20px;">
         <p style="text-align: center; font-weight: bold;">ANEXO I</p>
-        <p style="font-weight: bold; margin-bottom: -15px;">ANEXO AO CONTRATO INDIVIDUAL DE TRABALHO POR PRAZO DETERMINADO</p>
+        <p style="font-weight: bold;">ANEXO AO CONTRATO INDIVIDUAL DE TRABALHO POR PRAZO DETERMINADO</p>
         <p style="font-weight: bold;">DESCRIÇÃO DAS FUNÇÕES</p>
         <p>A lista não exaustiva de responsabilidades principais inclui:</p>
         {!! $translatedJobDescription !!}

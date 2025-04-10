@@ -44,7 +44,7 @@ $countryWork = $record->country_work ?? null;
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 $pensionFund = $record->socialSecurityInfos->pension_fund ?? 'N/A';
-$signaturePath = 'signatures/employee_' . $record->id . '.webp';
+$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
 $signatureExists = Storage::disk('public')->exists($signaturePath);
 switch (true) {
 case $employeeCountry == 'Colombia':
@@ -1026,7 +1026,7 @@ break;
                     <div style="text-align: center;">
                         <p style="margin-bottom: 20px"><b>EL EMPLEADO</b></p>
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->id . '.webp') : asset('storage/signatures/employee_' . $record->id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
                         <p style="text-align: center; margin-bottom: 0px">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
                         @else
