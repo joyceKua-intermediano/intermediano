@@ -47,12 +47,22 @@ $jobDescription = $record->job_description;
 $signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
 $signatureExists = Storage::disk('public')->exists($signaturePath);
 @endphp
+<style>
+    .non-pdf h4 {
+        font-weight: bold;
+    }
+
+    .non-pdf p {
+        line-height: 1.7 !important;
+    }
+
+</style>
 <body>
 
 
     <!-- Content Section -->
     @include('pdf.contract.layout.header')
-    <main>
+    <main class="{{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -89,7 +99,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
 
     </main>
     @include('pdf.contract.layout.header')
-    <main>
+    <main class="{{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -121,7 +131,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
         @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
-    <main>
+    <main class="{{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -150,7 +160,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
 
     </main>
     @include('pdf.contract.layout.header')
-    <main>
+    <main class="{{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -188,7 +198,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
         @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
-    <main>
+    <main class="{{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -238,7 +248,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
     </main>
     @include('pdf.contract.layout.header')
 
-    <main>
+    <main class="{{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -281,7 +291,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
         @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
-    <main>
+    <main class="{{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -312,7 +322,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
         @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
-    <main>
+    <main class="{{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <table style="margin: 100px 0 !important">
             <tr>
                 <td style="width: 50%; vertical-align: top;">
