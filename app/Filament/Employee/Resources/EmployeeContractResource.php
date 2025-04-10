@@ -61,7 +61,34 @@ class EmployeeContractResource extends Resource
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
-                        $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
+                        $contractQuotationType = $record->is_integral;
+                        switch ($record->cluster_name) {
+                            case 'IntermedianoDoBrasilLtda':
+                                $companyTitle = 'Intermediano do Brasil Ltda.';
+                                $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
+                                break;
+                            case 'IntermedianoColombiaSAS':
+                                $companyTitle = 'Intermediano Colombia SAS.';
+                                if ($contractQuotationType === 0) {
+                                    $pdfPage = $record->end_date === null
+                                        ? 'pdf.contract.colombia.ordinary_undefined_employee'
+                                        : 'pdf.contract.colombia.ordinary_defined_employee';
+                                } elseif ($contractQuotationType === 1) {
+                                    $pdfPage = $record->end_date === null
+                                        ? 'pdf.contract.colombia.integral_undefined_employee'
+                                        : 'pdf.contract.colombia.integral_defined_employee';
+                                } else {
+                                    $pdfPage = '';
+                                }
+                                break;
+                            case 'IntermedianoHongkong':
+                                $companyTitle = 'Intermediano Hong Kong Limited';
+                                $pdfPage = 'pdf.contract.hongkong.employee';
+                                break;
+                            default:
+                                $pdfPage = '';
+                                break;
+                        }
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
                         $tr = new GoogleTranslate();
@@ -71,12 +98,11 @@ class EmployeeContractResource extends Resource
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
-
                         $viewModal = 'filament.quotations.brasil_modal';
                         return view($pdfPage, [
                             'record' => $record,
                             'poNumber' => $contractTitle,
-                            'company' => 'Intermediano do Brasil Ltda.',
+                            'company' => $companyTitle,
                             'is_pdf' => false
                         ]);
                     }),
@@ -110,14 +136,42 @@ class EmployeeContractResource extends Resource
                     ->action(function ($record, $data) {
                         $record->update([
                             'signature' => $data['signature'],
-                            'signed_contract'  => $data['signed_contract'],
+                            'signed_contract' => $data['signed_contract'],
                         ]);
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('Download Contract')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
+                        $contractQuotationType = $record->is_integral;
+
+                        switch ($record->cluster_name) {
+                            case 'IntermedianoDoBrasilLtda':
+                                $companyTitle = 'Intermediano do Brasil Ltda.';
+                                $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
+                                break;
+                            case 'IntermedianoColombiaSAS':
+                                $companyTitle = 'Intermediano Colombia SAS.';
+                                if ($contractQuotationType === 0) {
+                                    $pdfPage = $record->end_date === null
+                                        ? 'pdf.contract.colombia.ordinary_undefined_employee'
+                                        : 'pdf.contract.colombia.ordinary_defined_employee';
+                                } elseif ($contractQuotationType === 1) {
+                                    $pdfPage = $record->end_date === null
+                                        ? 'pdf.contract.colombia.integral_undefined_employee'
+                                        : 'pdf.contract.colombia.integral_defined_employee';
+                                } else {
+                                    $pdfPage = '';
+                                }
+                                break;
+                            case 'IntermedianoHongkong':
+                                $companyTitle = 'Intermediano Hong Kong Limited';
+                                $pdfPage = 'pdf.contract.hongkong.employee';
+                                break;
+                            default:
+                                $pdfPage = '';
+                                break;
+                        }
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
                         $tr = new GoogleTranslate();
@@ -131,12 +185,12 @@ class EmployeeContractResource extends Resource
                         $pdf = Pdf::loadView($pdfPage, [
                             'record' => $record,
                             'poNumber' => $contractTitle,
-                            'company' => 'Intermediano do Brasil Ltda.',
+                            'company' => $companyTitle,
                             'is_pdf' => true
 
                         ]);
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             $fileName . '.pdf'
                         );
                     }),
@@ -162,7 +216,7 @@ class EmployeeContractResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $employeeId = auth()->user()->id;
-        $getEmployeeExpenses = Contract::where('employee_id',  $employeeId)->where('is_sent_to_employee', true);
+        $getEmployeeExpenses = Contract::where('employee_id', $employeeId)->where('is_sent_to_employee', true);
         return $getEmployeeExpenses;
     }
 
