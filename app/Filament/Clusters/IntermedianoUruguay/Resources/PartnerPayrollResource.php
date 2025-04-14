@@ -56,7 +56,7 @@ class PartnerPayrollResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'El Salvador', 'Guatemala', 'Jamaica']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua',  'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic']);
                     })
                     ->required(),
                 Forms\Components\Select::make('consultant_id')
@@ -200,6 +200,10 @@ class PartnerPayrollResource extends Resource
                     ->dateTime('y-m-d')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('consultant.name')
+                    ->label('Consultant')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('country.name')
                     ->label('Country')
                     ->sortable()
@@ -216,7 +220,6 @@ class PartnerPayrollResource extends Resource
                     ->query(fn(Builder $query): Builder => $query->where('cluster_name', 'PartnerUruguay'))
                     ->default(),
                 Filter::make('is_payroll')
-                    ->label('Is Quotation')
                     ->query(fn(Builder $query): Builder => $query->where('is_payroll', true))
                     ->default(),
                 Tables\Filters\SelectFilter::make('country')
@@ -246,13 +249,13 @@ class PartnerPayrollResource extends Resource
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
-                        switch ($record->country->name) {
-                            case 'Panama':
-                                $viewModal = 'filament.quotations.panama_modal';
-                                break;
-                            default:
-                                break;
-                        }
+                        $viewModal = [
+                            'Panama' => 'filament.quotations.panama_modal',
+                            'Nicaragua' => 'filament.quotations.nicaragua_modal',
+                            'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
+                        ];
+                        $viewModal = $viewModal[$record->country->name] ?? null;
+   
                         return view($viewModal, [
                             'record' => $record,
                         ]);
@@ -260,25 +263,34 @@ class PartnerPayrollResource extends Resource
                 ExportAction::make('export')
                     ->label('Export Details')
                     ->action(function ($record) {
-                        $isQuotation = true;
-                        $export = new QuotationExport($record, [], $isQuotation);
+                        $currentDate = Carbon::parse($record->title);
+                        $previousMonthDate = $currentDate->subMonth();
+
+                        $previousMonthRecord = Quotation::where('consultant_id', $record->consultant_id)
+                            ->where('country_id', $record->country->id)
+                            ->whereNull('deleted_at')
+                            ->whereMonth('title', $previousMonthDate->month)
+                            ->whereYear('title', $previousMonthDate->year)
+                            ->first();
+
+                        $export = new QuotationExport($record, $previousMonthRecord);
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
-                        return Excel::download($export,  $transformTitle .  '_Payroll for ' . $companyName . '.xlsx');
+                        return Excel::download($export,  $transformTitle .  '_Payroll for ' . $companyName . ' ' . $record->consultant->name . '.xlsx');
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        switch ($record->country->name) {
-                            case 'Panama':
-                                $pdfPage = 'pdf.panama_quotation';
-                                break;
-                            default:
-                                break;
-                        }
+                        $pdfPages = [
+                            'Panama' => 'pdf.panama_quotation',
+                            'Nicaragua' => 'pdf.nicaragua_quotation',
+                            'Dominican Republic' => 'pdf.dominican_republic_quotation',
+                        ];
+                        $pdfPage = $pdfPages[$record->country->name] ?? null;
+
                         $companyName = $record->company->name;
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);

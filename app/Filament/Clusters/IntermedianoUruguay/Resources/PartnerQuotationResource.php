@@ -54,7 +54,7 @@ class PartnerQuotationResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'El Salvador', 'Guatemala', 'Jamaica']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic']);
                     })
                     ->required(),
 
@@ -239,13 +239,12 @@ class PartnerQuotationResource extends Resource
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
-                        switch ($record->country->name) {
-                            case 'Panama':
-                                $viewModal = 'filament.quotations.panama_modal';
-                                break;
-                            default:
-                                break;
-                        }
+                        $viewModal = [
+                            'Panama' => 'filament.quotations.panama_modal',
+                            'Nicaragua' => 'filament.quotations.nicaragua_modal',
+                            'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
+                        ];
+                        $viewModal = $viewModal[$record->country->name] ?? null;
                         return view($viewModal, [
                             'record' => $record,
                         ]);
@@ -258,25 +257,26 @@ class PartnerQuotationResource extends Resource
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
-                        return Excel::download($export,  $transformTitle .  '_Quotation for ' . $companyName . '.xlsx');
+                        return Excel::download($export, $transformTitle . '_Quotation for ' . $companyName . '.xlsx');
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        switch ($record->country->name) {
-                            case 'Panama':
-                                $pdfPage = 'pdf.panama_quotation';
-                                break;
-                            default:
-                                break;
-                        }
+                        $pdfPages = [
+                            'Panama' => 'pdf.panama_quotation',
+                            'Nicaragua' => 'pdf.nicaragua_quotation',
+                            'Dominican Republic' => 'pdf.dominican_republic_quotation',
+                        ];
+                        $pdfPage = $pdfPages[$record->country->name] ?? null;
+
+
                         $companyName = $record->company->name;
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             Str::slug($transformTitle, '.') . '_Quotation for ' . $companyName . '.pdf'
                         );
                     }),
