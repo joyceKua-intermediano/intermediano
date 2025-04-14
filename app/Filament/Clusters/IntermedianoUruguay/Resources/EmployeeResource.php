@@ -27,6 +27,7 @@ class EmployeeResource extends Resource
 
     protected static ?string $cluster = IntermedianoUruguay::class;
 
+    protected static ?int $navigationSort = 7;
     public static function form(Form $form): Form
     {
         return $form

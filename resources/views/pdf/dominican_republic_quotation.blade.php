@@ -28,10 +28,6 @@
             padding: 10px 15px;
             text-align: left;
             border: 1px solid #ddd;
-            @if(empty($hideHeader)) font-size: inherit;
-            @else font-size: 12px;
-            padding: 6px 10px;
-            @endif
         }
 
         .table th {
@@ -81,11 +77,10 @@
 
 <body>
     @php
-    $quotationDetails = calculateUruguayQuotation($record, []);
+    $quotationDetails = calculateDominicanRepublicQuotation($record, []);
     @endphp
 
-    <table class="table" style="margin-top: 30px">
-        @if(empty($hideHeader))
+    <table class="table">
         <tr class="headerTable">
             <th rowspan="2"> <img src="{{ public_path('images/logo.jpg') }}" alt="logo" style="width: 100px; height: auto;">
             </th>
@@ -95,7 +90,6 @@
         <tr>
             <td class="headerTable textWhite textWeightBold" colspan="2">{{ $record->title }}</td>
         </tr>
-        @endif
         <tr style="{{ $record->home_allowance == 0 ? 'display: none' : '' }}">
             <th class="p-4">Home Allowance</th>
             <td class="p-4 space-between">
@@ -233,19 +227,6 @@
             </td>
         </tr>
         <tr>
-            <th class="p-4">Service taxes - VAT 22%</th>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['servicesTaxes'], 2) }}
-                </span>
-            </td>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment">USD</span>
-                <span class="recordAlignment">{{ number_format($quotationDetails['servicesTaxes'] / $record->exchange_rate, 2) }}</span>
-            </td>
-        </tr>
-        <tr>
             <th class="p-4 ">Bank Fee</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
@@ -259,7 +240,7 @@
             </td>
         </tr>
         <tr class="">
-            <th class="p-4 text-left">Subtotal</th>
+            <th class="p-4 text-left">Total Partial</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
                 <span class="recordAlignment">
@@ -271,7 +252,19 @@
                 <span class="recordAlignment">{{ number_format($quotationDetails['subTotal'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
-
+        <tr>
+            <th class="p-4">VAT 15%</th>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
+                <span class="recordAlignment">
+                    {{ number_format($quotationDetails['servicesTaxes'], 2) }}
+                </span>
+            </td>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['servicesTaxes'] / $record->exchange_rate, 2) }}</span>
+            </td>
+        </tr>
         <tr class="highlight">
             <th class="p-4 text-left textWeightBold">Total Invoice</th>
             <td class="p-4 space-between">
@@ -293,35 +286,25 @@
         </tr>
         <tr class="highlight">
             <th class="p-4 textWeightBold">Payroll Costs</th>
-            <th class="p-4 text-left">CAD</th>
+            <th class="p-4 text-left">DOP</th>
             <td class="p-4">USD</td>
         </tr>
+        @foreach ($quotationDetails['payrollCostsLists'] as $payrollCostsItem)
         <tr class="">
-            <th class="p-4 text-left">Social Security</th>
+            <th class="p-4 text-left">{{ strtoupper($payrollCostsItem) }}</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
                 <span class="recordAlignment">
-                    {{ number_format($quotationDetails['socialSecurity'], 2) }}
+                    {{ number_format($quotationDetails[$payrollCostsItem], 2) }}
                 </span>
             </td>
             <td class="p-4 space-between">
                 <span class="currencyAlignment">USD</span>
-                <span class="recordAlignment">{{ number_format($quotationDetails['socialSecurity'] / $record->exchange_rate, 2) }}</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails[$payrollCostsItem] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
-        <tr class="">
-            <th class="p-4 text-left">Operational Costs</th>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['operationalCosts'], 2) }}
-                </span>
-            </td>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment">USD</span>
-                <span class="recordAlignment">{{ number_format($quotationDetails['operationalCosts'] / $record->exchange_rate, 2) }}</span>
-            </td>
-        </tr>
+        @endforeach
+
 
         <tr class="highlight">
             <th class="p-4 textWeightBold">Total</th>
@@ -343,64 +326,24 @@
         </tr>
         <tr class="highlight">
             <th class="p-4 textWeightBold">Provisions</th>
-            <td class="p-4">CAD</td>
+            <td class="p-4">DOP</td>
             <td class="p-4">USD</td>
         </tr>
-
-
+        @foreach ($quotationDetails['provisionLists'] as $provisionItem)
         <tr class="">
-            <th class="p-4">13th Salary</th>
+            <th class="p-4">{{ camelCaseToWords($provisionItem) }}</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
                 <span class="recordAlignment">
-                    {{ number_format($quotationDetails['salary13th'], 2) }}
+                    {{ number_format($quotationDetails[$provisionItem], 2) }}
                 </span>
             </td>
             <td class="p-4 space-between">
                 <span class="currencyAlignment">USD</span>
-                <span class="recordAlignment">{{ number_format($quotationDetails['salary13th'] / $record->exchange_rate, 2) }}</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails[$provisionItem] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
-        <tr class="">
-            <th class="p-4">License</th>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['license'], 2) }}
-                </span>
-            </td>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment">USD</span>
-                <span class="recordAlignment">{{ number_format($quotationDetails['license'] / $record->exchange_rate, 2) }}</span>
-            </td>
-        </tr>
-
-        <tr class="">
-            <th class="p-4">Vacational Salary</th>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['vacationSalary'], 2) }}
-                </span>
-            </td>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment">USD</span>
-                <span class="recordAlignment">{{ number_format($quotationDetails['vacationSalary'] / $record->exchange_rate, 2) }}</span>
-            </td>
-        </tr>
-        <tr class="">
-            <th class="p-4">Dismissal</th>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['dismissal'], 2) }}
-                </span>
-            </td>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment">USD</span>
-                <span class="recordAlignment">{{ number_format($quotationDetails['dismissal'] / $record->exchange_rate, 2) }}</span>
-            </td>
-        </tr>
+        @endforeach
         <tr class="highlight">
             <th class="p-4 textWeightBold">Total</th>
             <td class="p-4" style="text-align: center">
@@ -419,11 +362,9 @@
 
     </table>
 
-    @if(empty($hideHeader))
     <div class="footer">
         <p>Generated on {{ now()->format('F j, Y') }}</p>
     </div>
-    @endif
 </body>
 
 </html>
