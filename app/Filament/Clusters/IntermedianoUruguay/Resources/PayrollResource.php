@@ -34,6 +34,8 @@ class PayrollResource extends Resource
 
     protected static ?string $cluster = IntermedianoUruguay::class;
     protected static ?string $label = 'Payroll';
+    protected static ?int $navigationSort = 1;
+
 
     public static function form(Form $form): Form
     {
@@ -265,6 +267,7 @@ class PayrollResource extends Resource
                         $previousMonthDate = $currentDate->subMonth();
 
                         $previousMonthRecord = Quotation::where('consultant_id', $record->consultant_id)
+                            ->where('country_id', $record->country->id)
                             ->whereNull('deleted_at')
                             ->whereMonth('title', $previousMonthDate->month)
                             ->whereYear('title', $previousMonthDate->year)
