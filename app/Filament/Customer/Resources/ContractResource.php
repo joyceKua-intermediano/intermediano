@@ -131,7 +131,7 @@ class ContractResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $customerCompanyID = auth()->user()->company_id;
-        $getEmployeeContract = Contract::where('company_id',  $customerCompanyID)->where('contract_type', 'customer');
+        $getEmployeeContract = Contract::where('company_id',  $customerCompanyID)->where('contract_type',  '!=', 'employee');
         return $getEmployeeContract;
     }
     public static function canCreate(): bool
