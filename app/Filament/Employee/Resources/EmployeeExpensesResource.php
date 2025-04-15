@@ -39,7 +39,6 @@ class EmployeeExpensesResource extends Resource
 
     public static function form(Form $form): Form
     {
-        // Fetch necessary values outside the schema array
         $employeeCompanyId = Contract::where('employee_id', auth()->user()->id)->value('company_id');
         $employeeQuotationId = Contract::where('employee_id', auth()->user()->id)->value('quotation_id');
         $currencyName = Quotation::where('id', $employeeQuotationId)->value('currency_name');
