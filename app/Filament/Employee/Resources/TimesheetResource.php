@@ -31,8 +31,10 @@ class TimesheetResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $contractDetails = Contract::where('employee_id', auth()->user()->id)->where('contract_type', 'employee')->first();
-
+        $contractDetails = Contract::where('employee_id', auth()->user()->id)
+            ->whereIn('contract_type', ['employee', 'customer', 'partner'])
+            ->orderByRaw("FIELD(contract_type, 'employee', 'customer', 'partner')")
+            ->first();
         return $form
             ->schema([
                 Forms\Components\Section::make('Month Selection')
