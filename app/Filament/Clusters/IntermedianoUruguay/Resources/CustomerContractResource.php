@@ -21,7 +21,7 @@ class CustomerContractResource extends Resource
 {
     protected static ?string $model = Contract::class;
 
-    protected static ?string $label = 'Customer Contract';
+    protected static ?string $label = 'Client Contract';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
