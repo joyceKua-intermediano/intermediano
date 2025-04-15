@@ -29,7 +29,7 @@ class MspPayrollResource extends Resource
     protected static ?string $label = 'MSP/Caribbean Payroll';
 
     protected static ?string $cluster = IntermedianoUruguay::class;
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
