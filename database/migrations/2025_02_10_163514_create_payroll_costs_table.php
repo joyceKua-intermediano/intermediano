@@ -19,6 +19,8 @@ return new class extends Migration
             $table->decimal('transportation', 15, 2)->default(0);
             $table->decimal('uf_month', 15, 2)->default(0);
             $table->decimal('eps', 15, 2)->default(0);
+            $table->decimal('notice', 15, 2)->default(0);
+            $table->decimal('unemployment', 15, 2)->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

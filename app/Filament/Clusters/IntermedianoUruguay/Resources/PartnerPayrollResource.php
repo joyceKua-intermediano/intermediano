@@ -10,6 +10,7 @@ use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerPayrollResource\R
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -56,7 +57,7 @@ class PartnerPayrollResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua',  'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic']);
                     })
                     ->required(),
                 Forms\Components\Select::make('consultant_id')
@@ -178,7 +179,13 @@ class PartnerPayrollResource extends Resource
                     ])
                     ->required()
                     ->reactive(),
-
+                Fieldset::make('PayrollCosts')
+                    ->relationship('payrollCosts')
+                    ->label('Payroll Costs')
+                    ->schema([
+                        TextInput::make('notice')->label('Notice'),
+                        TextInput::make('unemployment')->label('Unemployment'),
+                    ]),
                 Forms\Components\Hidden::make('cluster_name')
                     ->default('PartnerUruguay')
                     ->label('PartnerUruguay'),
@@ -255,7 +262,7 @@ class PartnerPayrollResource extends Resource
                             'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
                         ];
                         $viewModal = $viewModal[$record->country->name] ?? null;
-   
+
                         return view($viewModal, [
                             'record' => $record,
                         ]);
@@ -277,7 +284,7 @@ class PartnerPayrollResource extends Resource
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
-                        return Excel::download($export,  $transformTitle .  '_Payroll for ' . $companyName . ' ' . $record->consultant->name . '.xlsx');
+                        return Excel::download($export, $transformTitle . '_Payroll for ' . $companyName . ' ' . $record->consultant->name . '.xlsx');
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
@@ -295,7 +302,7 @@ class PartnerPayrollResource extends Resource
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             Str::slug($transformTitle, '.') . '_Payroll for ' . $companyName . '.pdf'
                         );
                     }),
