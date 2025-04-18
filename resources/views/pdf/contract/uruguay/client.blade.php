@@ -59,11 +59,11 @@ $currencyName = $record->quotation->currency_name;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">SERVICE AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }} (the “Effective Date”), by and between <b>INTERMEDIANO SAS</b> (the “Provider”), domiciliated at Calle Faustino Carámbula 1203, Rivera, Uruguay, duly represented by its legal representative; AND <b>{{ $companyName }}</b> (the “Customer”), a company duly incorporated with {{ $customerTaxId }} under the laws of {{ $customerCountry }} and holding offices at {{ $customerAddress }} </p>
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }} (the “Effective Date”), by and between <b>INTERMEDIANO SAS</b> (the “Provider”), domiciliated at Calle Faustino Carámbula 1203, Rivera, Uruguay, duly represented by its legal representative; AND <b>{{ $companyName }}</b> (the “Customer”), a company duly incorporated with {{ $customerTaxId }} under the laws of {{ $customerCountry }} and holding offices at {{ $customerAddress }}. </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE SERVICIOS</h4>
-                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $formattedDate }}, {{ $month }}, {{ $year }} (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO SAS</b> (el "Proveedor") domiciliado en Calle El Faustino Carámbula 1203, Rivera, Uruguay, debidamente representado por su representante legall; Y <b>{{ $companyName }}</b> (el "Cliente"), una sociedad debidamente constituida con {{ $customerTaxId }} según las leyes de {{ $customerCountry }} y con domicilio en {{ $customerAddress }} </p>
+                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $formattedDate }}, {{ $month }}, {{ $year }} (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO SAS</b> (el "Proveedor") domiciliado en Calle El Faustino Carámbula 1203, Rivera, Uruguay, debidamente representado por su representante legall; Y <b>{{ $companyName }}</b> (el "Cliente"), una sociedad debidamente constituida con {{ $customerTaxId }} según las leyes de {{ $customerCountry }} y con domicilio en {{ $customerAddress }}. </p>
                 </td>
             </tr>
             <tr>
@@ -76,26 +76,26 @@ $currencyName = $record->quotation->currency_name;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>WHEREAS</b> Customer wishes to obtain the services and Provider wishes to provide the services on the terms and conditions set forth herein</p>
+                    <p><b>WHEREAS</b> Customer wishes to obtain the services and Provider wishes to provide the services on the terms and conditions set forth herein;</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>CONSIDERANDO</b> que el Cliente desea obtener los servicios y el Proveedor desea proporcionar los servicios en los términos y condiciones establecidos en este documento</p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 50%; vertical-align: top;">
-                    <p><b>WHEREAS</b> services will be provided by Provider in Chile</p>
-                </td>
-                <td style="width: 50%; vertical-align: top;">
-                    <p><b>CONSIDERANDO</b> que los servicios serán proporcionados por el Proveedor, en Chile</p>
+                    <p><b>CONSIDERANDO</b> que el Cliente desea obtener los servicios y el Proveedor desea proporcionar los servicios en los términos y condiciones establecidos en este documento;</p>
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>WHEREAS</b> Provider will render directly</p>
+                    <p><b>WHEREAS</b> services will be provided by Provider in Chile;</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>CONSIDERANDO</b> que el Proveedor prestará servicios directos </p>
+                    <p><b>CONSIDERANDO</b> que los servicios serán proporcionados por el Proveedor, en Chile;</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 50%; vertical-align: top;">
+                    <p><b>WHEREAS</b> Provider will render directly;</p>
+                </td>
+                <td style="width: 50%; vertical-align: top;">
+                    <p><b>CONSIDERANDO</b> que el Proveedor prestará servicios directos; </p>
                 </td>
             </tr>
             <tr>
@@ -495,8 +495,8 @@ $currencyName = $record->quotation->currency_name;
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">Si al Proveedor:</b>
                     <p>A/C: Fernando Gutierrez</p>
-                    <p>Address: Calle Faustino Carámbula 1203, Rivera, Uruguay </p>
-                    <p>Phone: +55 21 98217 3082</p>
+                    <p>Dirección: Calle Faustino Carámbula 1203, Rivera, Uruguay </p>
+                    <p>Teléfono: +55 21 98217 3082</p>
                     <p>E-mail: <a href="#">sac@intermediano.com</a> </p>
                 </td>
             </tr>
@@ -519,12 +519,12 @@ $currencyName = $record->quotation->currency_name;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">XI. Jurisdiction </b>
-                    <p>The parties elect the courts of {{ $customerCountry }} to settle any doubts and/or disputes arising out of this instrument, with the exclusion of any other jurisdiction, as privileged as it may be and the applicable law shall be of the {{ $customerCountry }}</p>
+                    <p>The parties elect the courts of Uruguay to settle any doubts and/or disputes arising out of this instrument, with the exclusion of any other jurisdiction, as privileged as it may be and the applicable law shall be of Uruguay.</p>
                     <p>The full text of this contract, as well as the documents derived from it, including the Annexes, have been drawn up in the English and Spanish languages, both versions being considered official, although the Spanish language version is considered as the priority for its interpretation.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">XI. Jurisdición</b>
-                    <p>Las partes eligen a los tribunales de {{ $customerCountry }}, para resolver cualquier duda y / o disputa que surja de este instrumento, con la exclusión de cualquier otra jurisdicción, por privilegiada que sea y la ley aplicable será la de {{ $customerCountry }} </p>
+                    <p>Las partes eligen a los tribunales de Uruguay, para resolver cualquier duda y / o disputa que surja de este instrumento, con la exclusión de cualquier otra jurisdicción, por privilegiada que sea y la ley aplicable será la de Uruguay.</p>
                     <p>El texto integro de este contrato, así como los documentos que se deriven del mismo, incluidos los Anexos, han sido redactados en los idiomas inglés y español, considerándose ambas versiones como oficiales, si bien se fija como prioritaria para su interpretación la versión en idioma español.</p>
                 </td>
             </tr>
@@ -650,15 +650,15 @@ $currencyName = $record->quotation->currency_name;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>DATE OF PAYMENT (every month)</b>: Last day of the working month</p>
+                    <p><b>DATE OF PAYMENT (every month)</b>: Last day of the working month.</p>
                     <p><b>LOCAL PAYMENT CONDITIONS: </b> <br>
-                        <p>Salaries and/or any other remuneration is set in [{{ $currencyName }}/Amount/{{ $contractType }}]</p>
+                        <p>Salaries and/or any other remuneration is set in [{{ $currencyName }}/Amount/{{ $contractType }}].</p>
                     </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>FECHA DE PAGO (mensual)</b>: Ultimo día del mês trabajado</p>
+                    <p><b>FECHA DE PAGO (mensual)</b>: Ultimo día del mês trabajado.</p>
                     <p> <b>CONDICIONES DE PAGO LOCALES:</b> <br>
-                        <p>El salario y/o cualquier otra remuneración se realizan en [{{ $currencyName }}/{{ number_format($employeeGrossSalary, 2) }}/{{ $contractType }}]</p>
+                        <p>El salario y/o cualquier otra remuneración se realizan en [{{ $currencyName }}/{{ number_format($employeeGrossSalary, 2) }}/{{ $contractType }}].</p>
                     </p>
                 </td>
             </tr>
@@ -728,7 +728,7 @@ $currencyName = $record->quotation->currency_name;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>GUARANTEE (1 MONTH SALARY/REMUNERATION):</b>
-                        Customer shall anticipate the monthly cost per each employee. This amount will be kept by Provider until the end of the Agreement and will be compensated on the last working month of the respective employee
+                        Customer shall anticipate the monthly cost per each employee. This amount will be kept by Provider until the end of the Agreement and will be compensated on the last working month of the respective employee.
                     </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
