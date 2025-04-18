@@ -2,12 +2,14 @@
 
 namespace App\Filament\Clusters\IntermedianoUruguay\Resources;
 
+use App\Exports\PartnerPayrollExport;
 use App\Filament\Clusters\IntermedianoUruguay;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\MspPayrollResource\Pages;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\MspPayrollResource\RelationManagers;
 use App\Models\MspPayroll;
 use App\Models\Consultant;
 use App\Models\Country;
+use DateTime;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\HtmlString;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -85,9 +88,23 @@ class MspPayrollResource extends Resource
                             ->label('Other Expense (Banking Fee, Reimbursement)')
                             ->numeric(),
                     ])
-                    ->default( $firstRecord->data ?? null)
+                    ->itemLabel(function (array $state): ?HtmlString {
+                        $consultant = Consultant::where('id', $state['consultant_id'])->value('name');
+                        $monthSalary = $state['monthly_salary'];
+                        return new HtmlString(
+                            "<span>
+                                <span style='font-weight: bold;'>{$consultant} - </span>
+                                <span style='font-weight: bold;'>Monthly Salary: {$monthSalary}</span>
+                
+                            </span>"
+                        );
+                    })
+                    ->default($firstRecord->data ?? null)
                     ->orderable('order')
                     ->columnSpanFull()
+                    ->collapsible()
+                    ->collapsed()
+
                     ->columns(1)
                     ->grid(2),
             ]);
@@ -105,7 +122,7 @@ class MspPayrollResource extends Resource
                     ->label('Title')
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\BadgeColumn::make('companies.name')
+                Tables\Columns\BadgeColumn::make('companies.name')
                     ->label('Companies')
                     ->colors(['primary']),
             ])
@@ -118,8 +135,10 @@ class MspPayrollResource extends Resource
                     ->label('Export Payrolls')
                     ->action(function ($record) {
                         $export = new PartnerPayrollExport($record);
-                        $dateFormat = now()->format('y.m');
-                        $fileName = now()->format('y.m') . '_Wesco_Anixter_Payroll Caribbean Islands_' . now()->format('F_Y');
+                        $dateString = $record->title;
+                        $date = new DateTime($dateString);
+                        $dateFormat = $date->format('F_Y');
+                        $fileName = $date->format('y.m') . '_Wesco_Anixter_Payroll Caribbean Islands_' . $dateFormat;
                         return Excel::download($export, $fileName . '.xlsx');
                     }),
             ])
