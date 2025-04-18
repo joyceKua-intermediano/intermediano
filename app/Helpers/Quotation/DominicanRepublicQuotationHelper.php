@@ -16,15 +16,15 @@ if (!function_exists('calculateDominicanRepublicQuotation')) {
 
         $afp = $totalGrossIncome * 0.0710;
         $sfs = $totalGrossIncome * 0.0709;
-        $srl = $totalGrossIncome * 0.0115;
+        $srl = $totalGrossIncome * 0.01;
         $infotep = $totalGrossIncome * 0.01;
         $payrollCostsLists = ['afp', 'sfs', 'srl', 'infotep'];
 
         $payrollCostsTotal = $afp + $sfs + $srl + $infotep;
         $salary13th = 0.0833 * $totalGrossIncome;
         $annualBonus = 0.1250 * $totalGrossIncome;
-        $notice =($record->payrollCosts->notice / 100) * $totalGrossIncome;
-        $unemployement = ($record->payrollCosts->unemployment / 100) * $totalGrossIncome;
+        $notice =($record->payrollCosts->notice ?? 0 / 100) * $totalGrossIncome;
+        $unemployement = ($record->payrollCosts->unemployment ?? 0 / 100) * $totalGrossIncome;
         $vacations = 0.0490 * $totalGrossIncome;
         $provisionLists = ['salary13th', 'annualBonus', 'notice', 'unemployement', 'vacations'];
 
