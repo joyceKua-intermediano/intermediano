@@ -2,14 +2,19 @@
 
 namespace App\Filament\Clusters\IntermedianoHongkong\Resources;
 
+use App\Exports\InvoicesExport;
 use App\Filament\Clusters\IntermedianoHongkong;
 use App\Filament\Clusters\IntermedianoHongkong\Resources\InvoiceResource\Pages;
 use App\Filament\Clusters\IntermedianoHongkong\Resources\InvoiceResource\RelationManagers;
 use App\Models\Invoice;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -19,7 +24,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Support\RawJs;
+use Maatwebsite\Excel\Facades\Excel;
 
+use Illuminate\Support\Facades\Storage;
 class InvoiceResource extends Resource
 {
     protected static ?int $navigationSort = 1;
@@ -41,6 +48,7 @@ class InvoiceResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('company_id')
                             ->relationship('company', 'name')
+                            ->searchable()
                             ->required(),
                         DatePicker::make('invoice_date')
                             ->label('Date')
@@ -109,13 +117,23 @@ class InvoiceResource extends Resource
 
             ])
             ->filters([
-                Tables\Filters\Filter::make('recent')
-                    ->label('Recent Invoices')
-                    ->query(fn(Builder $query) => $query->whereDate('created_at', '>=', now()->subMonth())),
+                Filter::make('Month')
+                    ->form([
+                        DatePicker::make('month')
+                            ->displayFormat('Y-m')
+                            ->placeholder('Select Month')
+                            ->extraInputAttributes(['type' => 'month'])
+
+                            ->native(),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['month']) {
+                            $query->whereMonth('invoice_date', Carbon::parse($data['month'])->month);
+                        }
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
                 Tables\Actions\Action::make('pdf')
                     ->label('Generate Invoice')
                     ->color('success')
@@ -129,6 +147,38 @@ class InvoiceResource extends Resource
                             'Invoice ' . $invoiceId . '.pdf'
                         );
                     }),
+            ])
+            ->headerActions([
+                Action::make('ExportByMonth')
+                    ->label('Export Invoices by Month')
+                    ->form([
+                        Forms\Components\Select::make('month')
+                            ->label('Month')
+                            ->options([
+                                '1' => 'January',
+                                '2' => 'February',
+                                '3' => 'March',
+                                '4' => 'April',
+                                '5' => 'May',
+                                '6' => 'June',
+                                '7' => 'July',
+                                '8' => 'August',
+                                '9' => 'September',
+                                '10' => 'October',
+                                '11' => 'November',
+                                '12' => 'December',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('year')
+                            ->label('Year')
+                            ->numeric()
+                            ->default(date('Y'))
+                            ->required(),
+                    ])
+                    ->action(function (array $data) {
+                        return self::exportInvoices($data['month'], $data['year']);
+                    })
+                    ->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -156,5 +206,32 @@ class InvoiceResource extends Resource
     protected static function getClusterName(): string
     {
         return class_basename(self::$cluster);
+    }
+
+    public static function exportInvoices($month, $year)
+    {
+        $currentMonthInvoices = Invoice::whereMonth('invoice_date', $month)
+            ->whereYear('invoice_date', $year)
+            ->with(['employee', 'company'])
+            ->get();
+        
+        $previousInvoices = Invoice::whereMonth('invoice_date', '<', $month)
+            ->whereYear('invoice_date', $year)
+            ->get();
+            if ($currentMonthInvoices->isEmpty()) {
+                Notification::make()
+                    ->title('No invoices found')
+                    ->body('No invoices found for the selected month and year.')
+                    ->danger()
+                    ->send();
+                
+                return redirect()->back();
+            }
+
+        $fileName = "invoices_{$year}_{$month}.xlsx";
+
+        Excel::store(new InvoicesExport($currentMonthInvoices, $previousInvoices), $fileName, 'local');
+
+        return response()->download(Storage::path($fileName))->deleteFileAfterSend();
     }
 }
