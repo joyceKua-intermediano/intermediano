@@ -21,7 +21,7 @@ $customerAddress = $record->company->address;
 $customerPhone = $record->companyContact->phone;
 $customerEmail = $record->companyContact->email;
 $customerName = $record->companyContact->contact_name;
-$customerCountry = $record->company->country;
+$customerCountry = $record->company->country ?? 'N/A';
 $customerPosition = $record->companyContact->position;
 $customerTaxId = $record->company->tax_id ?? 'NA';
 $customerTranslatedPosition = $record->translatedPosition;
@@ -185,10 +185,10 @@ $currencyName = $record->quotation->currency_name;
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>d)</b> to comply with all global and local laws, decrees, regulations, resolutions, decisions, norms and other provisions considered by law concerning the provision of the service and labor matters, in particular, but not limited to, those related to the protection of the environment, exempting Customer from any responsibility resulting therefrom. Therefore, the Provider declares in this Agreement that its activities and services, used now and in the future, comply with the legislation and protection and safety standards concerning sanitation and environment; </p>
+                    <p><b>d)</b> to comply with all global and local laws, decrees, regulations, resolutions, decisions, norms and other provisions considered by law concerning the provision of the service and labor matters, in particular, but not limited to, those related to the protection of the environment, exempting Customer from any responsibility resulting therefrom. Therefore, the Provider declares in this Agreement that its activities and services, used now and in the future, comply with the legislation and protection and safety standards concerning sanitation and environment. </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>d)</b> cumplir con todas las leyes, decretos, reglamentos, resoluciones, decisiones, normas y otras disposiciones globales y locales consideradas por la ley en relación a la prestación del servicio y los asuntos laborales, en particular, pero no limitados a los relacionados con la protección del medio ambiente, eximiendo al Cliente de cualquier responsabilidad que resulte de ello. Por lo tanto, el Proveedor declara en este Acuerdo que sus actividades y servicios, utilizados ahora y en el futuro, cumplen con la legislación y las normas de protección y seguridad en materia sanitaria y del medio ambiente;</p>
+                    <p><b>d)</b> cumplir con todas las leyes, decretos, reglamentos, resoluciones, decisiones, normas y otras disposiciones globales y locales consideradas por la ley en relación a la prestación del servicio y los asuntos laborales, en particular, pero no limitados a los relacionados con la protección del medio ambiente, eximiendo al Cliente de cualquier responsabilidad que resulte de ello. Por lo tanto, el Proveedor declara en este Acuerdo que sus actividades y servicios, utilizados ahora y en el futuro, cumplen con la legislación y las normas de protección y seguridad en materia sanitaria y del medio ambiente.</p>
                 </td>
             </tr>
 
@@ -381,10 +381,10 @@ $currencyName = $record->quotation->currency_name;
 
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> respect and comply with all Service requests forwarded by Customer before the date of expiration or early termination of this Agreement;</p>
+                    <p><b>b)</b> respect and comply with all Service requests forwarded by Customer before the date of expiration or early termination of this Agreement.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b></b> respetar y cumplir con todas las solicitudes de Servicio enviadas por el Cliente antes de la fecha de vencimiento o terminación anticipada de este Acuerdo;</p>
+                    <p><b></b> respetar y cumplir con todas las solicitudes de Servicio enviadas por el Cliente antes de la fecha de vencimiento o terminación anticipada de este Acuerdo.</p>
                 </td>
             </tr>
 
@@ -498,8 +498,8 @@ $currencyName = $record->quotation->currency_name;
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">Si al Cliente:</b>
                     <p>A/C: Fernando Gutierrez</p>
-                    <p>Address: Calle Faustino Carámbula 1203, Rivera, Uruguay </p>
-                    <p>Phone: +1 514 907 5393</p>
+                    <p>Dirección: Calle Faustino Carámbula 1203, Rivera, Uruguay </p>
+                    <p>Teléfono: +1 514 907 5393</p>
                     <p>E-mail: <a href="#">sac@intermediano.com</a> </p>
                 </td>
             </tr>
@@ -522,12 +522,12 @@ $currencyName = $record->quotation->currency_name;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">XI. Jurisdiction </b>
-                    <p>The parties elect the courts of {{ $customerCountry }} to settle any doubts and/or disputes arising out of this instrument, with the exclusion of any other jurisdiction, as privileged as it may be and the applicable law shall be of the {{ $customerCountry }}</p>
+                    <p>The parties elect the courts of Uruguay to settle any doubts and/or disputes arising out of this instrument, with the exclusion of any other jurisdiction, as privileged as it may be and the applicable law shall be of Uruguay.</p>
                     <p>The full text of this contract, as well as the documents derived from it, including the Annexes, have been drawn up in the English and Spanish languages, both versions being considered official, although the Spanish language version is considered as the priority for its interpretation.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">XI. Jurisdición</b>
-                    <p>Las partes eligen a los tribunales de {{ $customerCountry }}, para resolver cualquier duda y / o disputa que surja de este instrumento, con la exclusión de cualquier otra jurisdicción, por privilegiada que sea y la ley aplicable será la de {{ $customerCountry }} </p>
+                    <p>Las partes eligen a los tribunales de Uruguay, para resolver cualquier duda y / o disputa que surja de este instrumento, con la exclusión de cualquier otra jurisdicción, por privilegiada que sea y la ley aplicable será la de Uruguay. </p>
                     <p>El texto integro de este contrato, así como los documentos que se deriven del mismo, incluidos los Anexos, han sido redactados en los idiomas inglés y español, considerándose ambas versiones como oficiales, si bien se fija como prioritaria para su interpretación la versión en idioma español.</p>
                 </td>
             </tr>
@@ -601,7 +601,7 @@ $currencyName = $record->quotation->currency_name;
                         <p>ANEXO 1</p>
                         <p><b>SERVICIOS</b></p>
                     </div>
-                    <p>employeeCountryWork: {{ $employeeName }}</p>
+                    <p>Consultor: {{ $employeeName }}</p>
                     <p>Título del Puesto: {{ $employeeJobTitle }}</p>
                     <p>Lugar de Trabajo: {{ $employeeCountryWork }}</p>
                     <p>Fecha de Inicio: {{ $employeeStartDate }}</p>
