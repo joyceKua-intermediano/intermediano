@@ -38,6 +38,11 @@ class Contract extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function partner(): BelongsTo
+    {
+        return $this->belongsTo(Partner::class);
+    }
     public function quotation(): BelongsTo
     {
         return $this->belongsTo(Quotation::class);
