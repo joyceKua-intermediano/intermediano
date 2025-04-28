@@ -38,9 +38,9 @@ class CustomerContractResource extends Resource
             ->schema([
                 Forms\Components\Hidden::make('contract_type')
                     ->default('customer'),
-                Forms\Components\Select::make('company_id')
-                    ->label('Customer')
-                    ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
+                    Forms\Components\Select::make('partner_id')
+                    ->label('Partner')
+                    ->relationship('partner', 'partner_name')
                     ->required(),
                 Forms\Components\Select::make('employee_id')
                     ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoHongkong'))
@@ -87,7 +87,7 @@ class CustomerContractResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('company.name')
+                Tables\Columns\TextColumn::make('parntner.partner_name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('employee.name')
@@ -122,24 +122,39 @@ class CustomerContractResource extends Resource
                 Tables\Actions\Action::make('pdf')
                     ->label('Download Contract')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->action(function ($record) {
-                        $pdfPage = 'pdf.contract.hongkong.customer';
+                    ->form([
+                        Forms\Components\Select::make('contractType')
+                            ->label('Contract Type')
+                            ->options([
+                                'tcw' => 'TCW',
+                            ])
+                            ->required(),
+                    ])
+                    ->action(function ($record, $data) {
+                        $pdfPageMapping = [
+                            'tcw' => 'pdf.contract.canada.client.tcw',
+                        ];
+
+                        $pdfPage = $pdfPageMapping[$data['contractType']] ?? null;
+                        if (!$pdfPage) {
+                            throw new \Exception('Invalid contract type selected.');
+                        }
+
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
-
                         $tr = new GoogleTranslate();
                         $tr->setSource();
-                        $tr->setTarget('pt');
+                        $tr->setTarget('es');
                         $record->translatedPosition = $tr->translate($record->companyContact->position ?? "");
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
-                        $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee';
-                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'company' => 'Intermediano Hong Kong Limited', 'is_pdf' => true]);
+                        $fileName = $startDateFormat . '_Contract with_' . $record->partner->partner_name . '_of employee';
+                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'company' => 'Gate Intermediano Inc.', 'is_pdf' => true]);
                         return response()->streamDownload(
                             fn() => print ($pdf->output()),
                             $fileName . '.pdf'
                         );
-                    }),
+                    })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
