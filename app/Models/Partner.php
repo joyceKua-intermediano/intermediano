@@ -15,6 +15,7 @@ class Partner extends Model
         'partner_name',
         'contact_name',
         'mobile_number',
+        'tax_id',
         'email',
         'address'    
     ];

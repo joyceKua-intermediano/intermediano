@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('partner_name')->nullable();
             $table->string('contact_name')->nullable();
             $table->string('mobile_number');
+            $table->string('tax_id');
             $table->string('email');
             $table->text('address');
             $table->softDeletes();

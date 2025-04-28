@@ -59,19 +59,25 @@ class InvoicesExport implements FromCollection, WithHeadings, WithStyles
         foreach ($this->currentMonthInvoices as $invoice) {
             $companyName = $invoice->company->name;
             $employeeName = $invoice->employee->name;
-
             foreach ($invoice->invoice_items as $item) {
                 $itemTotal = $item['unit_price'] * $item['quantity'];
                 $currentMonthTotal += $itemTotal;
+                $fee = $item['fee'] ?? 0;
+                $bankFee = $item['bank_fee'] ?? 0;
+                $amountOut =  $itemTotal - ( $fee - $bankFee - $item['tax']);
 
                 $data->push([
                     'Company' => $companyName,
+                    'Invoice ID' => '000' . $invoice->id,
                     'Employee Name' => $employeeName,
-                    'Description' => $item['description'],
-                    'Quantity' => $item['quantity'],
-                    'Unit Price' => 'USD              ' . number_format($item['unit_price'], 2),
-                    'Tax' => $item['tax'],
-                    'Total' => 'USD               ' . number_format($itemTotal, 2),
+                    // 'Description' => $item['description'],
+                    // 'Quantity' => $item['quantity'],
+                    'Invoices Amount' => 'USD              ' . number_format($item['unit_price'], 2),
+                    'Amount Out' => 'USD              ' . number_format($amountOut, 2),
+                    'Fee' => $fee,
+                    'TAX' => $item['tax'],
+                    'Bank Fees' => $bankFee,
+                    // 'Total' => 'USD               ' . number_format($itemTotal, 2),
                 ]);
             }
         }
@@ -87,22 +93,30 @@ class InvoicesExport implements FromCollection, WithHeadings, WithStyles
 
         $data->push([
             'Company' => '',
+            'Invoice ID' => '',
             'Employee Name' => '',
-            'Description' => 'Total for the selected month',
-            'Quantity' => '',
-            'Unit Price' => '',
-            'Tax' => '',
-            'Total' => 'USD              ' . number_format($currentMonthTotal, 2),
+            // 'Description' => 'Total for the selected month',
+            // 'Quantity' => '',
+            'Invoices Amount' => '',
+            'Amount Out' => '',
+            'Fee' => '',
+            'TAX' => '',
+            'Bank Fees' => '',
+            // 'Total' => 'USD              ' . number_format($currentMonthTotal, 2),
         ]);
 
         $data->push([
             'Company' => '',
+            'Invoice ID' => '',
             'Employee Name' => '',
-            'Description' => 'Accumulative total (up to the selected month)',
-            'Quantity' => '',
-            'Unit Price' => '',
-            'Tax' => '',
-            'Total' => 'USD               ' . number_format($cumulativeTotal, 2),
+            // 'Description' => 'Accumulative total (up to the selected month)',
+            // 'Quantity' => '',
+            'Invoices Amount' => '',
+            'Amount Out' => '',
+            'Fee' => '',
+            'TAX' => '',
+            'Bank Fees' => '',
+            // 'Total' => 'USD               ' . number_format($cumulativeTotal, 2),
         ]);
 
         return $data;
@@ -111,13 +125,17 @@ class InvoicesExport implements FromCollection, WithHeadings, WithStyles
     public function headings(): array
     {
         return [
+            'Invoice ID',
             'Company',
             'Employee Name',
-            'Description',
-            'Quantity',
-            'Unit Price',
-            'Tax',
-            'Total',
+            // 'Description',
+            // 'Quantity',
+            'Invoices Amount',
+            'Amount Out',
+            'Fee',
+            'TAX',
+            'Bank Fees',
+            // 'Total',
         ];
     }
 
