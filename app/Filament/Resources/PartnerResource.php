@@ -54,8 +54,10 @@ class PartnerResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('address')
+                    ->required(),
+                Forms\Components\TextInput::make('tax_id')
                     ->required()
-                    ->columnSpanFull(),
+                    ->maxLength(255),
             ]);
     }
 

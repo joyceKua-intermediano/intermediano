@@ -39,7 +39,7 @@ class EmployeeExpensesResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $employeeCompanyId = Contract::where('employee_id', auth()->user()->id)->value('company_id');
+        $employeeCompanyId = Contract::where('employee_id', auth()->user()->id)->first()->value('company_id');
         $employeeQuotationId = Contract::where('employee_id', auth()->user()->id)->value('quotation_id');
         $currencyName = Quotation::where('id', $employeeQuotationId)->value('currency_name');
 
