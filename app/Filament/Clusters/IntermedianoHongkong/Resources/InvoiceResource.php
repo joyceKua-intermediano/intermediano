@@ -74,6 +74,8 @@ class InvoiceResource extends Resource
                                 $component->state($cleanedState);
                             })
                             ->required(),
+                        TextInput::make('fee')->required(),
+                        TextInput::make('bank_fee')->required(),
                         TextInput::make('tax')->required(),
                     ])
                     ->columnSpanFull()

@@ -36,7 +36,7 @@ class MspPayrollResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $firstRecord = MspPayroll::first();
+        $firstRecord = MspPayroll::latest('created_at')->first();
 
         return $form
             ->schema([
