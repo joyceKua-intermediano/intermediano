@@ -33,8 +33,8 @@ class PartnerContractResource extends Resource
                 Forms\Components\Hidden::make('contract_type')
                     ->default('partner'),
                 Forms\Components\Select::make('company_id')
-                    ->label('Customer')
-                    ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
+                    ->label('Partner')
+                    ->relationship('partner', 'partner_name')
                     ->required(),
                 Forms\Components\Select::make('employee_id')
                     ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoUruguay'))

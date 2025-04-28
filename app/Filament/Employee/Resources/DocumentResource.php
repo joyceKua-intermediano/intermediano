@@ -104,7 +104,7 @@ class DocumentResource extends Resource
                                 $extension = $file->getMimeType() === 'application/pdf'
                                     ? 'pdf'
                                     : 'webp';
-                    
+
                                 $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
                                 $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
 
@@ -125,7 +125,7 @@ class DocumentResource extends Resource
                     ->schema([
                         Forms\Components\Hidden::make('employee_id')
                             ->default(auth()->user()->id),
-                        TextInput::make('health_fund')->required(),
+                        TextInput::make('health_fund'),
                         FileUpload::make('health_fund_file')
                             ->label('File')
                             ->directory(fn() => 'employees/' . auth()->id() . '/documents')
@@ -133,7 +133,7 @@ class DocumentResource extends Resource
                             ->optimize('webp')
                             ->storeFileNamesIn('original_file_name')
                             ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
-                                $documentType = $get('document_type') ?? 'unknown';
+                                $documentType = 'health_fund';
                                 $extension = $file->getMimeType() === 'application/pdf'
                                     ? 'pdf'
                                     : 'webp';
@@ -146,7 +146,7 @@ class DocumentResource extends Resource
                                 }
                                 return $fileName;
                             }),
-                        TextInput::make('pension_fund')->required(),
+                        TextInput::make('pension_fund'),
                         FileUpload::make('pension_fund_file')
                             ->label('File')
                             ->directory(fn() => 'employees/' . auth()->id() . '/documents')
@@ -154,7 +154,7 @@ class DocumentResource extends Resource
                             ->optimize('webp')
                             ->storeFileNamesIn('original_file_name')
                             ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
-                                $documentType = $get('document_type') ?? 'unknown';
+                                $documentType = 'pension_fund_file';
                                 $extension = $file->getMimeType() === 'application/pdf'
                                     ? 'pdf'
                                     : 'webp';
@@ -167,7 +167,7 @@ class DocumentResource extends Resource
                                 }
                                 return $fileName;
                             }),
-                        TextInput::make('severance_fund')->required(),
+                        TextInput::make('severance_fund'),
                         FileUpload::make('severance_fund_file')
                             ->label('File')
                             ->directory(fn() => 'employees/' . auth()->id() . '/documents')
@@ -175,7 +175,29 @@ class DocumentResource extends Resource
                             ->optimize('webp')
                             ->storeFileNamesIn('original_file_name')
                             ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
-                                $documentType = $get('document_type') ?? 'unknown';
+                                $documentType = 'severance_fund_file';
+                                $extension = $file->getMimeType() === 'application/pdf'
+                                    ? 'pdf'
+                                    : 'webp';
+
+                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
+                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
+
+                                if (Storage::disk('public')->exists($filePath)) {
+                                    Storage::disk('public')->delete($filePath);
+                                }
+                                return $fileName;
+                            }),
+
+                        TextInput::make('social_security_number'),
+                        FileUpload::make('social_security_file')
+                            ->label('File')
+                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
+                            ->resize(50)
+                            ->optimize('webp')
+                            ->storeFileNamesIn('original_file_name')
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
+                                $documentType = 'social_security_file';
                                 $extension = $file->getMimeType() === 'application/pdf'
                                     ? 'pdf'
                                     : 'webp';
