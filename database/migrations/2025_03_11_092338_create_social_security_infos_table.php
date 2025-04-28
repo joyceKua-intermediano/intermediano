@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->foreignId('document_id')->constrained()->cascadeOnDelete();
-            $table->string('health_fund');
-            $table->string('pension_fund');
-            $table->string('severance_fund');
-            $table->string('health_fund_file');
-            $table->string('pension_fund_file');
-            $table->string('severance_fund_file');
+            $table->string('health_fund')->nullable();
+            $table->string('pension_fund')->nullable();
+            $table->string('severance_fund')->nullable();
+            $table->string('social_security_number')->nullable();
+            $table->string('health_fund_file')->nullable();
+            $table->string('pension_fund_file')->nullable();
+            $table->string('severance_fund_file')->nullable();
+            $table->string('social_security_file')->nullable();
             $table->timestamps();
         });
     }

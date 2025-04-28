@@ -19,7 +19,6 @@ class PartnerPayrollExport implements FromView
     {
         $data =  $this->record->data;
         $filteredData = [];
-
         foreach ($data as &$item) {
             $country = Country::find($item['country_id']); 
             $consultant = Consultant::find($item['consultant_id']); 
@@ -30,7 +29,7 @@ class PartnerPayrollExport implements FromView
                 if ($company->name == 'Wesco Anixter USVI, LLC' && $item['country_name'] == 'USVI') {
                     
                     $filteredData[] = $item;
-                } elseif ($company->name == 'WESCO DISBRIBUTION INC.' && $item['country_name'] != 'USVI') {
+                } elseif ($company->name == 'WESCO DISTRIBUTION INC.' && $item['country_name'] != 'USVI') {
                     $filteredData[] = $item;
                 }
             }
