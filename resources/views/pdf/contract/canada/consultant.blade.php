@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Document</title>
+    <link rel="stylesheet" href="css/contract.css">
+</head>
+
+@php
+$formattedDate = now()->format('jS');
+$month = now()->format('F');
+$year = now()->format('Y');
+$currentDate = now()->format('d/m/Y');
+$companyAddress = $record->company->address;
+$companyCity = $record->company->city;
+$companyState = $record->company->state;
+
+$companyName = $record->company->name;
+$companyCountry = $record->company->country;
+$customerTranslatedPosition = $record->translatedPosition;
+$employeeName = $record->employee->name;
+$employeeNationality = $record->personalInformation->country ?? null;
+$employeeState = $record->personalInformation->state ?? null;
+$employeeCivilStatus = $record->personalInformation->civil_status ?? null;
+$employeeDateBirth = $record->personalInformation->date_of_birth ?? null;
+$employeeEducation = $record->personalInformation->education_attainment ?? null;
+
+$employeeAddress = $record->personalInformation->address ?? null;
+$employeeCity = $record->personalInformation->city ?? null;
+$employeeState = $record->personalInformation->state ?? null;
+$employeeCountry = $record->personalInformation->country ?? null;
+$employeePhone = $record->personalInformation->phone ?? null;
+$employeeMobile = $record->personalInformation->mobile ?? null;
+
+$employeeJobTitle = $record->job_title ?? null;
+$employeeCountryWork = $record->country_work ?? null;
+$employeeGrossSalary = $record->gross_salary;
+$employeeTaxId = $record->document->tax_id ?? null;
+$employeeEmail = $record->employee->email ?? null;
+$employeeSocialSecurityNumber = $record->socialSecurityInfos->social_security_number ?? 'N/A';
+$employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+
+@endphp
+
+<style>
+    main {
+        padding: 40px
+    }
+    h3 {
+        font-weight: bold
+    }
+
+    p {
+        line-height: 1.5 !important;
+        padding-left: 25px
+    }
+
+    h4 {
+        padding-left: 15px;
+        font-weight: bold
+    }
+
+</style>
+<body>
+
+    @include('pdf.contract.layout.header')
+    <main class="main-container">
+        <h3>EMPLOYMENT CONTRACT</h3>
+        <b>{{ $employeeName }}</b> <br>
+        <b style='margin-top: -10px'>{{ $currentDate }}</b>
+
+        <h4>1. Employer</h4>
+        <p><b> Gate Intermediano Inc.</b></p>
+        <p>4388 Rue Saint-Denis Suite 200 #763 Montreal, QC H2J 2L1 Canada</p>
+
+        <p><b>Employee’s Immediate Supervisor at the Beginning of the Contract: </b>: Fernando Gutierrez</p>
+        <h4>2. Employee</h4>
+        <p><b>Complete Name:</b> {{ $employeeName }}</p>
+        <p><b>Social Insurance Number:</b> {{ $employeeSocialSecurityNumber }}</p>
+        <p><b>Date of Birth:</b> {{ $employeeDateBirth }}</p>
+        <p><b>Education:</b> {{ $employeeEducation }}</p>
+        <p><b>Permanent Address:</b> {{ $employeeAddress }},  {{ $employeeCity }},  {{ $employeeState }}  {{ $employeeCountry }}</p>
+        <h4>3. Validity of Contract</h4>
+        <h4>1.1. Form of Contract</h4>
+        <p>This contract shall be in force for a period of twelve (12) months, starting on {{ $year }} {{ $month }} {{ $formattedDate }}. This contract can be extended following agreement in writing.</p>
+        <p>This contract is subject to {{ $employeeState }} law and social security regulations unless otherwise provided in this contract or required by binding local legislation, conditions or requirements.</p>
+
+        <h4>1.2. Lay-off and termination</h4>
+        <p>The Employee can be laid off, if the Employer cannot offer suitable work to the Employee. The notice period for such lay-off is 2 weeks.</p>
+        <p>Both parties can terminate this contract by giving 2 weeks’ notice to the other party in writing.</p>
+
+        @include('pdf.contract.layout.canada_footer')
+    </main>
+
+    @include('pdf.contract.layout.header')
+    <main class="main-container">
+        <h4>1.3. Probation period</h4>
+        <p>The Employee will be subject to a probation period of three (3) months. During the probation period this contract can be terminated at two days’ notice by the Employer if the performance of the Employee is not satisfactory.</p>
+        <h4>4. Field of Activities</h4>
+        <p>Employee’s main task at the beginning of this contract: {{ $employeeJobTitle }}</p>
+        <p>The Employee agrees also to perform such other tasks corresponding to his skills and experience as may be required by the Employer.</p>
+        <p>The Employee is obliged to devote his working capacity exclusively to Intermediano and not to engage himself in any other business for the duration of this contract without the prior consent of the Employer.</p>
+        <p>The Employee home base is {{ $employeeCity }},  {{ $employeeState }}  {{ $employeeCountry }}.</p>
+        <h4>5. The General Duties of the Employee</h4>
+        <p>The Employee is required to perform his duties with due diligence and following any Employer orders regarding safety, quality and scope of work as well as time and place.</p>
+        <p>The Employee is required to sign the Non-Disclosure Agreement as attached.</p>
+        <h4>6. Working Hours</h4>
+        <p>The Employment is classified as salary-exempt, and any overtime required for the performance of the described tasks is compensated with the agreed total salary.</p>
+        <p>Week-end work will be recorded for internal productivity measurement and compensated as 1 for 1 additional holidays.</p>
+        <h4>7. Salary and Social Insurances</h4>
+        <h4>7.1 Salary</h4>
+        <p>The total gross salary agreed for the performance of the duties is CAD {{ number_format($employeeGrossSalary * 12, 2) }} per year.</p>
+        <p>The salary is paid to the Employee’s bank account. The salary is paid every two weeks.</p>
+
+
+        @include('pdf.contract.layout.canada_footer')
+    </main>
+    @include('pdf.contract.layout.header')
+    <main class="main-container">
+
+        <h4>7.2 Income Tax, Social Security</h4>
+        <p>The Employee is responsible for any personal income taxes. Employer will handle all at-source deductions.</p>
+        <p>The Employee must pay any social security contributions / unemployment contributions, statutory pension or other required to be paid by the Employee according to the rules and regulations of the social security scheme in force in the province where the employee is working. Employer will handle all at-source deductions.</p>
+        <p>The Employer will pay the Employer's statutory social security, unemployment, statutory pension and similar statutory contributions.</p>
+        <p>The Employee will be enrolled in and covered by the Company’s insurance programmes related to risk in the workplace (worker’s compensation).</p>
+        <h4>8. Holidays and Vacation</h4>
+        <h4>8.1 Vacation</h4>
+        <p>The vacation entitlement shall be accrued starting at the beginning of activities. The Employee is entitled to two weeks of vacation per year. (i.e. every week worked earns 10/52 days of vacation).</p>
+        <p>The time of the vacation shall be determined by the Employer locally. The Employer can change the time of the vacation two weeks prior to the beginning of the vacation if necessary for the project.</p>
+        <h4>8.2 Holidays</h4>
+        <p>All local public holidays shall be free days.</p>
+        <h4>9. Compensation of Travel Costs</h4>
+        <p>In case the Employee uses her own car for business use upon Employer instruction, the Employee shall be reimbursed upon presentation of travel statement according to company policies and procedures.</p>
+
+        @include('pdf.contract.layout.canada_footer')
+    </main>
+
+    @include('pdf.contract.layout.header')
+    <main class="main-container" style='page-break-after: avoid'>
+        <h4>10. Annulment of This Contract</h4>
+        <p>This contract can be annulled for any of the following reasons:</p>
+        <p>1. The Employee commits a breach of the provisions of clause 5</p>
+        <p>2. The Employee has misled the Employer in fundamental matters while negotiating this contract.</p>
+        <p>3. The Employee is incapable of working for a not temporary reason.</p>
+        <p>4. The Employee endangers site safety due to negligence or appears on site intoxicated or takes intoxicating substances defying the orders of his superiors. Recurring appearance at work in the state of the physical after-effects of drunkenness shall be deemed comparable with appearing intoxicated.</p>
+        <p>5. The Employee grossly insults colleagues, the Employer, their Family members, the Employer’s substitute or the Employer’s Client or commits outrage upon them.</p>
+        <p>6. The Employee deliberately or with negligence fails in her obligations and takes no corrective action despite being warned by the Employer.</p>
+        <h4>11. Transfer of contract</h4>
+        <p>This agreement can be transferred by Intermediano to a third party upon the prior written agreement of both parties.</p>
+        <h4>12. Miscellaneous provisions</h4>
+        <p>See Appendix 1.</p>
+        <h4>13. Disputes</h4>
+        <p>It is the intention of the parties of this contract that any disputes arising from this contract shall be primarily resolved through negotiations between the parties.</p>
+        <p>If a consensus cannot be reached in the negotiations, disputes shall be settled in the court of Montreal.</p>
+        <p>This contract is made in two originals, one for the Employer and one for the Employee.</p>
+        <h4>{{ $employeeCity }},  {{ $employeeState }}  {{ $employeeCountry }}, {{ $currentDate }}</h4>
+
+        @include('pdf.contract.layout.canada_footer')
+    </main>
+
+</body>
+</html>
