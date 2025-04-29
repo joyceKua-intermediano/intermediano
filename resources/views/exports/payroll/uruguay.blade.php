@@ -42,7 +42,7 @@
             $countItems = 0;
 
             foreach ($data as $item) {
-                if (($company->name == 'Wesco Anixter USVI, LLC' && $item['country_name'] == 'USVI') || ($company->name == 'WESCO DISBRIBUTION INC.' && $item['country_name'] != 'USVI')) {
+                if (($company->name == 'Wesco Anixter USVI, LLC' && $item['country_name'] == 'USVI') || ($company->name == 'WESCO DISTRIBUTION INC.' && $item['country_name'] != 'USVI')) {
                     $countItems++;
                     $totalGrossMonthly += $item['monthly_salary'];
                     $totalOvertime += $item['overtime'];
@@ -80,7 +80,7 @@
             </thead>
             <tbody>
                 @foreach ($data as $item)
-                    @if (($company->name == 'Wesco Anixter USVI, LLC' && $item['country_name'] == 'USVI') || ($company->name == 'WESCO DISBRIBUTION INC.' && $item['country_name'] != 'USVI'))
+                    @if (($company->name == 'Wesco Anixter USVI, LLC' && $item['country_name'] == 'USVI') || ($company->name == 'WESCO DISTRIBUTION INC.' && $item['country_name'] != 'USVI'))
                         @php
                             $totalInvoice = $item['monthly_salary'] + $item['overtime'] + $item['other'] + $item['other_expenses'] + $record->bank_fee + $intermedianoFee;
                             $totalAllInvoice += $totalInvoice;

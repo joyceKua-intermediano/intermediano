@@ -117,6 +117,16 @@
                     @endif
                 </tr>
                 <tr>
+                    @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['social_security_file']))
+                    <td class="border border-gray-300 px-4 py-2">Social Insurance Number</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <a href="{{ Storage::url($record->socialSecurityInfo['social_security_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                            {{ basename($record->socialSecurityInfo['social_security_file']) }}
+                        </a>
+                    </td>  
+                    @endif
+                </tr>
+                <tr>
                     @if(!isset($record->socialSecurityInfo))
                     <tr>
                         <td colspan="3" class="text-center py-4 text-gray-500">
