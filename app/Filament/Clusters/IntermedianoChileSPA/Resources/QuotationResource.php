@@ -29,6 +29,7 @@ class QuotationResource extends Resource
     protected static ?string $model = Quotation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 7;
 
     protected static ?string $cluster = IntermedianoChileSPA::class;
 
