@@ -33,6 +33,7 @@ class PayrollResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 6;
     protected static ?string $cluster = IntermedianoChileSPA::class;
 
     protected static ?string $label = 'Payroll';
