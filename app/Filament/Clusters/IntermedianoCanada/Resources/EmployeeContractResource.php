@@ -161,11 +161,17 @@ class EmployeeContractResource extends Resource
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
 
+                        $footerDetails = [
+                            'companyName' => 'Gate Intermediano Inc.',
+                            'address' => '4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada',
+                            'domain' => 'www.intermediano.com',
+                            'mobile' => '+1 514 907 5393'
+                        ];
                         $pdf = Pdf::loadView($pdfPage, [
                             'record' => $record,
                             'poNumber' => $contractTitle,
-                            'company' => 'Intermediano Hong Kong Limited',
-                            'is_pdf' => true
+                            'is_pdf' => true,
+                            'footerDetails' => $footerDetails
                         ]);
 
                         return response()->streamDownload(
