@@ -153,7 +153,13 @@ class CustomerContractResource extends Resource
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contract with_' . $record->partner->partner_name . '_of employee';
-                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'company' => 'Gate Intermediano Inc.', 'is_pdf' => true]);
+                        $footerDetails = [
+                            'companyName' => 'Gate Intermediano Inc.',
+                            'address' => '4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada',
+                            'domain' => 'www.intermediano.com',
+                            'mobile' => '+1 514 907 5393'
+                        ];
+                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'is_pdf' => true, 'footerDetails' => $footerDetails]);
                         return response()->streamDownload(
                             fn() => print ($pdf->output()),
                             $fileName . '.pdf'
