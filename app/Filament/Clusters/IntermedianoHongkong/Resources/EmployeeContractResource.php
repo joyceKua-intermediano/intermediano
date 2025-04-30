@@ -160,12 +160,17 @@ class EmployeeContractResource extends Resource
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
-
+                        $footerDetails = [
+                            'companyName' => 'Intermediano Hong Kong Limited',
+                            'address' => 'Flat A11/F. Cheung Lung Ind Bldg 10 Cheung Yee ST, Cheung Sha Wan, Hong Kong',
+                            'domain' => 'www.intermediano.com',
+                            'mobile' => ''
+                        ];
                         $pdf = Pdf::loadView($pdfPage, [
                             'record' => $record,
                             'poNumber' => $contractTitle,
-                            'company' => 'Intermediano Hong Kong Limited',
-                            'is_pdf' => true
+                            'is_pdf' => true,
+                            'footerDetails' => $footerDetails
                         ]);
 
                         return response()->streamDownload(
