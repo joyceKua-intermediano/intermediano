@@ -85,6 +85,10 @@ class EmployeeContractResource extends Resource
                                 $companyTitle = 'Intermediano Hong Kong Limited';
                                 $pdfPage = 'pdf.contract.hongkong.employee';
                                 break;
+                            case 'IntermedianoChileSPA':
+                                $companyTitle = 'Intermediano Chile SPA';
+                                $pdfPage = 'pdf.contract.chile.consultant';
+                                break;
                             default:
                                 $pdfPage = '';
                                 break;
@@ -99,11 +103,17 @@ class EmployeeContractResource extends Resource
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
                         $viewModal = 'filament.quotations.brasil_modal';
+                        $footerDetails = [
+                            'companyName' => 'Intermediano Chile SPA',
+                            'address' => 'Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Chile',
+                            'domain' => 'www.intermediano.com',
+                            'mobile' => '+1 514-907-5393'
+                        ];
                         return view($pdfPage, [
                             'record' => $record,
                             'poNumber' => $contractTitle,
-                            'company' => $companyTitle,
-                            'is_pdf' => false
+                            'is_pdf' => false,
+                            'footerDetails' => $footerDetails,
                         ]);
                     }),
                 Tables\Actions\Action::make('uploadSignature')
@@ -168,6 +178,10 @@ class EmployeeContractResource extends Resource
                                 $companyTitle = 'Intermediano Hong Kong Limited';
                                 $pdfPage = 'pdf.contract.hongkong.employee';
                                 break;
+                            case 'IntermedianoChileSPA':
+                                $companyTitle = 'Intermediano Chile SPA';
+                                $pdfPage = 'pdf.contract.chile.consultant';
+                                break;
                             default:
                                 $pdfPage = '';
                                 break;
@@ -181,12 +195,18 @@ class EmployeeContractResource extends Resource
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
-
+                        $footerDetails = [
+                            'companyName' => 'Intermediano Chile SPA',
+                            'address' => 'Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Chile',
+                            'domain' => 'www.intermediano.com',
+                            'mobile' => '+1 514-907-5393'
+                        ];
                         $pdf = Pdf::loadView($pdfPage, [
                             'record' => $record,
                             'poNumber' => $contractTitle,
-                            'company' => $companyTitle,
-                            'is_pdf' => true
+                            'is_pdf' => true,
+                            'footerDetails' => $footerDetails,
+
 
                         ]);
                         return response()->streamDownload(
