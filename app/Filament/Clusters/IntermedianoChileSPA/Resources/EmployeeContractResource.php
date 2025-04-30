@@ -173,7 +173,6 @@ class EmployeeContractResource extends Resource
                         $pdf = Pdf::loadView($pdfPage, [
                             'record' => $record,
                             'poNumber' => $contractTitle,
-                            'company' => 'Intermediano Hong Kong Limited',
                             'is_pdf' => true,
                             'footerDetails' => $footerDetails,
                         ]);
