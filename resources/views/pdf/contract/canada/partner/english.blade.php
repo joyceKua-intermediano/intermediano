@@ -84,7 +84,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p><b>(b) </b>to collect all taxes related to its activities, considering local applicable law where the services are being rendered; </p>
         <p><b>(c)</b> to provide, whenever customer requests it, all reports, spreadsheets, and other information relating to the Services and the country’s requirements; </p>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -103,7 +103,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p style='line-height: 1.4 !important'><b>(d) EXCHANGE RATE:</b> Invoices will be issued in USD based on the exchange rate of the date of the issuance of the invoice, considering the 3.5% margin of risk in favor of Provider. For clarity, this means that all exchange rates used to convert to USD will be increased by 3.5%. </p>
         <p class='clause-header'><b> V - <span>CONFIDENTIALITY </span></b></p>
         <p style='line-height: 1.4 !important'><b>(a)</b> Both Customer and Provider acknowledge that by reason of its relationship to the other party under this Agreement, it will have access to and acquire knowledge, material, data, systems and other information concerning the operation, business, financial affairs and intellectual property of the other Party or Customer’s Client, that may not be accessible or known to the general public, including but not limited to the terms of this Agreement (referred to as "Confidential Information"). </p>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -114,7 +114,7 @@ $employeeGrossSalary = $record->gross_salary;
 
 
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -129,7 +129,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p style='line-height: 1.4 !important;'><b>(b)</b> After the termination or the expiry hereof, neither Party shall use trademarks or names that may be similar to those of the other Party and/or may somewhat be confused by customers and companies. Each Party undertakes to use its best efforts to avoid mistakes or improper disclosure of the trademarks and names of the other Parties by unauthorized people. </p>
         <p style='line-height: 1.4 !important;'><b>(c)</b> Provider agrees that everything provided to it or Workers by Client’s Customer remains the property of Client’s Customer, and that no right, title, or interest is transferred to Provider or Workers including recovery of said property; this includes company laptops, phones, credit cards, etc. Provider further agrees that all right title and interest in the work product (including but not limited to intellectual property, software, works of authorship, trade secrets, designs, data or other proprietary information) produced by Provider or Workers under this Agreement are the sole property of Customer’s Client. Provider further agrees to assign, or cause to be assigned from time to time, to Client’s Customer on an exclusive basis all rights, title and interest in and to the work product produced by Provider or Workers under this Agreement, including any copyrights, patents, mask work rights or other intellectual property rights relating thereto, in perpetuity or for the longest period otherwise permitted under applicable law. Provider agrees that it shall not use the work product for the benefit of any party other than Customer’s Client. Nothing in this Subsection shall apply to any copyrightable material, notes, records, drawings, designs, Innovations, improvements, developments, discoveries and trade secrets conceived, made or discovered by Provider prior to the Effective Date of this Agreement. </p>
         <p><b>(d)</b> Provider shall require each Worker assigned to Customer’s Client to agree that, to the maximum extent permitted by law, all inventions, developments or improvements conceived or </p>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -143,7 +143,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p>This Agreement shall be in force and remain valid for undetermined period. Each of the Parties is free to terminate this Agreement at any time without cause by previous written notice of 60 (sixty) days. Exception is made if the Worker resigns at his/her own discretion, in which the period of 30 (thirty) days shall prevail. </p>
         <p>The Agreement may be terminated for justified cause regardless of any previous notice, in the occurrence of the following events by the Parties: </p>
         <p><b>(a)</b> consecutives delays or failure to comply by Customer with the payments due to the Provider remuneration or repeated non-delivery or late delivery of the Services by the Provider, only after Provider has given Customer a 2 (two)months previous notice of the potential of termination and provided Customer at least 30 (thirty) days’ notice to cure it. Exception to the previous notice period will apply in case the Worker resigns at his/her own discretion, as beyond the will of the Parties. </p>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -161,7 +161,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p style='line-height: 1.4 !important'><b>PROVIDER´S LOCAL PARTNER:</b> In the event Provider indicates any local Partner in a Statement of Work (“SOW”), the Customer will not communicate directly to the local partner (i.e., emails, any correspondence, phone call, and so on) at any time without Provider’s written permission. Provider will be the primary and only point of contact for the entire negotiation and after its expiration in order to avoid damages and losses to the Provider. This provision is valid up to a period of 5 (five) years after the expiration of the Agreement. </p>
         <p style='line-height: 1.4 !important'><b>BENEFITS:</b> Customer, Provider, and Workers do not have any rights or interest in Customer’s Client’s employee benefits, pension plans, stock plans, profit sharing, 401k, or other fringe benefits that are provided to Customer’s Client’s employees by Customer’s Client. All Workers engaged by Provider for Customer shall follow local legislation and the costs shall be covered by Customer entirely</p>
         <p style='line-height: 1.4 !important'><b>INDEPENDENT CONTRACTOR:</b> Parties hereby agree that Provider is not employed by Customer, and nothing in this Agreement shall be construed as creating any partnership, joint venture or other relationship between Provider and Customer or Customer’s Client. This is not a contract of employment. Provider’s relationship with respect to Customer is that of an independent contractor. At no time during the term of this Agreement will Provider be Customer’s agent or have any right, authority or power to enter into any commitments on behalf of Customer unless specifically </p>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -176,7 +176,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p style='line-height: 1.4 !important'><b>(d) Entire Agreement –</b> This Agreement contains the entire agreement and understanding among the parties hereto with respect to the subject matter hereof, and supersedes all prior and contemporaneous agreements, understandings, inducements, and conditions, express or implied, oral or written, of any nature whatsoever with respect to the subject matter hereof. The express terms hereof control and supersede any course of performance and/or usage of the trade inconsistent with any of the terms hereof. </p>
         <p style='line-height: 1.4 !important'><b>(e) Tolerance and Absence of Waiver and Novation -</b> The tolerance of any failure to fulfill, even if repeated, by any Party, the provisions of this Agreement does not constitute or shall not be interpreted as a waiver by the other Party or as novation. If any court or tribunal finds that any provision or article of this Agreement is null, void, or without any binding effect, the rest of this Contract will remain in full force and effect as if such provision or part had not integrated this Agreement. </p>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
 
@@ -211,7 +211,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p>Any disputes between Customer and Provider that arise under this Agreement will be resolved through binding arbitration administered by the Cámara de Comercio Brasil - Canada, in accordance with the Arbitration Rules then in affect at that time. Partner agrees that sole venue and jurisdiction for disputes arising from this Agreement shall be conducted in Brazil – São Paulo city. Procedures and judgment upon the award rendered by the arbitrator may be entered in any court having jurisdiction thereof. </p>
         <p>In witness whereof, the Parties sign this Agreement in two (2) copies of equal form and content, for one sole purpose. The Parties do each hereby warrant and represent that their respective signatory is, as of the Effective Date, duly authorized by all necessary and appropriate corporate action to execute this Agreement. Subsequent addendums may later be incorporated if signed and agreed to by all Parties.</p>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -252,7 +252,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p style='line-height: 1.4 !important'>Provider will manage all legal, fiscal, administrative, and similar employer obligations under local law. That includes, but is not limited to, executing a proper employment contract with the Worker, verifying the Worker’s identity and legal right to work, issuing appropriate wages, collecting/remitting social charges and tax or the like as required by local law, and offboarding a Worker compliantly. Extra engagement costs, not part of the regular hiring process such as background checks shall be charged separately by Provider, and payment shall be equally made as stated in clause. </p>
         <p style='line-height: 1.4 !important'>Throughout the Worker’s engagement, Customer will act as a liaison between Customer’s Client/Worker and the Provider as it relates to any pay rate changes, reimbursement needs, annual leave, termination inquiries, and the like. Provider agrees to promptly provide Customer with any information it needs to ensure Customer’s Client and Worker are informed of any local legal nuances. </p>
         <p>Provider’s fee for its Payroll Outsourcing Service shall be 12% over the total gross earnings of the Worker´s for the related countries: Chile, Colombia, Costa Rica, Peru and Uruguay, considered a minimum fee of USD350,00. For other Countries not listed herein, shall be checked case by case. Provider shall invoice the EOR service fees as a separate line item on each invoice. </p>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -279,7 +279,7 @@ $employeeGrossSalary = $record->gross_salary;
             <p><b>GROSS WAGES:</b> {{ number_format($employeeGrossSalary, 2) }}</p>
             <p><b>DATE OF PAYMENT (every month):</b> Payment will be processed by the last day of the worked month. For efficiency, Provider will issue payment on the last day of every month. </p>
         </div>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -295,7 +295,7 @@ $employeeGrossSalary = $record->gross_salary;
         <div style="margin-top: -35px !important">
             @include('pdf.hong_kong_quotation', ['record' => $record->quotation, 'hideHeader' => true])
         </div>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -311,7 +311,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p>C) <b style='text-decoration: underline'>LOCAL LEGISLATION - PREVAILS</b></p>
         <p>The law that will govern the Worker’s engagement including their rights as an employee will be the law of the country where the Worker is providing the services., The Parties agree that all applicable law including but not limited to, labour and tax, and must be fully complied with the purposes of the local and global compliance guidelines. </p>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 </body>

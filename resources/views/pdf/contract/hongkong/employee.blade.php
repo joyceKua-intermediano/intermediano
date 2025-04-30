@@ -121,7 +121,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
         <p> to provide, whenever customer requests it, all reports, spreadsheets, and other information
             relating to the Services and its country local aspects;</p>
 
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -168,7 +168,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
         <p> During the term of this Agreement and for a period of five (5) years after its termination,
             bothParties undertake to maintain the most complete and absolute confidentiality on any
             information.</p>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -216,7 +216,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             prior written notice thereof to the non-terminating party, terminate this Agreement as of a
             date specified in such notice;</p>
 
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -259,7 +259,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             integrated this Agreement.</p>
         <p> Succession - This Agreement binds the Parties and their respective successors, particulars
             and universals, authorized assignees and legal representatives.</p>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -311,7 +311,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
 
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">Fernando Gutierrez</p>
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);">Fernando Gutierrez</p>
                     </div>
 
 
@@ -324,11 +324,11 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
 
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
-                        <p style="position: absolute; bottom: -12%;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                        <p style="position: absolute; bottom: -25px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                         @else
                         <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 10px; margin-top: 40px; z-index: 1000; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
                         @endif
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);">{{ $customerName }}</p>
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);">{{ $customerName }}</p>
 
                     </div>
 
@@ -336,7 +336,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             </tr>
         </table>
 
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -353,7 +353,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             <p style="margin: 0 0 2px;"><b>Job description:</b> {!! $employeeJobDescription !!}</p>
 
         </div>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -371,7 +371,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             <p> The total tax payment for the Agreement is the responsibility of the Provider.</p>
             <p> Payments to be processed to the bank account informed by Provider</p>
         </div>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 

@@ -72,7 +72,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -128,7 +128,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
 
@@ -194,7 +194,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -226,7 +226,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -259,7 +259,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -298,7 +298,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -360,7 +360,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -398,7 +398,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -434,7 +434,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -449,7 +449,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -465,7 +465,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -490,7 +490,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -531,7 +531,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -578,7 +578,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -617,7 +617,7 @@ $customerTranslatedPosition = $record->translatedPosition;
 
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -649,7 +649,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -690,7 +690,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -729,7 +729,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -776,7 +776,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -833,7 +833,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -897,7 +897,7 @@ $customerTranslatedPosition = $record->translatedPosition;
             </tr>
 
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -927,7 +927,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -962,7 +962,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -1022,7 +1022,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main>
@@ -1048,7 +1048,7 @@ $customerTranslatedPosition = $record->translatedPosition;
         <div style="margin-top: -10px !important">
             @include($record->quotation->is_integral === 1 ? 'pdf.integral_quotation' : 'pdf.ordinary_quotation', ['record' => $record->quotation, 'hideHeader' => true])
         </div>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
 
@@ -1093,7 +1093,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.colombia_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
