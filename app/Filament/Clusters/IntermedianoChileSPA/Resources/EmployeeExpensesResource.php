@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Filament\Employee\Resources;
+namespace App\Filament\Clusters\IntermedianoChileSPA\Resources;
 
 use App\Exports\EmployeeExpensesExport;
-use App\Filament\Employee\Resources\EmployeeExpensesResource\Pages;
-use App\Filament\Employee\Resources\EmployeeExpensesResource\RelationManagers;
-use App\Models\Contract;
+use App\Filament\Clusters\IntermedianoChileSPA;
+use App\Filament\Clusters\IntermedianoChileSPA\Resources\EmployeeExpensesResource\Pages;
+use App\Filament\Clusters\IntermedianoChileSPA\Resources\EmployeeExpensesResource\RelationManagers;
+use App\Models\Company;
 use App\Models\EmployeeExpenses;
+use App\Models\Contract;
+use App\Models\Employee;
 use App\Models\Quotation;
 use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,13 +21,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Forms\Components\Repeater;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\HtmlString;
+use Filament\Forms\Set;
+use Filament\Forms\Get;
 use Filament\Forms\Components\Section;
+use Illuminate\Support\HtmlString;
 use Maatwebsite\Excel\Facades\Excel;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
-use Illuminate\Support\Str;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
+use Filament\Forms\Components\Placeholder;
 
 class EmployeeExpensesResource extends Resource
 {
@@ -36,31 +37,57 @@ class EmployeeExpensesResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 4;
 
+    protected static ?string $cluster = IntermedianoChileSPA::class;
 
     public static function form(Form $form): Form
     {
+        $getUserTable = auth()->user()->getTable();
         $employeeCompanyId = Contract::where('employee_id', auth()->user()->id)->value('company_id');
         $employeeQuotationId = Contract::where('employee_id', auth()->user()->id)->value('quotation_id');
         $currencyName = Quotation::where('id', $employeeQuotationId)->value('currency_name');
+
         return $form
             ->schema([
+                Forms\Components\Select::make('employee_id')
+                    ->required()
+                    ->relationship(name: 'employee', titleAttribute: 'name')
+                    ->options(function () {
+                        $customerId = auth()->user()->id;
+
+                        return Employee::whereHas('contract', function ($query) {
+                            $query->where('cluster_name', 'IntermedianoChileSPA');
+                        })->pluck('name', 'id');
+                    })->disabled(fn($record) => $record && $record?->created_by !== 'user'),
+                Forms\Components\Select::make('company_id')
+                    ->required()
+                    ->relationship(name: 'company', titleAttribute: 'name')
+                    ->options(function () {
+                        $customerId = auth()->user()->id;
+
+                        return Company::whereHas('contracts', function ($query) {
+                            $query->where('cluster_name', 'IntermedianoChileSPA');
+                        })->pluck('name', 'id');
+                    })->disabled(fn($record) => $record && $record?->created_by !== 'user'),
                 Forms\Components\TextInput::make('cost_center')
-                    ->columnSpan(2),
+                    ->columnSpan(2)->disabled(fn($record) => $record && $record?->created_by !== 'customer'),
 
                 Forms\Components\Select::make('type')
+                    ->required()
                     ->options([
                         'local' => 'Local',
                         'abroad' => 'Abroad',
                     ])
                     ->live()
-                    ->columnSpan(2)
-                    ->required(),
+                    ->afterStateUpdated(function (Get $get, Set $set) {
+                        self::updateExpenseTotals($get, $set);
+                    })
+                    ->columnSpan(2)->disabled(fn($record) => $record && $record?->created_by !== 'customer'),
 
                 Forms\Components\TextInput::make('currency_name')
                     ->default($currencyName)
                     ->columnSpan(1)
-                    ->hidden(fn(Get $get) => !$get('type') || $get('type') === 'local'),
-
+                    ->hidden(fn(Get $get) => !$get('type') || $get('type') === 'local')
+                    ->disabled(fn($record) => $record?->created_by !== 'customer'),
 
                 Repeater::make('expenses')
                     ->schema([
@@ -81,52 +108,94 @@ class EmployeeExpensesResource extends Resource
                                 return count($savedItems) + 1;
                             }),
                         Forms\Components\TextInput::make('description')
-                            ->required(),
+                            ->required()
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated(),
 
                         Forms\Components\DatePicker::make('date')
                             ->displayFormat('d-m-Y')
                             ->placeholder('dd-mm-yy')
                             ->native(false)
-                            ->required(),
+                            ->required()
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('amount')
                             ->numeric()
-                            ->hidden(fn(Get $get) => $get('../../type') !== 'local'),
+
+                            ->hidden(fn(Get $get) => $get('../../type') !== 'local')
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('federal_amount')
                             ->numeric()
-                            ->hidden(fn(Get $get) => $get('../../type') !== 'local'),
 
+                            ->hidden(fn(Get $get) => $get('../../type') !== 'local')
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('state_amount')
                             ->numeric()
-                            ->hidden(fn(Get $get) => $get('../../type') !== 'local'),
+
+                            ->hidden(fn(Get $get) => $get('../../type') !== 'local')
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('local_currency_include_taxes')
-
                             ->afterStateUpdated(function (Get $get, Set $set) {
                                 self::updateExpenseTotals($get, $set);
                             })
                             ->live(onBlur: true)
-                            ->dehydrated()
-                            ->hidden(fn(Get $get) => $get('../../type') !== 'local'),
+                            ->hidden(fn(Get $get) => $get('../../type') !== 'local')
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('usd')
-                            ->label('USD')
+                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                self::updateExpenseTotals($get, $set);
+                            })
+                            ->live(onBlur: true)
+
                             ->numeric()
-                            ->hidden(fn(Get $get) => $get('../../type') !== 'abroad'),
+                            ->hidden(fn(Get $get) => $get('../../type') !== 'abroad')
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated(),
 
                         Forms\Components\TextInput::make('exchange_rate')
                             ->numeric()
                             ->hidden(fn(Get $get) => $get('../../type') !== 'abroad')
-                            ->reactive()
-                            ->afterStateUpdated(fn(Get $get, Set $set, $state) => $set('local_currency', ($get('usd') ?? 0) * $state)),
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated()
+                            ->live(onBlur: true)
+
+                            ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                $set('local_currency', ($get('usd') ?? 0) * $state);
+                                self::updateExpenseTotals($get, $set);
+                            }),
 
                         Forms\Components\TextInput::make('local_currency')
                             ->label('BRL')
                             ->disabled()
                             ->numeric()
-                            ->hidden(fn(Get $get) => $get('../../type') !== 'abroad'),
+                            ->hidden(fn(Get $get) => $get('../../type') !== 'abroad')
+                            ->disabled(fn($record) => $record && $record?->created_by !== 'customer')
+                            ->dehydrated(),
+                        Placeholder::make('invoice')
+                            ->label('Uploaded Invoice')
+                            ->content(function ($state) {
+                                if (is_array($state) && !empty($state)) {
+                                    // Extract the first value from the associative array
+                                    $invoicePath = asset('storage/' . reset($state));
+                                    return new HtmlString(
+                                        '<a href="' . $invoicePath . '" target="_blank">
+                                            <img src="' . $invoicePath . '" alt="Invoice" style="height: 150px;">
+                                         </a>'
+                                    );
+                                }
+                                return 'No image uploaded yet.';
+                            })
+                            ->visible(fn(string $operation): bool => $operation === 'edit'),
+
                         Forms\Components\FileUpload::make('invoice')
                             ->label('Invoice File')
                             ->disk('public')
@@ -136,20 +205,28 @@ class EmployeeExpensesResource extends Resource
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                             ->imagePreviewHeight(150)
                             ->preserveFilenames()
-                            ->required(),
-                        Forms\Components\Hidden::make('status')
+                            ->required()->visible(fn(string $operation): bool => $operation === 'create'),
 
-                            ->default('pending')
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                'pending' => 'Pending',
+                                'approved' => 'Approved',
+                                'rejected' => 'Rejected',
+                            ])->columnSpan(1)->hidden(fn($record) => $record?->created_by !== 'employee' && $getUserTable === 'users'),
+
+
+                        Forms\Components\Textarea::make('comments')
+                            ->columnSpan(2)->hidden(fn($record) => $record?->created_by !== 'employee' && $getUserTable === 'users'),
                     ])
-                    ->columns(8)
+                    ->columns(6)
                     ->itemLabel(function (array $state): ?HtmlString {
                         $description = $state['description'] ?? 'N/A';
                         $status = $state['status'] ?? 'Unknown';
                         $comments = $state['comments'] ?? '';
 
                         $badgeColor = match (strtolower($status)) {
-                            'approved' => 'green',
                             'pending' => 'orange',
+                            'approved' => 'green',
                             'rejected' => 'red',
                             default => 'gray',
                         };
@@ -165,27 +242,29 @@ class EmployeeExpensesResource extends Resource
                     ->addActionLabel('Add another expense')
                     ->collapsible()
                     ->collapsed()
+                    ->disableItemDeletion()
                     ->live()
-                    ->minItems(1)
+                    ->addable(function ($get, $set, $context, $record) {
+                        if ($context === 'create') {
+                            return true;
+                        }
+                        return $record?->created_by === 'admin';
+                    })
+                    ->addActionLabel(fn($record) => $record?->created_by === 'admin' ? 'Add another expense' : null)
+
                     ->afterStateUpdated(function (Get $get, Set $set) {
                         self::updateExpenseTotals($get, $set);
                     })
-                    ->columnSpanFull()
-                    ->cloneable(),
-
-                Forms\Components\Hidden::make('employee_id')
-                    ->default(auth()->user()->id),
+                    ->columnSpanFull(),
 
                 Forms\Components\Hidden::make('company_id')
-                    ->default($employeeCompanyId),
-
+                    ->default(auth()->user()->id),
                 Forms\Components\Hidden::make('created_by')
-                    ->default('employee'),
-
+                    ->default('admin'),
                 Forms\Components\Hidden::make('status')
-                    ->default('pending'),
+                    ->default('approved'),
                 Section::make('Totals')
-                    ->columns(3)
+                    ->columns(1)
                     ->schema([
                         Forms\Components\TextInput::make('local_total')
                             ->label('Local Total (BRL)')
@@ -221,22 +300,15 @@ class EmployeeExpensesResource extends Resource
                     ->label('Employee')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Expense Period')
-                    ->formatStateUsing(function ($record) {
-                        $date = $record->created_at->format('m-Y');
-                        $currency = $record->type === 'local'
-                            ? ($record->currency_name ?? 'BRL')
-                            : 'USD';
-
-                        return "Expenses {$date}_{$currency}";
-                    })
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('company.name')
                     ->label('Company')
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Date Created')
+                    ->dateTime('d F Y')
+                    ->sortable(),
                 BadgeColumn::make('created_by')
                     ->sortable()
                     ->colors([
@@ -265,7 +337,7 @@ class EmployeeExpensesResource extends Resource
                 ExportAction::make('export')
                     ->label('Export Expenses')
                     ->action(function ($record) {
-                        $currency =  getCurrencyByCompany($record->employee->company);
+                        $currency = 'BRL';
                         $employee = $record->employee->name ?? 'N/A';
                         $company = $record->company->name ?? 'N/A';
                         $companyIntermediano = $record->employee->company ?? 'N/A';
@@ -290,17 +362,21 @@ class EmployeeExpensesResource extends Resource
                                 'BRL' => $expense['local_currency'] ?? 0,
                                 'Status' => $record->status === 'approved' ? 'Approved' : $expense['status'],
                                 'Comments' => $expense['comments'] ?? '',
-                                // 'Local Total' => $expense['local_total'] ?? 0,
-                                // 'Abroad Total' => $expense['abroad_total'] ?? 0,
-                                // 'Grand Total' => $expense['grand_total'] ?? 0,
                             ];
                         }, $expenses);
-                        return Excel::download(new EmployeeExpensesExport($formattedExpenses, $companyIntermediano, $costCenter),  'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
 
+                        return Excel::download(new EmployeeExpensesExport($formattedExpenses, $companyIntermediano, $costCenter), 'Expenses_' . $formattedDate . '_' . $isLocal . '_' . $employee . '.xlsx');
                     })
+
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
 
     public static function updateExpenseTotals(Get $get, Set $set): void
     {
@@ -315,9 +391,9 @@ class EmployeeExpensesResource extends Resource
                 // $localTotal += (float)($expense['amount'] ?? 0);
                 // $localTotal += (float)($expense['federal_amount'] ?? 0);
                 // $localTotal += (float)($expense['state_amount'] ?? 0);
-                $localTotal += (float)($expense['local_currency_include_taxes'] ?? 0);
+                $localTotal += (float) ($expense['local_currency_include_taxes'] ?? 0);
             } else {
-                $abroadTotal += (float)($expense['usd'] ?? 0);
+                $abroadTotal += (float) ($expense['usd'] ?? 0);
             }
         }
 
@@ -325,6 +401,7 @@ class EmployeeExpensesResource extends Resource
         $set('abroad_total', number_format($abroadTotal, 2, '.', ''));
         $set('grand_total', number_format($type === 'local' ? $localTotal : $abroadTotal, 2, '.', ''));
     }
+
     public static function getPages(): array
     {
         return [
@@ -336,13 +413,9 @@ class EmployeeExpensesResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $employeeId = auth()->user()->id;
-        $getEmployeeExpenses = EmployeeExpenses::where('employee_id',  $employeeId);
-        return $getEmployeeExpenses;
-    }
-
-    public static function canEdit($record): bool
-    {
-        return $record->status !== 'approved';
+        $contractCluster = EmployeeExpenses::whereHas('employee', function ($query) {
+            $query->where('company', 'IntermedianoChileSPA');
+        });
+        return $contractCluster;
     }
 }
