@@ -5,6 +5,6 @@
     <img src="{{ asset('images/logo.jpg') }}" alt="Logo">
     @endif
     <div class="header-title">
-        {{ $company }}
+        {{ $footerDetails['companyName'] }}
     </div>
 </div>

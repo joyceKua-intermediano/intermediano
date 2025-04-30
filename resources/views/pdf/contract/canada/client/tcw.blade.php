@@ -84,7 +84,7 @@ $quotationDate = $record->quotation->title;
         <p>The Customer pays the Provider a monthly fee based on the calculations below:
         </p>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
 
@@ -127,7 +127,7 @@ $quotationDate = $record->quotation->title;
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 

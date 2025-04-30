@@ -92,7 +92,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p>The Employee can be laid off, if the Employer cannot offer suitable work to the Employee. The notice period for such lay-off is 2 weeks.</p>
         <p>Both parties can terminate this contract by giving 2 weeks’ notice to the other party in writing.</p>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -116,7 +116,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p>The salary is paid to the Employee’s bank account. The salary is paid every two weeks.</p>
 
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main class="main-container">
@@ -135,7 +135,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <h4>9. Compensation of Travel Costs</h4>
         <p>In case the Employee uses her own car for business use upon Employer instruction, the Employee shall be reimbursed upon presentation of travel statement according to company policies and procedures.</p>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -158,7 +158,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p>This contract is made in two originals, one for the Employer and one for the Employee.</p>
         <h4>{{ $employeeCity }},  {{ $employeeState }}  {{ $employeeCountry }}, {{ $currentDate }}</h4>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
 </body>

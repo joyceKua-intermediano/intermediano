@@ -114,7 +114,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
 
 
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -138,7 +138,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         </p>
         <p>Payroll Outsourcing Service </p>
         <p>At Customer’s request, Provider will take whatever steps are necessary under local law to become the employer of record for candidates approved by Customer’s Client or its subcontractor. By law, those individuals will be independent consultants (“freelancers”) or employees of Provider or from its subcontractor (“Workers”) for either an indefinite or definite period. In case of subcontracting a partner for the service, all indemnification responsibilities will be assumed by the subcontractor of the Provider. </p>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
 
@@ -161,7 +161,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <b style="text-decoration: underline; ">PAYMENT METHOD: </b>
         <p>Every 25th the Provider will submit the worked hours in the month and the Customer shall approve on the same day. Provider will issue an invoice based on it and Customer shall pay on the 10th of the following month to the latest. If payment is not processed in time, there will be a fine of 2% per month. </p>
 
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main class="main-container">
@@ -175,7 +175,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <div style="margin-top: -20px !important">
             @include('pdf.uruguay_quotation', ['record' => $record->quotation, 'hideHeader' => true])
         </div>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
     @include('pdf.contract.layout.header')
     <main class="main-container" style='page-break-after: avoid'>
@@ -222,7 +222,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p style="text-align: center; margin-top: -20px">Name of the legal representative</p>
         <p style="text-align: left;margin-top: -10px">Phone: {{ $partnerPhone }}</p>
         <p style="text-align: left;margin-top: -10px">Email: <a href="">{{ $partnerEmail }}</a></p>
-        @include('pdf.contract.layout.canada_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
 </body>

@@ -13,21 +13,15 @@ $formattedDate = now()->format('jS');
 $month = now()->format('F');
 $year = now()->format('Y');
 $currentDate = now()->format('[d/m/Y]');
-$companyName = $record->company->name;
-$companyTaxId = $record->company->tax_id;
-$companyCountry = $record->company->country;
-$companyAddress = $record->company->address;
-$companyCity = $record->company->city;
-$companyState = $record->company->state;
+$partnerName = $record->partner->partner_name;
+$partnerTaxId = $record->partner->tax_id;
+$partnerCountry = $record->partner->country->name;
+$partnerAddress = $record->partner->address;
 
-$contactName = $record->companyContact->contact_name;
-$contactSurname = $record->companyContact->surname;
+$partnerContactName = $record->partner->contact_name;
 
-$customerPhone = $record->companyContact->phone;
-$customerEmail = $record->companyContact->email;
-$customerName = $record->companyContact->contact_name;
-$customerPosition = $record->companyContact->position;
-$customerTranslatedPosition = $record->translatedPosition;
+$partnerPhone = $record->partner->mobile_number;
+$partnerEmail = $record->partner->email;
 
 $employeeName = $record->employee->name;
 $employeeCountryWork = $record->country_work;
@@ -63,12 +57,12 @@ $employeeGrossSalary = $record->gross_salary;
             “Effective Date”), by and between <b>INTERMEDIANO HONG KONG LIMITED</b> (the “Provider”),
             enrolled under the registration number 77682459, located at Flat A11/F. Cheung Lung Ind
             Bldg 10 Cheung Yee ST, Cheung Sha Wan, Hong Kong, duly represented by its legal
-            representative; AND <b>{{ $companyName }}</b> (the “Customer”), a company duly
-            incorporated with {{ $companyTaxId }} under the laws of {{ $companyCountry }} and holding
-            offices at {{ $companyAddress }}, {{ $companyCity }}, {{ $companyState }}, {{ $companyCountry }}.</p>
+            representative; AND <b>{{ $partnerName }}</b> (the “Customer”), a company duly
+            incorporated with {{ $partnerTaxId }} under the laws of {{ $partnerCountry }} and holding
+            offices at {{ $partnerAddress }}.</p>
         <p> <b>WHEREAS</b> Provider provides certain payroll, tax, and human resource services; and</p>
         <p><b>WHEREAS</b> Customer wishes to obtain the services and Provider wishes to provide the services on the terms and conditions set forth herein</p>
-        <p> <b>WHEREAS</b> services will be provided by Provider in {{ $companyCountry }}</p>
+        <p> <b>WHEREAS</b> services will be provided by Provider in {{ $partnerCountry }}</p>
         <p> <b>WHEREAS</b> Provider will render directly</p>
         <p> <b>NOW, THEREFORE</b>, in consideration of the premises and the mutual covenants set forth herein, the parties hereby agree as follows:</p>
         <p> Provider and Customer hereinafter jointly referred to as "Parties" and individually a "Party";</p>
@@ -87,7 +81,7 @@ $employeeGrossSalary = $record->gross_salary;
             periodically review the Services performed by the Provider;</p>
         <p><b>b)</b> to collect all taxes related to its activities, considering each different local law, rules and
             compliance demand;</p>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
     </main>
 
     @include('pdf.contract.layout.header')
@@ -129,7 +123,7 @@ $employeeGrossSalary = $record->gross_salary;
             requested by acompetent administrative or judicial authority, shall not be covered by the
             confidentiality obligation provided herein. In the latter case, the Party receiving such a request shall inform the other Party as promptly as possible and provided that the nature of
             the administrative or judicial proceedings so permits.</p>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -174,7 +168,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p><b>a)</b> consecutives delays or failure to comply by Customer with the payments due to the
             Provider remuneration or repeated non-delivery or late delivery of the Services by the
             Provider;</p>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -216,7 +210,7 @@ $employeeGrossSalary = $record->gross_salary;
         <p><b>(c)</b> Transfer–this Agreement maynotbetransferred orassignedinwholeorinpartbyeither
             Party without the prior written consent of the other Party.</p>
 
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -254,18 +248,18 @@ $employeeGrossSalary = $record->gross_salary;
         <b style='margin-top:30px'>If to Customer:</b>
         <p>
             <b> A/C:</b>
-            {{ $contactName }} {{ $contactSurname }}
+            {{ $partnerName }}
         </p>
         <p>
-            <b> Address:</b>  {{ $companyAddress }} {{ $companyCity }} {{ $companyState }} {{ $companyCountry }}
+            <b> Address:</b>  {{ $partnerAddress }}
         </p>
-        <p> <b> Phone:</b>  {{ $customerPhone }}</p>
-        <p> <b> E-mail:</b>  {{ $customerEmail }}</p>
+        <p> <b> Phone:</b>  {{ $partnerPhone }}</p>
+        <p> <b> E-mail:</b>  {{ $partnerEmail }}</p>
 
 
 
 
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -296,9 +290,9 @@ $employeeGrossSalary = $record->gross_salary;
                     <p style="margin-top: -30px"> Fernando Gutierrez</p>
                 </td>
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
-                    <h4>{{ $companyName }}</h4>
+                    <h4>{{ $partnerName }}</h4>
                     <div style="width: 100%; border-bottom: 1px solid black; margin-top: 60px"></div>
-                    <p style="margin-top: -30px"> {{ $customerName }}</p>
+                    <p style="margin-top: -30px"> {{ $partnerContactName }}</p>
                 </td>
             </tr>
         </table>
@@ -325,7 +319,7 @@ $employeeGrossSalary = $record->gross_salary;
             offboarding a Worker compliantly. Extra engagement costs, not part of the regular hiring
             process such as background checks shall be charged separately by Provider, and
             payment shall be equally made as stated in clause.</p>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -364,7 +358,7 @@ $employeeGrossSalary = $record->gross_salary;
             days, Provider will replace the Direct Hire individual at no cost, Provider will replace the
             direct hire, at no recruiting cost, as far the recruitment has been done by the Provider. In
             this case, Customer shall pay for all termination cost related the Worker.</p>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -379,7 +373,7 @@ $employeeGrossSalary = $record->gross_salary;
             <p style="margin: 0 0 2px;"><b>JOB TITLE:</b> {{ $employeeJobTitle }}</p>
             <p style="margin: 0 0 2px;"><b>START DATE:</b> {{ $employeeStartDate }}</p>
             <p style="margin: 0 0 2px;"><b>END DATE:</b> {{ $employeeEndDate }}</p>
-            <p style="margin: 0 0 2px;"><b>GROSS WAGES:</b> {{ $employeeGrossSalary }}</p>
+            <p style="margin: 0 0 2px;"><b>GROSS WAGES:</b> {{ number_format($employeeGrossSalary, 2) }}</p>
         </div>
 
         <p style=""> <b>DATE OFPAYMENT(every month):</b> Local legislation requires payment by the last day of the
@@ -392,7 +386,7 @@ $employeeGrossSalary = $record->gross_salary;
         <div style="margin-top: -35px !important">
             @include('pdf.hong_kong_quotation', ['record' => $record->quotation, 'hideHeader' => true])
         </div>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 
@@ -422,16 +416,16 @@ $employeeGrossSalary = $record->gross_salary;
                         <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="margin-top: -30px"> Fernando Gutierrez</p>
+                    <p style="margin-top: -30px; text-align: center;"> Fernando Gutierrez</p>
                 </td>
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
-                    <h4>{{ $companyName }}</h4>
+                    <h4>{{ $partnerName }}</h4>
                     <div style="width: 100%; border-bottom: 1px solid black; margin-top: 60px"></div>
-                    <p style="margin-top: -30px"> {{ $customerName }}</p>
+                    <p style="margin-top: -30px; text-align: center;"> {{ $partnerContactName }}</p>
                 </td>
             </tr>
         </table>
-        @include('pdf.contract.layout.hongkong_footer')
+        @include('pdf.contract.layout.footer')
 
     </main>
 </body>
