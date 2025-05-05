@@ -60,11 +60,11 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">SERVICE AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }}, (the “Effective Date”), by and between <b>INTERMEDIANO CHILE SPA.</b> (the “Provider”) Unique Tax Identification Nº. 77.223.361-2, domiciliated at Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Región Metropolitana, Chile, duly represented by its legal representative; AND {{ $customerName }} (the “Customer”), a {{ $customerCountry }} company, enrolled under the fiscal registration number {{ $customerTaxId }}, located at {{ $customerAddress }} {{ $customerCity }} {{ $customerCountry }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).</p>
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }}, (the “Effective Date”), by and between <b>INTERMEDIANO CHILE SPA.</b> (the <b>“Provider”</b>) Unique Tax Identification Nº. 77.223.361-2, domiciliated at Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Región Metropolitana, Chile, duly represented by its legal representative; AND <b>{{ strtoupper($customerName) }} {{ strtoupper($contactSurname) }}</b> (the <b>“Customer”</b>), a {{ $customerCountry }} company, enrolled under the fiscal registration number {{ $customerTaxId }}, located at {{ $customerAddress }} {{ $customerCity }} {{ $customerCountry }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE SERVICIOS</h4>
-                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $formattedDate }} of {{ $month }}, {{ $year }}, (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO CHILE SPA.</b> (el "Proveedor") Identificación Fiscal Única Nº. 77.223.361-2, domiciliado en Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Región Metropolitana, Chile, debidamente representado por su representante legall; Y {{ $customerName }} (el "Cliente"), una empresa de {{ $customerCountry }}, inscrita bajo el número de registro fiscal {{ $customerTaxId }}, con domicilio en {{ $customerAddress }} {{ $customerCity }} {{ $customerCountry }}, debidamente representada por su representante autorizado, (cada uno, una "Parte" y juntos, las "Partes").</p>
+                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $formattedDate }} of {{ $month }}, {{ $year }}, (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO CHILE SPA.</b> (el <b>"Proveedor"</b>) Identificación Fiscal Única Nº. 77.223.361-2, domiciliado en Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Región Metropolitana, Chile, debidamente representado por su representante legall; Y <b>{{ strtoupper($customerName) }} {{ strtoupper($contactSurname) }}</b> (el <b>"Cliente"</b>), una empresa de {{ $customerCountry }}, inscrita bajo el número de registro fiscal {{ $customerTaxId }}, con domicilio en {{ $customerAddress }} {{ $customerCity }} {{ $customerCountry }}, debidamente representada por su representante autorizado, (cada uno, una "Parte" y juntos, las "Partes").</p>
                 </td>
             </tr>
             <tr>
@@ -73,7 +73,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>CONSIDERANDO que el Proveedor proporciona ciertos servicios de nómina, tributos y recursos humanos; y</p>
+                    <p><b>CONSIDERANDO</b> que el Proveedor proporciona ciertos servicios de nómina, tributos y recursos humanos; y</p>
                 </td>
             </tr>
             <tr>
@@ -89,7 +89,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                     <p><b>WHEREAS</b> services will be provided by Provider in Chile;</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>CONSIDERANDO</b> que los servicios serán proporcionados por el Proveedor, en Chile</p>
+                    <p><b>CONSIDERANDO</b> que los servicios serán proporcionados por el Proveedor en Chile;</p>
                 </td>
             </tr>
             <tr>
@@ -110,10 +110,10 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Provider and Customer hereinafter jointly referred to as "Parties" and individually a "Party";</p>
+                    <p>Provider and Customer hereinafter jointly referred to as "Parties" and individually a "Party".</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>El Proveedor y el Cliente en lo sucesivo denominados conjuntamente como "Partes" e individualmente una "Parte";</p>
+                    <p>El Proveedor y el Cliente en lo sucesivo denominados conjuntamente como "Partes" e individualmente una "Parte".</p>
                 </td>
             </tr>
 
@@ -125,16 +125,16 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <table style='margin-top: 0px !important'>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Provider and Customer hereinafter jointly referred to as "Parties" and individually a "Party";</p>
+                    <p>Provider and Customer hereinafter jointly referred to as "Parties" and individually a "Party".</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Las Partes deciden celebrar el presente Acuerdo de Servicios ("Acuerdo"), que se regirá por los siguientes términos y condiciones:</p>
+                    <p>Las Partes deciden celebrar el presente Acuerdo de Servicios ("Acuerdo"), que se regirá por los siguientes términos y condiciones.</p>
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">I. PURPOSE</b>
-                    <p><b>Service Offerings.</b>Provider shall provide to Customer the services of payroll, consulting and HR attached hereto as Schedule A (the “Schedule A”) and incorporated herein (collectively, the “Services”), during the Term (defined in Section VII) subject to the terms and conditions of this Agreement. </p>
+                    <p><b>Service Offerings.</b> Provider shall provide to Customer the services of payroll, consulting and HR attached hereto as Schedule A (the “Schedule A”) and incorporated herein (collectively, the “Services”), during the Term (defined in Section VII) subject to the terms and conditions of this Agreement. </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">I. PURPOSE</b>
@@ -212,18 +212,18 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>a)</b> to process the monthly payment to the Provider set forth in Schedule B (the “Schedule B”), following strictly the local labor legislation, considering where the service is being provided.</p>
+                    <p><b>a)</b> to process the monthly payment to the Provider set forth in Schedule B (the “Schedule B”), following strictly the local labor legislation, considering where the service is being provided;</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>a)</b> realizar el pago mensual al Proveedor establecido en el Anexo B (el "Anexo B"), siguiendo estrictamente la legislación laboral local, considerando dónde se está prestando el servicio.</p>
+                    <p><b>a)</b> realizar el pago mensual al Proveedor establecido en el Anexo B (el "Anexo B"), siguiendo estrictamente la legislación laboral local, considerando dónde se está prestando el servicio;</p>
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> to supply the technical information required for the Services to be performed; </p>
+                    <p><b>b)</b> to supply the technical information required for the Services to be performed.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> proporcionar la información técnica requerida para la realización de los Servicios; </p>
+                    <p><b>b)</b> proporcionar la información técnica requerida para la realización de los Servicios.</p>
                 </td>
             </tr>
             <tr>
@@ -373,10 +373,10 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>c)</b> If either party becomes or is declared insolvent or bankrupt, is the subject of any proceedings relating to its liquidation or insolvency or for the appointment of a receiver, conservator, or similar officer, or makes an assignment for the benefit of all or substantially all of its creditors or enters into any agreement for the composition, extension, or readjustment of all or substantially all of its obligations, then the other party may, by giving prior written notice thereof to the non-terminating party, terminate this Agreement as of a date specified in such notice;</p>
+                    <p><b>c)</b> if either party becomes or is declared insolvent or bankrupt, is the subject of any proceedings relating to its liquidation or insolvency or for the appointment of a receiver, conservator, or similar officer, or makes an assignment for the benefit of all or substantially all of its creditors or enters into any agreement for the composition, extension, or readjustment of all or substantially all of its obligations, then the other party may, by giving prior written notice thereof to the non-terminating party, terminate this Agreement as of a date specified in such notice;</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>c)</b> Si cualquiera de las partes se torna o se declara insolvente o en quiebra, es objeto de cualquier procedimiento relacionado con su liquidación o insolvencia o para el nombramiento de un síndico, curador o funcionario similar, o hace una cesión en beneficio de todos o sustancialmente todos sus acreedores o celebra cualquier acuerdo para el convenio, extensión, o reajuste de todas o sustancialmente todas sus obligaciones, entonces la otra parte podrá, mediante notificación previa por escrito de ello a la parte que no termina, rescindir este Acuerdo a partir de la fecha especificada en dicha notificación;</p>
+                    <p><b>c)</b> si cualquiera de las partes se torna o se declara insolvente o en quiebra, es objeto de cualquier procedimiento relacionado con su liquidación o insolvencia o para el nombramiento de un síndico, curador o funcionario similar, o hace una cesión en beneficio de todos o sustancialmente todos sus acreedores o celebra cualquier acuerdo para el convenio, extensión, o reajuste de todas o sustancialmente todas sus obligaciones, entonces la otra parte podrá, mediante notificación previa por escrito de ello a la parte que no termina, rescindir este Acuerdo a partir de la fecha especificada en dicha notificación;</p>
                 </td>
             </tr>
             <tr>
@@ -389,18 +389,18 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>a)</b> return to Customer the day of termination of this Agreement, any and all equipment, promotional material, and other documents which have been provided by Customer in relation to the Services agreed upon in this Agreement; as well as any compensation defined as cash advanced, among which is: deposit or guarantee, unsatisfied provisions, etc., deducted from the expenses actually incurred.</p>
+                    <p><b>a)</b> return to Customer the day of termination of this Agreement, any and all equipment, promotional material, and other documents which have been provided by Customer in relation to the Services agreed upon in this Agreement; as well as any compensation defined as cash advanced, among which is: deposit or guarantee, unsatisfied provisions, etc., deducted from the expenses actually incurred;</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>a)</b> devolver al Cliente el día de la terminación de este Acuerdo, todos y cada uno de los equipos, material promocional y otros documentos que hayan sido proporcionados por el Cliente en relación con los Servicios acordados en este Acuerdo; Así como cualquier compensación definida como cash advanced entre los que se encuentra: depósito o fianza, provisiones no satisfechas, etc., deducidas de los gastos realmente inccurridos.</p>
+                    <p><b>a)</b> devolver al Cliente el día de la terminación de este Acuerdo, todos y cada uno de los equipos, material promocional y otros documentos que hayan sido proporcionados por el Cliente en relación con los Servicios acordados en este Acuerdo; Así como cualquier compensación definida como cash advanced entre los que se encuentra: depósito o fianza, provisiones no satisfechas, etc., deducidas de los gastos realmente inccurridos;</p>
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> respect and comply with all Service requests forwarded by Customer before the date of expiration or early termination of this Agreement;</p>
+                    <p><b>b)</b> respect and comply with all Service requests forwarded by Customer before the date of expiration or early termination of this Agreement.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> respetar y cumplir con todas las solicitudes de Servicio enviadas por el Cliente antes de la fecha de vencimiento o terminación anticipada de este Acuerdo;</p>
+                    <p><b>b)</b> respetar y cumplir con todas las solicitudes de Servicio enviadas por el Cliente antes de la fecha de vencimiento o terminación anticipada de este Acuerdo.</p>
                 </td>
             </tr>
 
@@ -508,14 +508,14 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>If to the Client:</b>
-                    <p style="line-height: 1.5; margin: 2px; margin-top: 10px;">A/C: {{ $contactName }} {{ $contactSurname }}</p>
+                    <p style="line-height: 1.5; margin: 2px; margin-top: 10px;">A/C: <b>{{ strtoupper($contactName) }} {{ strtoupper($contactSurname) }}</b></p>
                     <p style="line-height: 1.5; margin: 2px;">Address: {{ $customerAddress }} </p>
                     <p style="line-height: 1.5; margin: 2px;">Phone/Fax: {{ $customerPhone }}</p>
                     <p style="line-height: 1.5; margin: 2px;">E-mail: <a href="#">{{ $customerEmail }}</a> </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Si al Cliente:</b>
-                    <p style="line-height: 1.5; margin: 2px; margin-top: 10px;">A/C: {{ $companyName }} {{ $contactSurname }}</p>
+                    <p style="line-height: 1.5; margin: 2px; margin-top: 10px;">A/C: <b>{{ strtoupper($contactName) }} {{  strtoupper($contactSurname) }}</b></p>
                     <p style="line-height: 1.5; margin: 2px;">Dirección: {{ $customerAddress }} </p>
                     <p style="line-height: 1.5; margin: 2px;">Telefone/Fax: {{ $customerPhone }}</p>
                     <p style="line-height: 1.5; margin: 2px;">Correo electrónico: <a href="#">{{ $customerEmail }}</a> </p>
@@ -531,12 +531,12 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <table style="margin-top: 35px !important">
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <b style="text-decoration: underline;">XI. Jurisdiction </b>
+                    <b style="text-decoration: underline;">XI. JURISDICTION </b>
                     <p>The parties elect the courts of Santiago – Chile, to settle any doubts and/or disputes arising out of this instrument, with the exclusion of any other jurisdiction, as privileged as it may be and the applicable law shall be of the Chile.</p>
                     <p>The full text of this contract, as well as the documents derived from it, including the Annexes, have been drawn up in the English and Spanish languages, both versions being considered official, although the Spanish language version is considered as the priority for its interpretation.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <b style="text-decoration: underline;">XI. Jurisdición </b>
+                    <b style="text-decoration: underline;">XI. {{ strtoupper('Jurisdición') }} </b>
                     <p>Las partes eligen a los tribunales de Santiago de Chile, para resolver cualquier duda y / o disputa que surja de este instrumento, con la exclusión de cualquier otra jurisdicción, por privilegiada que sea y la ley aplicable será la de Chile.</p>
                     <p>El texto integro de este contrato, así como los documentos que se deriven del mismo, incluidos los Anexos, han sido redactados en los idiomas inglés y español, considerándose ambas versiones como oficiales, si bien se fija como prioritaria para su interpretación la versión en idioma español.</p>
                 </td>
@@ -562,8 +562,8 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p style="text-align: center; margin-top: -20px">Fernando Gutierrez</p>
         <p style="text-align: center;margin-top: -20px">Legal Representative</p>
 
-        <div style="text-align: center; margin-top: 20px;">
-            <b>{{ $companyName }}</b>
+        <div style="text-align: center; margin-top: 70px;">
+            <b>{{ strtoupper($companyName) }}</b>
         </div>
         <br><br>
         <div style="text-align: center; margin-top: 0px">
