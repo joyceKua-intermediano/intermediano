@@ -121,26 +121,8 @@ class CustomerContractResource extends Resource
                 Tables\Actions\Action::make('pdf')
                     ->label('Download Contract')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->form([
-                        Forms\Components\Select::make('contractType')
-                            ->label('Contract Type')
-                            ->options([
-                                'client' => 'Client',
-                                // 'english_french' => 'English - French',
-                                // 'english' => 'English',
-
-                            ])
-                            ->required(),
-                    ])
                     ->action(function ($record, $data) {
-                        $pdfPageMapping = [
-                            'client' => 'pdf.contract.chile.client',
-                            // 'english_french' => 'pdf.contract.canada.client.english_french',
-                            // 'english' => 'pdf.contract.canada.client.english',
-            
-                        ];
-
-                        $pdfPage = $pdfPageMapping[$data['contractType']] ?? null;
+                        $pdfPage = 'pdf.contract.chile.client';
                         if (!$pdfPage) {
                             throw new \Exception('Invalid contract type selected.');
                         }
@@ -153,7 +135,7 @@ class CustomerContractResource extends Resource
                         $record->translatedPosition = $tr->translate($record->companyContact->position ?? "");
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
-                        $fileName = $startDateFormat . '_Contract with_' . $record->partner->partner_name . '_of employee';
+                        $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee';
 
                         $footerDetails = [
                             'companyName' => 'Intermediano Chile SPA ',
