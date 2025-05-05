@@ -159,12 +159,18 @@ class EmployeeContractResource extends Resource
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
-
+                        $footerDetails = [
+                            'companyName' => 'Intermediano do Brasil Ltda.',
+                            'address' => '',
+                            'domain' => 'sac@intermediano.com',
+                            'mobile' => ''
+                        ];
                         $pdf = Pdf::loadView($pdfPage, [
                             'record' => $record,
                             'poNumber' => $contractTitle,
-                            'company' => 'Intermediano do Brasil Ltda.',
-                            'is_pdf' => true
+                            'is_pdf' => true,
+                            'footerDetails' => $footerDetails
+
                         ]);
 
                         return response()->streamDownload(

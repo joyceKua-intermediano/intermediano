@@ -29,6 +29,23 @@ class PersonalInformationResource extends Resource
                     ->relationship('employee', 'name')
                     ->default(auth()->user()->id)
                     ->required(),
+                Forms\Components\Select::make('gender')
+                    ->label('Gender')
+                    ->options([
+                        'male' => 'Male',
+                        'female' => 'Female',
+                    ])
+                    ->searchable()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('gender')
+                            ->label('Enter a new gender if not listed')
+                            ->required(),
+                    ])
+                    ->createOptionUsing(function (array $data) {
+                        return $data['gender'];
+                    })
+                    ->required()
+                    ->default(''),
                 Forms\Components\Select::make('civil_status')
                     ->label('Civil Status')
                     ->options([
@@ -47,7 +64,7 @@ class PersonalInformationResource extends Resource
                         return $data['civil_status'];
                     })
                     ->required()
-                    ->default('single'),
+                    ->default('Single'),
                 Forms\Components\DatePicker::make('date_of_birth'),
                 Forms\Components\TextInput::make('nationality')
                     ->maxLength(255)
@@ -199,14 +216,14 @@ class PersonalInformationResource extends Resource
     {
 
         $employeeId = auth()->user()->id;
-        $employeePersonalInformation = PersonalInformation::where('employee_id',  $employeeId);
+        $employeePersonalInformation = PersonalInformation::where('employee_id', $employeeId);
         return $employeePersonalInformation->count() === 0;
     }
 
     public static function getEloquentQuery(): Builder
     {
         $employeeId = auth()->user()->id;
-        $employeePersonalInformation = PersonalInformation::where('employee_id',  $employeeId);
+        $employeePersonalInformation = PersonalInformation::where('employee_id', $employeeId);
         return $employeePersonalInformation;
     }
 }
