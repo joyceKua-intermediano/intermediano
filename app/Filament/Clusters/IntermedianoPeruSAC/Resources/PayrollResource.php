@@ -34,6 +34,7 @@ class PayrollResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $cluster = IntermedianoPeruSAC::class;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $label = 'Payroll';
 
