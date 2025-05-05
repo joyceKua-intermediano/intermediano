@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('personal_information', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
+            $table->string('gender')->nullable();
             $table->string('civil_status')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->boolean('is_local')->default(1);

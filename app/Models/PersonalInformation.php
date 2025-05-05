@@ -9,6 +9,7 @@ class PersonalInformation extends Model
 
     protected $fillable = [
         'employee_id',
+        'gender',
         'civil_status',
         'date_of_birth',
         'is_local',
