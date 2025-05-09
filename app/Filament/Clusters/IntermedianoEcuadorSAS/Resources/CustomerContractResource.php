@@ -139,7 +139,7 @@ class CustomerContractResource extends Resource
                         $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee';
 
                         $footerDetails = [
-                            'companyName' => 'INTERMECU SAS',
+                            'companyName' => 'INTERMEDIANO ECUADOR SAS',
                             'address' => 'Av Francisco Orellana E12-148 y Av 12 de Octubre, Oficina 206, Mariscal Sucre, Quito, Pichincha, Ecuador',
                             'domain' => 'www.intermediano.com',
                             'mobile' => '+1 514-907-5393'
