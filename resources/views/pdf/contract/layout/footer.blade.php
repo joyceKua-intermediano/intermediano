@@ -1,7 +1,7 @@
 <div class="footer">
     <div class="footer-title">
         <b style='line-height: 1.2 !important'>{{ $footerDetails['companyName'] }}</b>
-        <p style='line-height: 1.2 !important'>{{  $footerDetails['address'] }}</p>
+        <p style='line-height: 1.2 !important' class="footer-address">{{  $footerDetails['address'] }}</p>
         <p style='line-height: 1.2 !important'>{{  $footerDetails['domain'] }}</p>
         <p style='line-height: 1.2 !important'>{{  $footerDetails['mobile'] }}</p>
         {{-- @if ($company !== 'Intermediano S.A.S.')

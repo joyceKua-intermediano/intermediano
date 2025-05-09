@@ -64,7 +64,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
     }
 
     p {
-        line-height: 1.5 !important
+        line-height: 1.4 !important
     }
 
     .non-pdf p {
@@ -83,13 +83,21 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
     .footer {
         height: 70px;
     }
+    .footer img {
+        padding-top: 10px;
+
+    }
+    .footer-address {
+        width: 50% !important
+    }
+
 
 </style>
 <body>
     <!-- Content Section -->
     @include('pdf.contract.layout.header')
     <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
-        <table style='margin-top: 0px'>
+        <table style='margin-top: -5px'>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">INDEFINITE-TERM EMPLOYMENT CONTRACT WITH PROBATIONARY PERIOD</h4>

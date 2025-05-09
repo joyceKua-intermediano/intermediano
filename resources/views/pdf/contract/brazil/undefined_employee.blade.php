@@ -405,7 +405,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
     @include('pdf.contract.layout.header')
     <div style="border: 1px solid rgb(188, 188, 188); margin: 0px 10px 0 10px; padding: 20px; page-break-after: always;">
         <p style="text-align: center; font-weight: bold;">ANNEX I</p>
-        <p style="font-weight: bold;">ANNEX TO THE INDIVIDUAL EMPLOYMENT CONTRACT FOR A FIXED TERM</p>
+        <p style="font-weight: bold;">ANNEX TO THE INDIVIDUAL EMPLOYMENT CONTRACT</p>
         <p style="font-weight: bold;">JOB DESCRIPTION</p>
         <p>The non-exhaustive list of key responsibilities includes:</p>
         {!! $jobDescription !!}
@@ -414,7 +414,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
     @include('pdf.contract.layout.header')
     <div style="border: 1px solid rgb(188, 188, 188); margin: 20px 10px 0 10px; padding: 20px;">
         <p style="text-align: center; font-weight: bold;">ANEXO I</p>
-        <p style="font-weight: bold;">ANEXO AO CONTRATO INDIVIDUAL DE TRABALHO POR PRAZO DETERMINADO</p>
+        <p style="font-weight: bold;">ANEXO AO CONTRATO INDIVIDUAL DE TRABALHO</p>
         <p style="font-weight: bold;">DESCRIÇÃO DAS FUNÇÕES</p>
         <p>A lista não exaustiva de responsabilidades principais inclui:</p>
         {!! $translatedJobDescription !!}
