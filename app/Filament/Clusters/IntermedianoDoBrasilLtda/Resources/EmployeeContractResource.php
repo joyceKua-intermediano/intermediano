@@ -149,7 +149,24 @@ class EmployeeContractResource extends Resource
                     ->label('Download Contract')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
+                        $createdAt = strtotime($record->created_at);
+                        $comparisonDate = strtotime('2025-04-14');
+                        switch (true) {
+                            case $record->end_date === null && $createdAt <= $comparisonDate:
+                                $pdfPage = 'pdf.contract.brazil.undefined_employee';
+                                break;
+                            case $record->end_date != null && $createdAt <= $comparisonDate:
+                                $pdfPage = 'pdf.contract.brazil.defined_employee';
+                                break;
+                            case $record->end_date == null && $createdAt > $comparisonDate:
+                                $pdfPage = 'pdf.contract.brazil.undefined_v2_employee';
+                                break;
+                            case $record->end_date != null && $createdAt > $comparisonDate:
+                                $pdfPage = 'pdf.contract.brazil.defined_v2_employee';
+                                break;
+                            default:
+                                break;
+                        }
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
                         $tr = new GoogleTranslate();
@@ -160,10 +177,10 @@ class EmployeeContractResource extends Resource
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
                         $footerDetails = [
-                            'companyName' => 'Intermediano do Brasil Ltda.',
+                            'companyName' => 'Intermediano do Brasil Ltda.              ',
                             'address' => '',
                             'domain' => 'sac@intermediano.com',
-                            'mobile' => ''
+                            'mobile' => '+1 514-907-5393'
                         ];
                         $pdf = Pdf::loadView($pdfPage, [
                             'record' => $record,

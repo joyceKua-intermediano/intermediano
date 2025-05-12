@@ -53,8 +53,10 @@ html {
 
 .footer img {
     height: 50px;
-    /* Height as per the uploaded image */
     width: auto;
+    right: 10;
+    position: absolute;
+
 }
 
 .footer-title {
