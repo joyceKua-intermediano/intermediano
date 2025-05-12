@@ -150,7 +150,7 @@ class EmployeeContractResource extends Resource
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
                         $createdAt = strtotime($record->created_at);
-                        $comparisonDate = strtotime('2025-04-14');
+                        $comparisonDate = strtotime('2025-05-03');
                         switch (true) {
                             case $record->end_date === null && $createdAt <= $comparisonDate:
                                 $pdfPage = 'pdf.contract.brazil.undefined_employee';
