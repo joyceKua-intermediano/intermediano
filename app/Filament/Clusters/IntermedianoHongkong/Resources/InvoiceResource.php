@@ -6,6 +6,7 @@ use App\Exports\InvoicesExport;
 use App\Filament\Clusters\IntermedianoHongkong;
 use App\Filament\Clusters\IntermedianoHongkong\Resources\InvoiceResource\Pages;
 use App\Filament\Clusters\IntermedianoHongkong\Resources\InvoiceResource\RelationManagers;
+use App\Models\Company;
 use App\Models\Invoice;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -48,6 +49,7 @@ class InvoiceResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('company_id')
                             ->relationship('company', 'name')
+                            ->options(options: Company::pluck('name', 'name'))
                             ->searchable()
                             ->required(),
                         DatePicker::make('invoice_date')
@@ -216,19 +218,19 @@ class InvoiceResource extends Resource
             ->whereYear('invoice_date', $year)
             ->with(['employee', 'company'])
             ->get();
-        
+
         $previousInvoices = Invoice::whereMonth('invoice_date', '<', $month)
             ->whereYear('invoice_date', $year)
             ->get();
-            if ($currentMonthInvoices->isEmpty()) {
-                Notification::make()
-                    ->title('No invoices found')
-                    ->body('No invoices found for the selected month and year.')
-                    ->danger()
-                    ->send();
-                
-                return redirect()->back();
-            }
+        if ($currentMonthInvoices->isEmpty()) {
+            Notification::make()
+                ->title('No invoices found')
+                ->body('No invoices found for the selected month and year.')
+                ->danger()
+                ->send();
+
+            return redirect()->back();
+        }
 
         $fileName = "invoices_{$year}_{$month}.xlsx";
 

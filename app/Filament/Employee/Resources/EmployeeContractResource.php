@@ -89,6 +89,14 @@ class EmployeeContractResource extends Resource
                                 $companyTitle = 'Intermediano Chile SPA';
                                 $pdfPage = 'pdf.contract.chile.consultant';
                                 break;
+                            case 'IntermedianoPeruSAC':
+                                $companyTitle = 'Intermediano Perú SAC';
+                                $pdfPage = 'pdf.contract.peru.consultant';
+                                break;
+                            case 'IntermedianoEcuadorSAS':
+                                $companyTitle = 'INTERMEDIANO ECUADOR SAS';
+                                $pdfPage = 'pdf.contract.ecuador.consultant';
+                                break;
                             default:
                                 $pdfPage = '';
                                 break;
@@ -181,6 +189,14 @@ class EmployeeContractResource extends Resource
                             case 'IntermedianoChileSPA':
                                 $companyTitle = 'Intermediano Chile SPA';
                                 $pdfPage = 'pdf.contract.chile.consultant';
+                                break;
+                            case 'IntermedianoPeruSAC':
+                                $companyTitle = 'Intermediano Perú SAC';
+                                $pdfPage = 'pdf.contract.peru.consultant';
+                                break;
+                            case 'IntermedianoEcuadorSAS':
+                                $companyTitle = 'INTERMEDIANO ECUADOR SAS';
+                                $pdfPage = 'pdf.contract.ecuador.consultant';
                                 break;
                             default:
                                 $pdfPage = '';
