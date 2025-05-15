@@ -13,20 +13,15 @@ $formattedDate = now()->format('jS');
 $month = now()->format('F');
 $year = now()->format('Y');
 $currentDate = now()->format('[d/m/Y]');
-$companyName = $record->company->name;
-$companyTaxId = $record->company->tax_id;
-$companyCountry = $record->company->country;
-$companyAddress = $record->company->address;
-$companyCity = $record->company->city;
-$companyState = $record->company->state;
+$partnerName = $record->partner->partner_name;
+$partnerTaxId = $record->partner->tax_id;
+$partnerCountry = $record->partner->country->name;
+$partnerAddress = $record->partner->address;
 
-$contactName = $record->companyContact->contact_name;
-$contactSurname = $record->companyContact->surname;
 
-$customerPhone = $record->companyContact->phone;
-$customerEmail = $record->companyContact->email;
-$customerName = $record->companyContact->contact_name;
-$customerPosition = $record->companyContact->position;
+$partnerPhone = $record->partner->mobile_number;
+$partnerEmail = $record->partner->email;
+$partnerContactName = $record->partner->contact_name;
 $customerTranslatedPosition = $record->translatedPosition;
 
 $employeeName = $record->employee->name;
@@ -67,8 +62,8 @@ $employeeGrossSalary = $record->gross_salary;
             “Effective Date”), by and between <b>GATE INTERMEDIANO INC.</b> (the <b>“Customer”</b> ), a Canadian
             company, enrolled under the fiscal registration number 733087506RC0001, lo cated at 4388 Rue
             Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada, duly repre sented by its legal
-            representative; AND <b>{{ $companyName }}</b> (the <b>“Provider”</b>), a {{ $companyCountry }} company, enrolled
-            under the fiscal registration number {{ $companyTaxId }}, located at {{ $companyAddress }}, {{ $companyCity }}, {{ $companyState }}, {{ $companyCountry }}, duly rep resented by its
+            representative; AND <b>{{ $partnerName }}</b> (the <b>“Provider”</b>), a {{ $partnerCountry }} company, enrolled
+            under the fiscal registration number {{ $partnerTaxId }}, located at {{ $partnerAddress }}, duly rep resented by its
             authorized representative, (each, a “Party “and together, the “Parties”)
         </p>
 
@@ -191,13 +186,13 @@ $employeeGrossSalary = $record->gross_salary;
         <b style='margin-top:30px'>If to Provider:</b>
         <p>
             <b> A/C:</b>
-            {{ $contactName }} {{ $contactSurname }}
+            {{ $partnerName }}
         </p>
         <p>
-            <b> Address:</b> {{ $companyAddress }} {{ $companyCity }} {{ $companyState }} {{ $companyCountry }}
+            <b> Address:</b> {{ $partnerAddress }}
         </p>
-        <p> <b> Phone/Fax:</b> {{ $customerPhone }}</p>
-        <p> <b> E-mail:</b> {{ $customerEmail }}</p>
+        <p> <b> Phone/Fax:</b> {{ $partnerPhone }}</p>
+        <p> <b> E-mail:</b> {{ $partnerEmail }}</p>
         <br>
         <b>If to Customer:</b>
         <p>
@@ -226,10 +221,10 @@ $employeeGrossSalary = $record->gross_salary;
             <tr style="border: none;">
 
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
-                    <h4>{{ $companyName }}</h4>
+                    <h4>{{ $partnerName }}</h4>
                     <div style="width: 100%; border-bottom: 1px solid black; margin-top: 60px"></div>
-                    <p style="margin-top: -30px; text-align: center;"> {{ $customerName }}</p>
-                    <p style="margin-top: -15px; text-align: center;"> {{ $customerPosition }}</p>
+                    <p style="margin-top: -30px; text-align: center;"> {{ $partnerContactName }}</p>
+                    <p style="margin-top: -15px; text-align: center;"> Representative</p>
                 </td>
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>GATE INTERMEDIANO INC. </h4>
