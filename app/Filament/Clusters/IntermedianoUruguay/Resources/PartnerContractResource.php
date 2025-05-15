@@ -128,7 +128,13 @@ class PartnerContractResource extends Resource
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee_PR';
-                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'company' => 'Intermediano S.A.S.', 'is_pdf' => true]);
+                        $footerDetails = [
+                            'companyName' => 'Intermediano S.A.S.',
+                            'address' => '',
+                            'domain' => 'sac@intermediano.com',
+                            'mobile' => ''
+                        ];
+                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'footerDetails' => $footerDetails, 'is_pdf' => true]);
                         return response()->streamDownload(
                             fn() => print ($pdf->output()),
                             $fileName . '.pdf'

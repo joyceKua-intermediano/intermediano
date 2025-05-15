@@ -24,6 +24,7 @@ class TimesheetResource extends Resource
 
     protected static ?int $navigationSort = 5;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $label = 'Employee Timesheet';
 
     protected static ?string $cluster = IntermedianoEcuadorSAS::class;
 

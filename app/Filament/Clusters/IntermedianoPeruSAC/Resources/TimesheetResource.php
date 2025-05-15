@@ -21,6 +21,7 @@ class TimesheetResource extends Resource
 {
     protected static ?string $model = MonthlyTimesheet::class;
 
+    protected static ?string $label = 'Employee Timesheet';
     protected static ?int $navigationSort = 5;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
