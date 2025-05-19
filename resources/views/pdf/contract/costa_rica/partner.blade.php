@@ -12,6 +12,9 @@
 $formattedDate = now()->format('jS');
 $month = now()->format('F');
 $year = now()->format('Y');
+$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
+$day = now()->format('j');
+
 $currentDate = now()->format('[d/m/Y]');
 $partnerName = $record->partner->partner_name;
 $partnerTaxId = $record->partner->tax_id;
@@ -81,26 +84,26 @@ $employeeGrossSalary = $record->gross_salary;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>WHEREAS</b> Customer wishes to obtain the services and Provider wishes to provide the services on the terms and conditions set forth herein</p>
+                    <p><b>WHEREAS</b> Customer wishes to obtain the services and Provider wishes to provide the services on the terms and conditions set forth herein;</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>CONSIDERANDO</b> que el Cliente desea obtener los servicios y el Proveedor desea proporcionar los servicios en los términos y condiciones establecidos en este documento</p>
-                </td>
-            </tr>
-            <tr>
-                <td style="width: 50%; vertical-align: top;">
-                    <p><b>WHEREAS</b> services will be provided by Provider in Costa Rica</p>
-                </td>
-                <td style="width: 50%; vertical-align: top;">
-                    <p><b>CONSIDERANDO</b> que los servicios serán proporcionados por el Proveedor, en Costa Rica</p>
+                    <p><b>CONSIDERANDO</b> que el Cliente desea obtener los servicios y el Proveedor desea proporcionar los servicios en los términos y condiciones establecidos en este documento;</p>
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>WHEREAS</b> Provider will render directly </p>
+                    <p><b>WHEREAS</b> services will be provided by Provider in Costa Rica;</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>CONSIDERANDO</b> que el Proveedor prestará servicios directos </p>
+                    <p><b>CONSIDERANDO</b> que los servicios serán proporcionados por el Proveedor, en Costa Rica;</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 50%; vertical-align: top;">
+                    <p><b>WHEREAS</b> Provider will render directly;</p>
+                </td>
+                <td style="width: 50%; vertical-align: top;">
+                    <p><b>CONSIDERANDO</b> que el Proveedor prestará servicios directos;</p>
                 </td>
             </tr>
             <tr>
@@ -204,10 +207,10 @@ $employeeGrossSalary = $record->gross_salary;
         <table style='margin-top: 0px'>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>d)</b> to comply with all global and local laws, decrees, regulations, resolutions, decisions, norms and other provisions considered by law concerning the provision of the service and labor matters, in particular, but not limited to, those related to the protection of the environment, exempting Customer from any responsibility resulting therefrom. Therefore, the Provider declares in this Agreement that its activities and services, used now and in the future, comply with the legislation and protection and safety standards concerning sanitation and environment; </p>
+                    <p><b>d)</b> to comply with all global and local laws, decrees, regulations, resolutions, decisions, norms and other provisions considered by law concerning the provision of the service and labor matters, in particular, but not limited to, those related to the protection of the environment, exempting Customer from any responsibility resulting therefrom. Therefore, the Provider declares in this Agreement that its activities and services, used now and in the future, comply with the legislation and protection and safety standards concerning sanitation and environment. </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>d)</b> cumplir con todas las leyes, decretos, reglamentos, resoluciones, decisiones, normas y otras disposiciones globales y locales consideradas por la ley en relación a la prestación del servicio y los asuntos laborales, en particular, pero no limitados a los relacionados con la protección del medio ambiente, eximiendo al Cliente de cualquier responsabilidad que resulte de ello. Por lo tanto, el Proveedor declara en este Acuerdo que sus actividades y servicios, utilizados ahora y en el futuro, cumplen con la legislación y las normas de protección y seguridad en materia sanitaria y del medio ambiente;</p>
+                    <p><b>d)</b> cumplir con todas las leyes, decretos, reglamentos, resoluciones, decisiones, normas y otras disposiciones globales y locales consideradas por la ley en relación a la prestación del servicio y los asuntos laborales, en particular, pero no limitados a los relacionados con la protección del medio ambiente, eximiendo al Cliente de cualquier responsabilidad que resulte de ello. Por lo tanto, el Proveedor declara en este Acuerdo que sus actividades y servicios, utilizados ahora y en el futuro, cumplen con la legislación y las normas de protección y seguridad en materia sanitaria y del medio ambiente.</p>
                 </td>
             </tr>
             <tr>
@@ -236,10 +239,10 @@ $employeeGrossSalary = $record->gross_salary;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> to supply the technical information required for the Services to be performed; </p>
+                    <p><b>b)</b> to supply the technical information required for the Services to be performed. </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> proporcionar la información técnica requerida para la realización de los Servicios; </p>
+                    <p><b>b)</b> proporcionar la información técnica requerida para la realización de los Servicios. </p>
                 </td>
             </tr>
 
@@ -293,7 +296,7 @@ $employeeGrossSalary = $record->gross_salary;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> Information received by a Party which: (i) is information of general or public knowledge; (ii) has been previously ap-proved or consented to in writing, gener-ally and without restriction, by the Party from which the information originates; and/or (iii) has been requested by a competent administrative or judicial au-thority, shall not be covered by the confi-dentiality obligation provided herein. In the latter case, the Party receiving such a request shall inform the other Party as promptly as possible and provided that the nature of the administrative or judicial proceedings so permits.</p>
+                    <p><b>b)</b> Information received by a Party which: (i) is information of general or public knowledge; (ii) has been previously approved or consented to in writing, generally and without restriction, by the Party from which the information originates; and/or (iii) has been requested by a competent administrative or judicial authority, shall not be covered by the confidentiality obligation provided herein. In the latter case, the Party receiving such a request shall inform the other Party as promptly as possible and provided that the nature of the administrative or judicial proceedings so permits.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>b)</b> No quedan comprendidas dentro de la obligación de confidencialidad aquí prevista la información recibida por una de las Partes que:(i) sea información de general o público conocimiento; (ii) haya sido su transmisión a terceros aprobada o consentida previamente y por escrito, con carácter general y sin restricciones, por la Parte de la que procede la información; y/o (iii) haya sido solicitada por una autoridad administrativa o judicial competente. En este último caso, la Parte que reciba tal solicitud informará a la otra Parte con la mayor celeridad posible y siempre que la naturaleza de las actuaciones administrativas o judiciales lo permitan.</p>
@@ -444,10 +447,10 @@ $employeeGrossSalary = $record->gross_salary;
         <table style='margin-top: 0px'>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> respect and comply with all Service requests forwarded by Customer before the date of expiration or early termination of this Agreement;</p>
+                    <p><b>b)</b> respect and comply with all Service requests forwarded by Customer before the date of expiration or early termination of this Agreement.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>b)</b> respetar y cumplir con todas las solicitudes de Servicio enviadas por el Cliente antes de la fecha de vencimiento o terminación anticipada de este Acuerdo;</p>
+                    <p><b>b)</b> respetar y cumplir con todas las solicitudes de Servicio enviadas por el Cliente antes de la fecha de vencimiento o terminación anticipada de este Acuerdo.</p>
                 </td>
             </tr>
             <tr>
@@ -588,10 +591,10 @@ $employeeGrossSalary = $record->gross_salary;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b style='text-decoration: underline'>XI. Jurisdiction </b></p>
+                    <p><b style='text-decoration: underline'>XI. {{ strtoupper('Jurisdiction') }} </b></p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b style='text-decoration: underline'>XI. Jurisdición</b></p>
+                    <p><b style='text-decoration: underline'>XI. {{ strtoupper('JurisdiciÓn') }}</b></p>
                 </td>
             </tr>
 
@@ -628,7 +631,7 @@ $employeeGrossSalary = $record->gross_salary;
             <tr>
                 <td colspan="2" style="text-align: center;">
                     <p style="margin: 0; text-align: center; font-weight: bold;">
-                        San Jose, {{ $formattedDate }} of {{ $month }} of {{ $year }}.
+                        San Jose, {{$day}} de {{ $translatedMonth }} de {{ $year }}.
                     </p>
                 </td>
             </tr>
@@ -703,10 +706,10 @@ $employeeGrossSalary = $record->gross_salary;
         <table style='margin-top: -5px'>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>The value in USD will fluctuate depending on the exchange rate, whenever applica-ble</p>
+                    <p>The value in USD will fluctuate depending on the exchange rate, whenever applicable.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>The value in USD will fluctuate depending on the exchange rate, whenever applica-ble</p>
+                    <p>The value in USD will fluctuate depending on the exchange rate, whenever applicable.</p>
                 </td>
             </tr>
             <tr>
