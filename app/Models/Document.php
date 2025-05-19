@@ -33,8 +33,8 @@ class Document extends Model
         return $this->hasMany(EmployeeFile::class);
     }
 
-    public function socialSecurityInfos()
+    public function socialSecurityInfo()
     {
-        return $this->hasMany(SocialSecurityInfo::class);
+        return $this->hasOne(SocialSecurityInfo::class);
     }
 }

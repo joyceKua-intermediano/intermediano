@@ -11,6 +11,7 @@ class BankingDetail extends Model
         'employee_id',
         'bank_name',
         'branch_name',
+        'bank_code',
         'account_number',
         'account_type',
     ];
