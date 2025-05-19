@@ -47,29 +47,29 @@
         <tbody>
 
             @forelse($record->employeeFiles as $file)
-                <tr>
-                    <td class="border border-gray-300 px-4 py-2">{{ ucfirst(str_replace('_', ' ', $file->document_type)) }}</td>
-                    <td class="border border-gray-300 px-4 py-2">
-                        <a href="{{ Storage::url($file->file_path) }}" target="_blank" class="text-blue-500 hover:underline">
-                            {{ $file->original_file_name }}
-                        </a>
-                    </td>
-                    {{-- <td class="border border-gray-300 px-4 py-2">
+            <tr>
+                <td class="border border-gray-300 px-4 py-2">{{ ucfirst(str_replace('_', ' ', $file->document_type)) }}</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <a href="{{ Storage::url($file->file_path) }}" target="_blank" class="text-blue-500 hover:underline">
+                        {{ $file->original_file_name }}
+                    </a>
+                </td>
+                {{-- <td class="border border-gray-300 px-4 py-2">
                         <button 
                             type="button" 
                             class="text-red-500 hover:underline"
                             onclick="deleteDocument({{ $file->id }})"
-                        >
-                            Delete
-                        </button>
-                    </td> --}}
-                </tr>
+                >
+                Delete
+                </button>
+                </td> --}}
+            </tr>
             @empty
-                <tr>
-                    <td colspan="3" class="text-center py-4 text-gray-500">
-                        No files uploaded yet.
-                    </td>
-                </tr>
+            <tr>
+                <td colspan="3" class="text-center py-4 text-gray-500">
+                    No files uploaded yet.
+                </td>
+            </tr>
             @endforelse
         </tbody>
     </table>
@@ -85,56 +85,76 @@
         </thead>
         <tbody>
 
-                <tr>
-                    @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['health_fund_file']))
-                    <td class="border border-gray-300 px-4 py-2">Health Fund</td>
-                    <td class="border border-gray-300 px-4 py-2">
-                        <a href="{{ Storage::url($record->socialSecurityInfo['health_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
-                            {{ basename($record->socialSecurityInfo['health_fund_file']) }}
-                        </a>
-                    </td>  
-                    @endif
-                </tr>
-                <tr>
-                    @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['pension_fund_file']))
+            <tr>
+                @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['health_fund_file']))
+                <td class="border border-gray-300 px-4 py-2">Health Fund</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <a href="{{ Storage::url($record->socialSecurityInfo['health_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                        {{ basename($record->socialSecurityInfo['health_fund_file']) }}
+                    </a>
+                </td>
+                @endif
+            </tr>
+            <tr>
+                @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['pension_fund_file']))
 
-                    <td class="border border-gray-300 px-4 py-2">Pension Fund</td>
-                    <td class="border border-gray-300 px-4 py-2">
-                        <a href="{{ Storage::url($record->socialSecurityInfo['pension_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
-                            {{ basename($record->socialSecurityInfo['health_fund_file']) }}
-                        </a>
-                    </td>  
-                    @endif
-                </tr>
-                <tr>
-                    @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['severance_fund_file']))
-                    <td class="border border-gray-300 px-4 py-2">Severance Fund</td>
-                    <td class="border border-gray-300 px-4 py-2">
-                        <a href="{{ Storage::url($record->socialSecurityInfo['health_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
-                            {{ basename($record->socialSecurityInfo['severance_fund_file']) }}
-                        </a>
-                    </td>  
-                    @endif
-                </tr>
-                <tr>
-                    @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['social_security_file']))
-                    <td class="border border-gray-300 px-4 py-2">Social Insurance Number</td>
-                    <td class="border border-gray-300 px-4 py-2">
-                        <a href="{{ Storage::url($record->socialSecurityInfo['social_security_file']) }}" target="_blank" class="text-blue-500 hover:underline">
-                            {{ basename($record->socialSecurityInfo['social_security_file']) }}
-                        </a>
-                    </td>  
-                    @endif
-                </tr>
-                <tr>
-                    @if(!isset($record->socialSecurityInfo))
-                    <tr>
-                        <td colspan="3" class="text-center py-4 text-gray-500">
-                            No files uploaded yet.
-                        </td>
-                    </tr>
-                    @endif
-                </tr>
+                <td class="border border-gray-300 px-4 py-2">Pension Fund</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <a href="{{ Storage::url($record->socialSecurityInfo['pension_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                        {{ basename($record->socialSecurityInfo['health_fund_file']) }}
+                    </a>
+                </td>
+                @endif
+            </tr>
+            <tr>
+                @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['severance_fund_file']))
+                <td class="border border-gray-300 px-4 py-2">Severance Fund</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <a href="{{ Storage::url($record->socialSecurityInfo['health_fund_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                        {{ basename($record->socialSecurityInfo['severance_fund_file']) }}
+                    </a>
+                </td>
+                @endif
+            </tr>
+            <tr>
+                @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['social_security_file']))
+                <td class="border border-gray-300 px-4 py-2">Social Insurance Number</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <a href="{{ Storage::url($record->socialSecurityInfo['social_security_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                        {{ basename($record->socialSecurityInfo['social_security_file']) }}
+                    </a>
+                </td>
+                @endif
+            </tr>
+            <tr>
+                @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['curp_file']))
+                <td class="border border-gray-300 px-4 py-2">CURP</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <a href="{{ Storage::url($record->socialSecurityInfo['curp_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                        {{ basename($record->socialSecurityInfo['curp_file']) }}
+                    </a>
+                </td>
+                @endif
+            </tr>
+            <tr>
+                @if(isset($record->socialSecurityInfo) && !empty($record->socialSecurityInfo['voter_id_file']))
+                <td class="border border-gray-300 px-4 py-2">Voter ID</td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <a href="{{ Storage::url($record->socialSecurityInfo['voter_id_file']) }}" target="_blank" class="text-blue-500 hover:underline">
+                        {{ basename($record->socialSecurityInfo['voter_id_file']) }}
+                    </a>
+                </td>
+                @endif
+            </tr>
+            <tr>
+                @if(!isset($record->socialSecurityInfo))
+            <tr>
+                <td colspan="3" class="text-center py-4 text-gray-500">
+                    No files uploaded yet.
+                </td>
+            </tr>
+            @endif
+            </tr>
         </tbody>
     </table>
 </div>
@@ -146,4 +166,5 @@
             console.log(`Deleting document with ID: ${id}`);
         }
     }
+
 </script>
