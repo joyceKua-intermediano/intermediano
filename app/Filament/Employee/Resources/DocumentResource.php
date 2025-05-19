@@ -40,6 +40,7 @@ class DocumentResource extends Resource
                     ->maxLength(255)
                     ->default(null),
                 Forms\Components\TextInput::make('tax_id')
+                    ->label(auth()->user()->company === 'IntermedianoMexicoSC' ? 'Tax ID (RFC)' : 'Tax ID')
                     ->maxLength(255)
                     ->default(null),
                 Forms\Components\DatePicker::make('expiration'),
@@ -57,20 +58,7 @@ class DocumentResource extends Resource
                 Forms\Components\TextInput::make('category')
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\Fieldset::make('BankingDetail')
-                    ->relationship('bankingDetail')
-                    ->schema([
-                        Forms\Components\Hidden::make('employee_id')
-                            ->default(auth()->user()->id),
-                        Forms\Components\TextInput::make('bank_name'),
-                        Forms\Components\TextInput::make('branch_name'),
-                        Forms\Components\TextInput::make('account_number'),
-                        Forms\Components\Select::make('account_type')
-                            ->options([
-                                'Savings' => 'Savings',
-                                'Checking' => 'Checking',
-                            ])
-                    ]),
+
                 Repeater::make('documents')
                     ->relationship('employeeFiles')
                     ->schema([
@@ -117,108 +105,75 @@ class DocumentResource extends Resource
                     ->columnSpanFull()
                     ->columns(2)
                     ->grid(2)
+                    ->collapsed(false)
                     ->orderable('id')
-                    ->defaultItems(0),
+                    ->defaultItems(1),
+                Forms\Components\Fieldset::make('BankingDetail')
+                    ->relationship('bankingDetail')
+                    ->schema([
+                        Forms\Components\Hidden::make('employee_id')
+                            ->default(auth()->user()->id),
+                        Forms\Components\TextInput::make('bank_name'),
+                        Forms\Components\TextInput::make('bank_code')->label('Interbank Code (Clave interbancaria)'),
+                        Forms\Components\TextInput::make('branch_name'),
+                        Forms\Components\TextInput::make('account_number'),
+                        Forms\Components\Select::make('account_type')
+                            ->options([
+                                'Savings' => 'Savings',
+                                'Checking' => 'Checking',
+                            ])
+                    ]),
 
-                Repeater::make('socialSecurityInfos')
-                    ->relationship('socialSecurityInfos')
+
+                Forms\Components\Fieldset::make('Social Security Infos')
+                    ->relationship('socialSecurityInfo')
                     ->schema([
                         Forms\Components\Hidden::make('employee_id')
                             ->default(auth()->user()->id),
                         TextInput::make('health_fund'),
-                        FileUpload::make('health_fund_file')
-                            ->label('File')
-                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
-                            ->resize(50)
-                            ->optimize('webp')
-                            ->storeFileNamesIn('original_file_name')
-                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
-                                $documentType = 'health_fund';
-                                $extension = $file->getMimeType() === 'application/pdf'
-                                    ? 'pdf'
-                                    : 'webp';
+                        self::createFileUpload('health_fund_file', 'health_fund'),
 
-                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
-                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
-
-                                if (Storage::disk('public')->exists($filePath)) {
-                                    Storage::disk('public')->delete($filePath);
-                                }
-                                return $fileName;
-                            }),
                         TextInput::make('pension_fund'),
-                        FileUpload::make('pension_fund_file')
-                            ->label('File')
-                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
-                            ->resize(50)
-                            ->optimize('webp')
-                            ->storeFileNamesIn('original_file_name')
-                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
-                                $documentType = 'pension_fund_file';
-                                $extension = $file->getMimeType() === 'application/pdf'
-                                    ? 'pdf'
-                                    : 'webp';
+                        self::createFileUpload('pension_fund_file', 'pension_fund_file'),
 
-                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
-                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
-
-                                if (Storage::disk('public')->exists($filePath)) {
-                                    Storage::disk('public')->delete($filePath);
-                                }
-                                return $fileName;
-                            }),
                         TextInput::make('severance_fund'),
-                        FileUpload::make('severance_fund_file')
-                            ->label('File')
-                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
-                            ->resize(50)
-                            ->optimize('webp')
-                            ->storeFileNamesIn('original_file_name')
-                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
-                                $documentType = 'severance_fund_file';
-                                $extension = $file->getMimeType() === 'application/pdf'
-                                    ? 'pdf'
-                                    : 'webp';
+                        self::createFileUpload('severance_fund_file', 'severance_fund_file'),
 
-                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
-                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
-
-                                if (Storage::disk('public')->exists($filePath)) {
-                                    Storage::disk('public')->delete($filePath);
-                                }
-                                return $fileName;
-                            }),
+                        TextInput::make('curp'),
+                        self::createFileUpload('curp_file', 'curp_file'),
 
                         TextInput::make('social_security_number'),
-                        FileUpload::make('social_security_file')
-                            ->label('File')
-                            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
-                            ->resize(50)
-                            ->optimize('webp')
-                            ->storeFileNamesIn('original_file_name')
-                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) {
-                                $documentType = 'social_security_file';
-                                $extension = $file->getMimeType() === 'application/pdf'
-                                    ? 'pdf'
-                                    : 'webp';
+                        self::createFileUpload('social_security_file', 'social_security_file'),
 
-                                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
-                                $filePath = 'employees/' . auth()->id() . '/documents' . $fileName;
-
-                                if (Storage::disk('public')->exists($filePath)) {
-                                    Storage::disk('public')->delete($filePath);
-                                }
-                                return $fileName;
-                            }),
+                        TextInput::make('voter_id'),
+                        self::createFileUpload('voter_id_file', 'voter_id_file'),
 
                     ])
-                    ->columnSpanFull()
-                    ->columns(2)
-                    ->grid(2)
-                    ->orderable('id')
-                    ->defaultItems(0),
+                ,
             ]);
     }
+
+    public static function createFileUpload(string $fieldName, string $documentType)
+    {
+        return FileUpload::make($fieldName)
+            ->label('File')
+            ->directory(fn() => 'employees/' . auth()->id() . '/documents')
+            ->resize(50)
+            ->optimize('webp')
+            ->storeFileNamesIn('original_file_name')
+            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, Get $get) use ($documentType) {
+                $extension = $file->getMimeType() === 'application/pdf' ? 'pdf' : 'webp';
+
+                $fileName = auth()->user()->name . '_' . $documentType . '.' . $extension;
+                $filePath = 'employees/' . auth()->id() . '/documents/' . $fileName;
+
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
+                return $fileName;
+            });
+    }
+
 
     public static function table(Table $table): Table
     {
