@@ -18,11 +18,15 @@ return new class extends Migration
             $table->string('health_fund')->nullable();
             $table->string('pension_fund')->nullable();
             $table->string('severance_fund')->nullable();
+            $table->string('curp')->nullable();
             $table->string('social_security_number')->nullable();
+            $table->string('voter_id')->nullable();
             $table->string('health_fund_file')->nullable();
             $table->string('pension_fund_file')->nullable();
             $table->string('severance_fund_file')->nullable();
+            $table->string('curp_file')->nullable();
             $table->string('social_security_file')->nullable();
+            $table->string('voter_id_file')->nullable();
             $table->timestamps();
         });
     }

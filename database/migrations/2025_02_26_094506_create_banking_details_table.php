@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('document_id')->constrained()->cascadeOnDelete();
             $table->string('bank_name')->nullable();
             $table->string('branch_name')->nullable();
+            $table->string('bank_code')->nullable();
             $table->string('account_number')->nullable();
             $table->string('account_type')->nullable();
             $table->timestamps();
