@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId("user_id")->nullable()->constrained();
             $table->string("name");
             $table->string("website")->nullable();
+            $table->string("vat")->nullable();
             $table->string("tax_id")->nullable();
             $table->string("country")->nullable();
             $table->string("state")->nullable();

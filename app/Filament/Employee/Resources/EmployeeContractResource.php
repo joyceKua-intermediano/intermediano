@@ -3,23 +3,21 @@
 namespace App\Filament\Employee\Resources;
 
 use App\Filament\Employee\Resources\EmployeeContractResource\Pages;
-use App\Filament\Employee\Resources\EmployeeContractResource\RelationManagers;
 use App\Models\Contract;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Filters\Filter;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\RichEditor;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
+use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Support\Facades\URL;
 
 class EmployeeContractResource extends Resource
 {
@@ -61,46 +59,7 @@ class EmployeeContractResource extends Resource
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
-                        $contractQuotationType = $record->is_integral;
-                        switch ($record->cluster_name) {
-                            case 'IntermedianoDoBrasilLtda':
-                                $companyTitle = 'Intermediano do Brasil Ltda.';
-                                $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
-                                break;
-                            case 'IntermedianoColombiaSAS':
-                                $companyTitle = 'Intermediano Colombia SAS.';
-                                if ($contractQuotationType === 0) {
-                                    $pdfPage = $record->end_date === null
-                                        ? 'pdf.contract.colombia.ordinary_undefined_employee'
-                                        : 'pdf.contract.colombia.ordinary_defined_employee';
-                                } elseif ($contractQuotationType === 1) {
-                                    $pdfPage = $record->end_date === null
-                                        ? 'pdf.contract.colombia.integral_undefined_employee'
-                                        : 'pdf.contract.colombia.integral_defined_employee';
-                                } else {
-                                    $pdfPage = '';
-                                }
-                                break;
-                            case 'IntermedianoHongkong':
-                                $companyTitle = 'Intermediano Hong Kong Limited';
-                                $pdfPage = 'pdf.contract.hongkong.employee';
-                                break;
-                            case 'IntermedianoChileSPA':
-                                $companyTitle = 'Intermediano Chile SPA';
-                                $pdfPage = 'pdf.contract.chile.consultant';
-                                break;
-                            case 'IntermedianoPeruSAC':
-                                $companyTitle = 'Intermediano Perú SAC';
-                                $pdfPage = 'pdf.contract.peru.consultant';
-                                break;
-                            case 'IntermedianoEcuadorSAS':
-                                $companyTitle = 'INTERMEDIANO ECUADOR SAS';
-                                $pdfPage = 'pdf.contract.ecuador.consultant';
-                                break;
-                            default:
-                                $pdfPage = '';
-                                break;
-                        }
+                        $content = getContractModalContent($record);
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
                         $tr = new GoogleTranslate();
@@ -112,12 +71,12 @@ class EmployeeContractResource extends Resource
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
                         $viewModal = 'filament.quotations.brasil_modal';
                         $footerDetails = [
-                            'companyName' => 'Intermediano Chile SPA',
-                            'address' => 'Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Chile',
+                            'companyName' => $content['companyTitle'],
+                            'address' => '',
                             'domain' => 'www.intermediano.com',
-                            'mobile' => '+1 514-907-5393'
+                            'mobile' => ''
                         ];
-                        return view($pdfPage, [
+                        return view($content['pdfPage'], [
                             'record' => $record,
                             'poNumber' => $contractTitle,
                             'is_pdf' => false,
@@ -127,33 +86,65 @@ class EmployeeContractResource extends Resource
                 Tables\Actions\Action::make('uploadSignature')
                     ->label('Upload Signature')
                     ->icon('heroicon-o-arrow-up-tray')
-
                     ->form([
-                        Forms\Components\FileUpload::make('signature')
-                            ->label('Signature File')
+                        SignaturePad::make('signature_data') 
+                            ->label(__('Sign here'))
+                            ->downloadable(false)
+                            ->undoable()
+                            ->live()
+                            // ->visible(fn($get) => empty($get('signature_file')))
+                            ->confirmable(true)
+                            ->afterStateUpdated(function ($state, $livewire) {
+                                if ($state) {
+                                    $base64_string = substr($state, strpos($state, ',') + 1);
+                                    $image_data = base64_decode($base64_string);
+                                    $file_name = Str::random(40) . '.png';
+                                    $file = self::createTemporaryFileUploadFromUrl($image_data, $file_name);
+                                    $livewire->dispatch('signature-uploaded', $file);
+                                }
+                            })
+                            ->columnSpan(4),
+
+                        Forms\Components\FileUpload::make('signature_file')
+                            ->label('')
                             ->disk('public')
                             ->directory('signatures')
                             ->visibility('public')
-                            ->optimize('webp')
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->optimize('webp')
                             ->resize(50)
                             ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
                                 $fileName = 'employee_' . auth()->user()->id . '.' . $file->getClientOriginalExtension();
-
                                 $filePath = 'signatures/' . $fileName;
                                 if (Storage::disk('public')->exists($filePath)) {
                                     Storage::disk('public')->delete($filePath);
                                 }
-
                                 return $fileName;
                             })
-                            ->required(),
+                            ->required()
+                            ->extraAttributes(['style' => 'display: none;'])
+
+                            ->extraAlpineAttributes([
+                                'x-data' => '{ fileReady: false }',
+                                'x-on:signature-uploaded.window' => '
+                                const pond = FilePond.find($el.querySelector(".filepond--root"));
+                                fileReady = false; // Reset to false before starting
+                                pond.removeFiles({ revert: false });
+                                pond.addFile($event.detail).then(() => {
+                                    fileReady = true; // Set to true once the file is fully uploaded
+                                }).catch(error => {
+                                    console.error("File upload failed:", error);
+                                    fileReady = false; // Ensure it’s marked as not ready in case of failure
+                                });
+                                  ',
+                            ])
+                            ->columnSpanFull(),
                         Forms\Components\Hidden::make('signed_contract')
                             ->default(now()->toDateTimeString()),
                     ])
                     ->action(function ($record, $data) {
                         $record->update([
-                            'signature' => $data['signature'],
+                            'signature' => $data['signature_file'],
                             'signed_contract' => $data['signed_contract'],
                         ]);
                     }),
@@ -161,47 +152,8 @@ class EmployeeContractResource extends Resource
                     ->label('Download Contract')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        $contractQuotationType = $record->is_integral;
+                        $content = getContractModalContent($record);
 
-                        switch ($record->cluster_name) {
-                            case 'IntermedianoDoBrasilLtda':
-                                $companyTitle = 'Intermediano do Brasil Ltda.';
-                                $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
-                                break;
-                            case 'IntermedianoColombiaSAS':
-                                $companyTitle = 'Intermediano Colombia SAS.';
-                                if ($contractQuotationType === 0) {
-                                    $pdfPage = $record->end_date === null
-                                        ? 'pdf.contract.colombia.ordinary_undefined_employee'
-                                        : 'pdf.contract.colombia.ordinary_defined_employee';
-                                } elseif ($contractQuotationType === 1) {
-                                    $pdfPage = $record->end_date === null
-                                        ? 'pdf.contract.colombia.integral_undefined_employee'
-                                        : 'pdf.contract.colombia.integral_defined_employee';
-                                } else {
-                                    $pdfPage = '';
-                                }
-                                break;
-                            case 'IntermedianoHongkong':
-                                $companyTitle = 'Intermediano Hong Kong Limited';
-                                $pdfPage = 'pdf.contract.hongkong.employee';
-                                break;
-                            case 'IntermedianoChileSPA':
-                                $companyTitle = 'Intermediano Chile SPA';
-                                $pdfPage = 'pdf.contract.chile.consultant';
-                                break;
-                            case 'IntermedianoPeruSAC':
-                                $companyTitle = 'Intermediano Perú SAC';
-                                $pdfPage = 'pdf.contract.peru.consultant';
-                                break;
-                            case 'IntermedianoEcuadorSAS':
-                                $companyTitle = 'INTERMEDIANO ECUADOR SAS';
-                                $pdfPage = 'pdf.contract.ecuador.consultant';
-                                break;
-                            default:
-                                $pdfPage = '';
-                                break;
-                        }
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
                         $tr = new GoogleTranslate();
@@ -212,12 +164,12 @@ class EmployeeContractResource extends Resource
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
                         $fileName = $startDateFormat . '_Contrato Individual de ' . $record->employee->name . '_of employee';
                         $footerDetails = [
-                            'companyName' => 'Intermediano Chile SPA',
-                            'address' => 'Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Chile',
+                            'companyName' => $content['companyTitle'],
+                            'address' => '',
                             'domain' => 'www.intermediano.com',
-                            'mobile' => '+1 514-907-5393'
+                            'mobile' => ''
                         ];
-                        $pdf = Pdf::loadView($pdfPage, [
+                        $pdf = Pdf::loadView($content['pdfPage'], [
                             'record' => $record,
                             'poNumber' => $contractTitle,
                             'is_pdf' => true,
@@ -233,6 +185,25 @@ class EmployeeContractResource extends Resource
 
             ])
             ->searchable(false);
+    }
+
+    public static function createTemporaryFileUploadFromUrl($imageData, $filename): string
+    {
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+        file_put_contents($tempFilePath, $imageData);
+
+        $mimeType = mime_content_type($tempFilePath);
+        $tempFile = new UploadedFile($tempFilePath, basename($filename), $mimeType, null, true);
+
+        $path = Storage::putFile('livewire-tmp', $tempFile);
+
+        $file = TemporaryUploadedFile::createFromLivewire($path);
+
+        return URL::temporarySignedRoute(
+            'livewire.preview-file',
+            now()->addMinutes(30),
+            ['filename' => $file->getFilename()]
+        );
     }
     public static function getRelations(): array
     {
