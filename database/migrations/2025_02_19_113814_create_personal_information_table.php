@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('civil_status')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->boolean('is_local')->default(1);
+            $table->string('passport_number')->nullable();
             $table->string('work_visa')->nullable();
             $table->string('nationality')->nullable();
             $table->string('city')->nullable();
