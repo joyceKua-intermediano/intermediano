@@ -36,4 +36,9 @@ class PersonalInformation extends Model
     {
         return $this->hasMany(Dependent::class);
     }
+
+    public function emergencyContact()
+    {
+        return $this->hasOne(EmergencyContact::class);
+    }
 }

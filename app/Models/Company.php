@@ -62,4 +62,9 @@ class Company extends Model
     {
         return $this->hasMany(Contract::class);
     }
+
+    public function invoiceDetails()
+    {
+        return $this->hasOne(InvoiceDetails::class);
+    }
 }
