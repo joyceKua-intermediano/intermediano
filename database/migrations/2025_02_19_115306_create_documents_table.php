@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('is_driver_license')->default(0);
             $table->boolean('has_insurance')->default(0);
             $table->string('category')->nullable();
+            $table->string('bank_account_currency')->nullable();
             $table->timestamps();
         });
     }
