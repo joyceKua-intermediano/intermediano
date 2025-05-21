@@ -79,4 +79,9 @@ class Contract extends Model
     {
         return $this->belongsTo(SocialSecurityInfo::class, 'employee_id', 'employee_id');
     }
+
+        public function supplementaryContractDetails()
+    {
+        return $this->hasOne(SupplementaryContractDetails::class);
+    }
 }

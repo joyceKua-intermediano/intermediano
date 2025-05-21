@@ -15,4 +15,9 @@ class InvoiceDetails extends Model
         'invoice_deadline',
         'currency_payment',
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }
