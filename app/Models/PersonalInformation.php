@@ -13,6 +13,7 @@ class PersonalInformation extends Model
         'civil_status',
         'date_of_birth',
         'is_local',
+        'passport_number',
         'work_visa',
         'nationality',
         'city',

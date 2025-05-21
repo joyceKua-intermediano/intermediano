@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\TextInput;
 
 class PersonalInformationResource extends Resource
 {
@@ -112,6 +113,9 @@ class PersonalInformationResource extends Resource
                         '0' => 'No',
                     ])
                     ->required(),
+                Forms\Components\TextInput::make('passport_number')
+                    ->maxLength(255)
+                    ->default(null),
                 Forms\Components\TextInput::make('work_visa')
                     ->maxLength(255)
                     ->default(null),
@@ -140,6 +144,29 @@ class PersonalInformationResource extends Resource
                     ->columns(2)
                     ->grid(2)
                     ->label('Dependents'),
+                Forms\Components\Fieldset::make('Emergency Contact')
+                    ->relationship('emergencyContact')
+                    ->schema([
+                        Forms\Components\Hidden::make('employee_id')
+                            ->default(auth()->user()->id),
+                        TextInput::make('emergency_contact_name')
+                            ->label('Contact Person in case of emergency')
+                            ->required()
+                            ->placeholder('Enter full name'),
+                        TextInput::make(name: 'relationship')
+                            ->label('Relationship')
+                            ->required()
+                            ->placeholder('Enter mobile number'),
+                        TextInput::make('mobile_number')
+                            ->label('mobile number')
+                            ->required()
+                            ->placeholder('Enter mobile number'),
+                        TextInput::make('email')
+                            ->label('Email')
+                            ->required()
+                            ->placeholder('Enter email'),
+                    ])
+
             ]);
     }
 
