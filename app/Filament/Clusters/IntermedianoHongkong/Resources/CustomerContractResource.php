@@ -77,6 +77,41 @@ class CustomerContractResource extends Resource
                     })
                     ->maxLength(255)
                     ->default(null),
+
+                Forms\Components\Fieldset::make('Label')
+                    ->relationship('supplementaryContractDetails')
+
+                    ->schema([
+                        Forms\Components\TextInput::make('standard_working_hours')
+                            ->placeholder('ex: 8hours')
+
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\TextInput::make('shift_schedule')
+                            ->placeholder('ex: 8:00am - 5:00pm')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\TextInput::make('notice_period')
+                            ->placeholder('ex: 30days, 60days, 90days')
+                            ->maxLength(255)
+                            ->default(null),
+
+                        Forms\Components\TextInput::make('payment_terms')
+                            ->placeholder('ex: from invoice date - 15days, 30days')
+                            ->maxLength(255)
+                            ->default(null),
+
+                        Forms\Components\TextInput::make('billing_currency')
+                            ->placeholder('ex: USD-HKD')
+                            ->maxLength(255)
+                            ->default(null),
+                        Forms\Components\TextInput::make('payment_currency')
+                            ->placeholder('ex: USD-HKD')
+                            ->maxLength(255)
+                            ->default(null),
+                    ]),
+
+
                 Forms\Components\Hidden::make('cluster_name')
                     ->default(self::getClusterName())
                     ->label(self::getClusterName()),

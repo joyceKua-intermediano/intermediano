@@ -121,7 +121,10 @@ class DocumentResource extends Resource
                             ->options([
                                 'Savings' => 'Savings',
                                 'Checking' => 'Checking',
-                            ])
+                            ]),
+                        Forms\Components\TextInput::make('bank_account_currency'),
+
+
                     ]),
 
 
