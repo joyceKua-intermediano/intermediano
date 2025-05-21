@@ -17,6 +17,9 @@ use Filament\Forms\Components\Toggle;
 use Illuminate\Validation\Rules\Unique;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\DatePicker;
 
 class CustomerResource extends Resource
 {
@@ -35,10 +38,13 @@ class CustomerResource extends Resource
                     ->maxLength(255)->unique(ignoreRecord: true, modifyRuleUsing: function (Unique $rule) {
                         return $rule->whereNull('deleted_at');
                     }),
+                Forms\Components\TextInput::make('vat')
+                    ->maxLength(255)->label(__("GST/VAT Registration Number:")),
                 Forms\Components\TextInput::make('website')
                     ->maxLength(255)->label(__("Website")),
                 Forms\Components\TextInput::make('tax_id')
                     ->maxLength(255)->label(__("Tax ID")),
+
                 Forms\Components\TextInput::make('country')
                     ->maxLength(255)->label(__("Country")),
                 Forms\Components\TextInput::make('state')
@@ -75,7 +81,43 @@ class CustomerResource extends Resource
                         Forms\Components\Toggle::make('is_main_contact')->required()->label(__("Main Contact")),
 
                     ])->columns(4)
-                ])->columnSpanFull()
+                ])->columnSpanFull(),
+
+                Forms\Components\Fieldset::make('Invoice Details')
+                    ->relationship('invoiceDetails')
+                    ->schema([
+                        TextInput::make('contact_person')
+                            ->label('Contact Person for Invoice')
+                            ->placeholder('Enter full name'),
+
+                        TextInput::make('email')
+                            ->label(' Email Address')
+                            ->placeholder('Enter email address'),
+                        TextInput::make('mobile_number')
+                            ->label('Mobile number/Phone')
+                            ->placeholder('Enter phone or mobile number'),
+
+                        TextInput::make('invoice_number')
+                            ->label('Invoice Number')
+                            ->placeholder('Enter invoice number'),
+
+                        Select::make('invoice_cycle')
+                            ->label('Invoice Cycle')
+                            ->options([
+                                'weekly' => 'Weekly',
+                                'fortnightly' => 'Fortnightly',
+                                'monthly' => 'Monthly',
+                                'annual' => 'Annual',
+                            ])
+                            ->placeholder('Select cycle'),
+
+                        DatePicker::make('invoice_deadline')
+                            ->label('Invoice Deadline'),
+                        TextInput::make('currency_payment')
+                            ->label('Currency Payment')
+                            ->placeholder('Enter full name'),
+                    ]),
+
             ]);
     }
 
