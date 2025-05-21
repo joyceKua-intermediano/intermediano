@@ -14,6 +14,8 @@ class BankingDetail extends Model
         'bank_code',
         'account_number',
         'account_type',
+        'bank_account_currency'
+
     ];
 
     public function employee()
