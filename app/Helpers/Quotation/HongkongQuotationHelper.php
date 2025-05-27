@@ -3,6 +3,7 @@
 if (!function_exists('calculateHongkongQuotation')) {
     function calculateHongkongQuotation($record, $previousMonthRecord)
     {
+        $mfpMinimumEarning = 30000;
 
         $grossSalary = $record->gross_salary;
 
@@ -15,12 +16,13 @@ if (!function_exists('calculateHongkongQuotation')) {
             $record->medical_allowance +
             $record->internet_allowance;
 
-        $mpf = $totalGrossIncome * 0.05;
-
-
+        $mpf = $totalGrossIncome > $mfpMinimumEarning ? 1500 : $totalGrossIncome * 0.05;
+        $employerCompensationInsurance = 0;
         $payrollCostsTotal = $mpf;
 
-        $leave = 0.0417 * $totalGrossIncome;
+        $privateHealthInsurance = 0;
+        $proRated13thMonthPay = $totalGrossIncome / 12;
+        $leave = $totalGrossIncome / 160;
 
         $provisionsTotal = $leave;
 
@@ -34,7 +36,8 @@ if (!function_exists('calculateHongkongQuotation')) {
                 $previousMonthRecord->internet_allowance;
         } else {
             $previousMonthGrossIncome = 0;
-        };
+        }
+        ;
 
         $accumulatedLeave = (0.0417 * $previousMonthGrossIncome) + $leave;
 
@@ -42,11 +45,21 @@ if (!function_exists('calculateHongkongQuotation')) {
 
         // end of accumulated provision
 
-        $subTotalGrossPayroll = $totalGrossIncome + $provisionsTotal + $payrollCostsTotal;
-        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : $totalGrossIncome * ($record->fee / 100) ;
         $bankFee = $record->bank_fee * $record->exchange_rate;
+
+        $subTotalGrossPayroll = $totalGrossIncome + $payrollCostsTotal + $bankFee + $employerCompensationInsurance;
+
+        $exchangeValue = $record->fee * $record->exchange_rate;
+        $fixFee = 450 * $record->exchange_rate;
+        $computedFeeByTotalGrossIncome = $subTotalGrossPayroll * ($record->fee / 100);
+
+        if ($record->is_fix_fee) {
+            $fee = $exchangeValue;
+        } else {
+            $fee = max($computedFeeByTotalGrossIncome, $fixFee);
+        }
         $subTotal = $subTotalGrossPayroll + $fee;
-        $totalInvoice = $subTotal + $bankFee ;
+        $totalInvoice = $subTotal;
 
         return [
             'grossSalary' => $grossSalary,
@@ -57,6 +70,7 @@ if (!function_exists('calculateHongkongQuotation')) {
             'subTotal' => $subTotal,
             'totalInvoice' => $totalInvoice,
             'mpf' => $mpf,
+            'mployerCompensationInsurance' => $employerCompensationInsurance,
             'payrollCostsTotal' => $payrollCostsTotal,
             'leave' => $leave,
             'provisionsTotal' => $provisionsTotal,
