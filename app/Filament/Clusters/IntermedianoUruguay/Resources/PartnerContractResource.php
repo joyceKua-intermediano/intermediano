@@ -6,6 +6,7 @@ use App\Filament\Clusters\IntermedianoUruguay;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerContractResource\Pages;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerContractResource\RelationManagers;
 use App\Models\Contract;
+use App\Models\Quotation;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -45,6 +46,7 @@ class PartnerContractResource extends Resource
                         'title',
                         fn(Builder $query) => $query->where('cluster_name', 'PartnerUruguay')->where('is_payroll', '0')
                     )
+                    ->getOptionLabelFromRecordUsing(fn(Quotation $record) => "{$record->title} ({$record->country->name})")
                     ->required(),
                 Forms\Components\TextInput::make('country_work')
                     ->maxLength(255)
@@ -81,7 +83,7 @@ class PartnerContractResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('company.name')
+                Tables\Columns\TextColumn::make('partner.partner_name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('employee.name')
@@ -127,7 +129,7 @@ class PartnerContractResource extends Resource
                         $record->translatedPosition = $tr->translate($record->companyContact->position ?? "");
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
-                        $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee_PR';
+                        $fileName = $startDateFormat . '_Contract with_' . $record->partner->partner_name . '_of employee_PR';
                         $footerDetails = [
                             'companyName' => 'Intermediano S.A.S.',
                             'address' => '',

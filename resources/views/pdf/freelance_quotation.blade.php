@@ -71,25 +71,28 @@
             position: absolute;
             right: 0;
         }
+
     </style>
 </head>
 
 <body>
     @php
-        $quotationDetails = calculateFreelanceQuotation($record, []);
+    $quotationDetails = calculateFreelanceQuotation($record, []);
     @endphp
 
     <table class="table">
+
+        @if(empty($hideHeader))
         <tr class="headerTable">
-            <th rowspan="2"> <img src="{{ public_path('images/logo.jpg') }}" alt="logo"
-                    style="width: 100px; height: auto;">
+            <th rowspan="2"> <img src="{{ public_path('images/logo.jpg') }}" alt="logo" style="width: 100px; height: auto;">
             </th>
 
-            <td class="p-4 textWhite textWeightBold" colspan="1">{{ $record->country->name }}</td>
+            <td class="p-4 textWhite textWeightBold" colspan="2">{{ $record->country->name }}</td>
         </tr>
         <tr>
-            <td class="headerTable textWhite textWeightBold" colspan="1">{{ $record->title }}</td>
+            <td class="headerTable textWhite textWeightBold" colspan="2">{{ $record->title }}</td>
         </tr>
+        @endif
         <tr style="{{ $record->home_allowance == 0 ? 'display: none' : '' }}">
             <th class="p-4">Home Allowance</th>
             <td class="p-4 space-between">
@@ -175,9 +178,11 @@
         </tr>
     </table>
 
+    @if(empty($hideHeader))
     <div class="footer">
         <p>Generated on {{ now()->format('F j, Y') }}</p>
     </div>
+    @endif
 </body>
 
 </html>
