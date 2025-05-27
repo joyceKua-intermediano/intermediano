@@ -35,6 +35,7 @@ return new class extends Migration
             $table->decimal('uvt_amount', 15, 2)->default(0);
             $table->decimal('capped_amount', 15, 2)->default(0);
             $table->boolean('dependent')->default(0);
+            $table->boolean('is_freelance')->default(0);
             $table->boolean('is_payroll')->default(0);
             $table->boolean('is_integral')->default(0);
             $table->string('cluster_name');
