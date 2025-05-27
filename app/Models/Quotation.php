@@ -32,6 +32,7 @@ class Quotation extends Model
         'capped_amount',
         'uvt_amount',
         'dependent',
+        'is_freelance',
         'is_payroll',
         'is_integral',
         'payroll_cost_medical_insurance',

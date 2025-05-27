@@ -51,7 +51,8 @@
             "app/Helpers/Quotation/HongkongQuotationHelper.php",
             "app/Helpers/Quotation/DominicanRepublicQuotationHelper.php",
             "app/Helpers/CamelCaseToWordsHelper.php",
-            "app/Helpers/GetContractContentHelper.php"
+            "app/Helpers/GetContractContentHelper.php",
+            "app/Helpers/Quotation/FreelanceQuotationHelper.php"
             
         ]
     },
