@@ -13,16 +13,13 @@ $formattedDate = now()->format('jS');
 $month = now()->format('F');
 $year = now()->format('Y');
 $currentDate = now()->format('[d/m/Y]');
-$companyName = $record->company->name;
-$contactName = $record->companyContact->contact_name;
-$contactSurname = $record->companyContact->surname;
-
-$customerAddress = $record->company->address;
-$customerPhone = $record->companyContact->phone;
-$customerEmail = $record->companyContact->email;
-$customerName = $record->companyContact->contact_name;
+$companyName = $record->partner->partner_name;
+$contactName = $record->partner->contact_name;
+$customerAddress = $record->partner->address;
+$customerPhone = $record->partner->phone;
+$customerEmail = $record->partner->email;
+$customerName = $record->partner->contact_name;
 $customerCountry = $record->company->country ?? 'N/A';
-$customerPosition = $record->companyContact->position;
 $customerTaxId = $record->company->tax_id ?? 'NA';
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
@@ -48,7 +45,6 @@ $jobDescription = $record->job_description;
 $contractType = $record->end_date == null ? 'Undefined Period' : 'Defined Period';
 $exchangeRate = $record->quotation->exchange_rate;
 $currencyName = $record->quotation->currency_name;
-
 
 @endphp
 <body>
@@ -375,7 +371,7 @@ $currencyName = $record->quotation->currency_name;
                     <p><b>a)</b> return to Customer the day of termination of this Agreement, any and all equipment, promotional material, and other documents which have been provided by Customer in relation to the Services agreed upon in this Agreement.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>a)</b>	devolver al Cliente el día de la terminación de este Acuerdo, todos y cada uno de los equipos, material promocional y otros documentos que hayan sido proporcionados por el Cliente en relación con los Servicios acordados en este Acuerdo.</p>
+                    <p><b>a)</b> devolver al Cliente el día de la terminación de este Acuerdo, todos y cada uno de los equipos, material promocional y otros documentos que hayan sido proporcionados por el Cliente en relación con los Servicios acordados en este Acuerdo.</p>
                 </td>
             </tr>
 
@@ -485,7 +481,7 @@ $currencyName = $record->quotation->currency_name;
 
     @include('pdf.contract.layout.header')
     <main>
-        <table >
+        <table>
 
             <tr>
                 <td style="width: 50%; vertical-align: top;">
@@ -506,14 +502,14 @@ $currencyName = $record->quotation->currency_name;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>If to Provider:</b>
-                    <p>A/C: {{ $contactName }} {{ $contactSurname }}</p>
+                    <p>A/C: {{ $contactName }}</p>
                     <p>Address: {{ $customerAddress }} </p>
                     <p>Phone/Fax: {{ $customerPhone }}</p>
                     <p>E-mail: <a href="#">{{ $customerEmail }}</a> </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Si al Proveedor:</b>
-                    <p>A/C: {{ $contactName }} {{ $contactSurname }}</p>
+                    <p>A/C: {{ $contactName }} </p>
                     <p>Dirección: {{ $customerAddress }} </p>
                     <p>Teléfono: {{ $customerPhone }}</p>
                     <p>E-mail: <a href="#">{{ $customerEmail }}</a> </p>
@@ -548,7 +544,7 @@ $currencyName = $record->quotation->currency_name;
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;">
-                    <p style="margin: 0;">Rivera, {{ $currentDate }}</p>
+                    <p style="margin: 0; text-align: center;">Rivera, {{ $currentDate }}</p>
                 </td>
             </tr>
             <tr>
@@ -562,13 +558,13 @@ $currencyName = $record->quotation->currency_name;
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <div style="text-align: center; margin-top: -20px">
-                        <p>{{ $customerName }} {{ $contactSurname }}</p>
-                        <p style="margin-top: -20px">Legal Representative</p>
+                        <p style='text-align: center;'>{{ $customerName }}</p>
+                        <p style="margin-top: -20px; text-align: center;">Legal Representative</p>
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center">
-                        <b>INTERMEDIANO SAS </b>
+                        <b>INTERMEDIANO SAS</b>
                     </div>
                     <br><br>
                     <div style="text-align: center; margin-top: -20px">
@@ -576,8 +572,8 @@ $currencyName = $record->quotation->currency_name;
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <div style="text-align: center; margin-top: -20px">
-                        <p>Fernando Gutierrez</p>
-                        <p style="margin-top: -20px">Legal Representative</p>
+                        <p style='text-align: center;'>Fernando Gutierrez</p>
+                        <p style="margin-top: -20px; text-align: center;">Legal Representative</p>
                     </div>
                 </td>
 
@@ -586,7 +582,7 @@ $currencyName = $record->quotation->currency_name;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; font-weight: bold;margin-bottom: 16px">
-                        <p>ANNEX 1</p>
+                        <p style='text-align: center;'>ANNEX 1</p>
                         <p><b>SERVICES</b></p>
                     </div>
                     <p>Consultant: {{ $employeeName }}</p>
@@ -598,7 +594,7 @@ $currencyName = $record->quotation->currency_name;
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; font-weight: bold;margin-bottom: 16px">
-                        <p>ANEXO 1</p>
+                        <p style="text-align: center;">ANEXO 1</p>
                         <p><b>SERVICIOS</b></p>
                     </div>
                     <p>Consultor: {{ $employeeName }}</p>
@@ -633,7 +629,25 @@ $currencyName = $record->quotation->currency_name;
             </tr>
         </table>
         <div style="margin-top: -20px !important">
-            @include('pdf.uruguay_quotation', ['record' => $record->quotation, 'hideHeader' => true])
+            @php
+            // Determine the appropriate view to include
+            $country = strtolower($record->quotation->country->name ?? 'unknown'); // Assuming 'country' is a property of $record->quotation
+            $isFreelance = $record->quotation->is_freelance === 1;
+
+            // Decide the view name
+            $viewName = $isFreelance
+            ? 'pdf.freelance_quotation'
+            : "pdf.{$country}_quotation";
+            @endphp
+
+            @if (View::exists($viewName))
+            @include($viewName, ['record' => $record->quotation, 'hideHeader' => true])
+            @else
+            <script>
+                alert('Error: Quotation file for "{{ $record->quotation->country }}" is missing.');
+
+            </script>
+            @endif
         </div>
         <table>
             <tr>

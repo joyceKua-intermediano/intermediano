@@ -54,7 +54,7 @@ class PartnerQuotationResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'USVI']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'USVI', 'Saint Marteen']);
                     })
                     ->required(),
 
