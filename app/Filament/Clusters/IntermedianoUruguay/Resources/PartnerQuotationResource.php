@@ -54,7 +54,7 @@ class PartnerQuotationResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'USVI']);
                     })
                     ->required(),
 
@@ -166,6 +166,14 @@ class PartnerQuotationResource extends Resource
                     ->default(0)
                     ->hidden(true)
                     ->label('Capped (LIMIT) Social Security'),
+                Forms\Components\Select::make('is_freelance')
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ])
+                    ->required()
+                    ->reactive(),
+
                 Forms\Components\Select::make('dependent')
                     ->options([
                         '1' => 'Yes',
@@ -239,12 +247,17 @@ class PartnerQuotationResource extends Resource
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
-                        $viewModal = [
-                            'Panama' => 'filament.quotations.panama_modal',
-                            'Nicaragua' => 'filament.quotations.nicaragua_modal',
-                            'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
-                        ];
-                        $viewModal = $viewModal[$record->country->name] ?? null;
+                        if ($record->is_freelance) {
+                            $viewModal = 'filament.quotations.freelance_modal';
+                        } else {
+                            $viewModal = [
+                                'Panama' => 'filament.quotations.panama_modal',
+                                'Nicaragua' => 'filament.quotations.nicaragua_modal',
+                                'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
+                            ];
+                            $viewModal = $viewModal[$record->country->name] ?? null;
+
+                        }
                         return view($viewModal, [
                             'record' => $record,
                         ]);
@@ -264,12 +277,17 @@ class PartnerQuotationResource extends Resource
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        $pdfPages = [
-                            'Panama' => 'pdf.panama_quotation',
-                            'Nicaragua' => 'pdf.nicaragua_quotation',
-                            'Dominican Republic' => 'pdf.dominican_republic_quotation',
-                        ];
-                        $pdfPage = $pdfPages[$record->country->name] ?? null;
+                        if ($record->is_freelance) {
+                            $pdfPage = 'pdf.freelance_quotation';
+                        } else {
+                            $pdfPages = [
+                                'Panama' => 'pdf.panama_quotation',
+                                'Nicaragua' => 'pdf.nicaragua_quotation',
+                                'Dominican Republic' => 'pdf.dominican_republic_quotation',
+                            ];
+                            $pdfPage = $pdfPages[$record->country->name] ?? null;
+
+                        }
 
 
                         $companyName = $record->company->name;
