@@ -429,4 +429,10 @@ class EmployeeExpensesResource extends Resource
     // {
     //     return $record->created_by === 'customer';
     // }
+
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        return $user && $user->company_id !== null;
+    }
 }

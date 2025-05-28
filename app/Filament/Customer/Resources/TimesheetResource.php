@@ -190,4 +190,9 @@ class TimesheetResource extends Resource
     {
         return false;
     }
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        return $user && $user->company_id !== null;
+    }
 }

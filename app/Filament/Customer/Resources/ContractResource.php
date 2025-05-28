@@ -3,7 +3,6 @@
 namespace App\Filament\Customer\Resources;
 
 use App\Filament\Customer\Resources\ContractResource\Pages;
-use App\Filament\Customer\Resources\ContractResource\RelationManagers;
 use App\Models\Contract;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,7 +10,15 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Saade\FilamentAutograph\Forms\Components\SignaturePad;
+use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\URL;
 
 class ContractResource extends Resource
 {
@@ -62,8 +69,13 @@ class ContractResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('company.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Company')
+                    ->sortable()
+                    ->hidden(fn() => auth()->user()->company_id === null), // Show only if `company_id` exists
+                Tables\Columns\TextColumn::make('partner.partner_name')
+                    ->label('Partner')
+                    ->sortable()
+                    ->hidden(fn() => auth()->user()->partner_id === null), // Show only if `partner_id`
                 Tables\Columns\TextColumn::make('employee.name')
                     ->numeric()
                     ->sortable(),
@@ -104,6 +116,105 @@ class ContractResource extends Resource
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
+
+
+                Tables\Actions\Action::make('uploadSignature')
+                    ->label('Signature Pad')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->form([
+                        SignaturePad::make('signature_data')
+                            ->label(__('Sign here'))
+                            ->downloadable(false)
+                            ->undoable()
+                            ->live()
+                            // ->visible(fn($get) => empty($get('signature_file')))
+                            ->confirmable(true)
+                            ->afterStateUpdated(function ($state, $livewire) {
+                                if ($state) {
+                                    $base64_string = substr($state, strpos($state, ',') + 1);
+                                    $image_data = base64_decode($base64_string);
+                                    $file_name = Str::random(40) . '.png';
+                                    $file = self::createTemporaryFileUploadFromUrl($image_data, $file_name);
+                                    $livewire->dispatch('signature-uploaded', $file);
+                                }
+                            })
+                            ->columnSpan(4),
+
+                        Forms\Components\FileUpload::make('signature_file')
+                            ->label('')
+                            ->disk('public')
+                            ->directory('signatures/clients')
+                            ->visibility('public')
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->optimize('webp')
+                            ->resize(50)
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
+                                $companyId = auth()->user()->company_id;
+                                $partnerId = auth()->user()->partner_id;
+                                $signaturePath = $companyId ? 'customer_' . $companyId : 'partner_' . $partnerId;
+                                $fileName = $signaturePath . '.' . $file->getClientOriginalExtension();
+                                $filePath = 'signatures/clients' . $fileName;
+                                if (Storage::disk('public')->exists($filePath)) {
+                                    Storage::disk('public')->delete($filePath);
+                                }
+                                return $fileName;
+                            })
+                            ->required()
+                            ->extraAttributes(['style' => 'display: none;'])
+
+                            ->extraAlpineAttributes([
+                                'x-data' => '{ fileReady: false }',
+                                'x-on:signature-uploaded.window' => '
+                                const pond = FilePond.find($el.querySelector(".filepond--root"));
+                                fileReady = false; // Reset to false before starting
+                                pond.removeFiles({ revert: false });
+                                pond.addFile($event.detail).then(() => {
+                                    fileReady = true; // Set to true once the file is fully uploaded
+                                }).catch(error => {
+                                    console.error("File upload failed:", error);
+                                    fileReady = false; // Ensure it’s marked as not ready in case of failure
+                                });
+                                  ',
+                            ])
+                            ->columnSpanFull(),
+                        Forms\Components\Hidden::make('signed_contract')
+                            ->default(now()->toDateTimeString()),
+                    ])
+                    ->action(function ($record, $data) {
+                        $record->update([
+                            'signature' => $data['signature_file'],
+                            'signed_contract' => $data['signed_contract'],
+                        ]);
+                    }),
+                Tables\Actions\Action::make('pdf')
+                    ->label('Download Contract')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->action(function ($record) {
+                        $content = getClientContractFile($record);
+
+                        $year = date('Y', strtotime($record->created_at));
+                        $formattedId = sprintf('%04d', $record->id);
+
+                        $tr = new GoogleTranslate();
+                        $tr->setSource();
+                        $tr->setTarget('es');
+                        $record->translatedPosition = $tr->translate($record->companyContact->position ?? "");
+                        $contractTitle = $year . '.' . $formattedId;
+                        $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
+                        $fileName = $startDateFormat . '_Contract with_' . $record->partner->partner_name . '_of employee_PR';
+                        $footerDetails = [
+                            'companyName' => $content['companyTitle'],
+                            'address' => '',
+                            'domain' => 'sac@intermediano.com',
+                            'mobile' => ''
+                        ];
+                        $pdf = Pdf::loadView($content['pdfPage'], ['record' => $record, 'poNumber' => $contractTitle, 'footerDetails' => $footerDetails, 'is_pdf' => true]);
+                        return response()->streamDownload(
+                            fn() => print ($pdf->output()),
+                            $fileName . '.pdf'
+                        );
+                    }),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -119,6 +230,25 @@ class ContractResource extends Resource
         ];
     }
 
+    public static function createTemporaryFileUploadFromUrl($imageData, $filename): string
+    {
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+        file_put_contents($tempFilePath, $imageData);
+
+        $mimeType = mime_content_type($tempFilePath);
+        $tempFile = new UploadedFile($tempFilePath, basename($filename), $mimeType, null, true);
+
+        $path = Storage::putFile('livewire-tmp', $tempFile);
+
+        $file = TemporaryUploadedFile::createFromLivewire($path);
+
+        return URL::temporarySignedRoute(
+            'livewire.preview-file',
+            now()->addMinutes(30),
+            ['filename' => $file->getFilename()]
+        );
+    }
+
     public static function getPages(): array
     {
         return [
@@ -131,7 +261,11 @@ class ContractResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $customerCompanyID = auth()->user()->company_id;
-        $getEmployeeContract = Contract::where('company_id',  $customerCompanyID)->where('contract_type',  '!=', 'employee');
+        $customerPartnerID = auth()->user()->partner_id;
+        $queryId = $customerCompanyID ?? $customerPartnerID;
+        $queryColumn = $customerCompanyID ? 'company_id' : 'partner_id';
+        $contractType = $customerCompanyID ? 'customer' : 'partner';
+        $getEmployeeContract = Contract::where($queryColumn, $queryId)->where('contract_type', '=', $contractType);
         return $getEmployeeContract;
     }
     public static function canCreate(): bool
