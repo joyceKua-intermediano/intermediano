@@ -27,8 +27,26 @@ class CustomerPortalAccountResource extends Resource
         return $form
             ->schema([
 
+                Forms\Components\Select::make('type')
+                    ->label('Select Type')
+                    ->options([
+                        'company' => 'Company',
+                        'partner' => 'Partner',
+                    ])
+                    ->required()
+                    ->reactive() 
+                    ->placeholder('Select Company or Partner'),
+
                 Forms\Components\Select::make('company_id')
-                    ->relationship(name: 'company', titleAttribute: 'name'),
+                    ->label('Company')
+                    ->nullable()
+                    ->relationship(name: 'company', titleAttribute: 'name')
+                    ->hidden(fn($get) => $get('type') !== 'company'),
+                Forms\Components\Select::make('partner_id')
+                    ->label('Partner')
+                    ->nullable()
+                    ->relationship(name: 'partner', titleAttribute: 'partner_name')
+                    ->hidden(fn($get) => $get('type') !== 'partner'), 
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
