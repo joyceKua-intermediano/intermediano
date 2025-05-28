@@ -65,6 +65,8 @@ if (!function_exists('getContractModalContent')) {
                 $pdfPage = 'pdf.contract.canada.consultant';
                 break;
             default:
+                $mobile = '';
+                $address = '';
                 $companyTitle = '';
                 $pdfPage = '';
                 break;
