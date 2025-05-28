@@ -21,31 +21,13 @@ $customerEmail = $record->partner->email;
 $customerName = $record->partner->contact_name;
 $customerCountry = $record->company->country ?? 'N/A';
 $customerTaxId = $record->company->tax_id ?? 'NA';
-$customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
-$employeeNationality = $record->personalInformation->country ?? null;
-$employeeState = $record->personalInformation->state ?? null;
-$employeeCivilStatus = $record->personalInformation->civil_status ?? null;
 $employeeJobTitle = $record->job_title ?? null;
 $employeeCountryWork = $record->country_work ?? null;
-$employeeGrossSalary = $record->gross_salary;
-$employeeTaxId = $record->document->tax_id ?? null;
-$employeeEmail = $record->employee->email ?? null;
-$employeeAddress = $record->personalInformation->address ?? null;
-$employeeCity = $record->personalInformation->city ?? null;
-$employeeDateBirth = $record->personalInformation->date_of_birth ?? null;
-$employeePhone = $record->personalInformation->phone ?? null;
-$employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
-$employeeEducation = $record->personalInformation->education_attainment ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
-$translatedJobDescription = $record->translated_job_description;
-$jobDescription = $record->job_description;
-$contractType = $record->end_date == null ? 'Undefined Period' : 'Defined Period';
-$exchangeRate = $record->quotation->exchange_rate;
-$currencyName = $record->quotation->currency_name;
-
+$signatureExists = Storage::disk('public')->exists($record->signature);
 @endphp
 <body>
     <!-- Content Section -->
@@ -553,9 +535,17 @@ $currencyName = $record->quotation->currency_name;
                         <b>{{ $companyName }}</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: -20px">
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                    <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+
+                    @else
+                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
+
+                    @endif
+                    {{-- <div style="text-align: center; margin-top: -20px">
                         <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
-                    </div>
+                    </div> --}}
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <div style="text-align: center; margin-top: -20px">
                         <p style='text-align: center;'>{{ $customerName }}</p>
@@ -567,11 +557,11 @@ $currencyName = $record->quotation->currency_name;
                         <b>INTERMEDIANO SAS</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: -20px">
+                    <div style="text-align: center; margin-top: 65px">
                         <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <div style="text-align: center; margin-top: -20px">
+                    <div style="text-align: center; margin-top: -65px">
                         <p style='text-align: center;'>Fernando Gutierrez</p>
                         <p style="margin-top: -20px; text-align: center;">Legal Representative</p>
                     </div>
