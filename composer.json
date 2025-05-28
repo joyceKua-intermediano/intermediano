@@ -52,8 +52,8 @@
             "app/Helpers/Quotation/DominicanRepublicQuotationHelper.php",
             "app/Helpers/CamelCaseToWordsHelper.php",
             "app/Helpers/GetContractContentHelper.php",
+            "app/Helpers/GetClientContractContentHelper.php",
             "app/Helpers/Quotation/FreelanceQuotationHelper.php"
-            
         ]
     },
     "autoload-dev": {
