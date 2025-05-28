@@ -100,7 +100,13 @@ class VacationRequestResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $customerCompanyID = auth()->user()->company_id;
-        $getEmployeeContract = VacationRequest::where('company_id',  $customerCompanyID);
+        $getEmployeeContract = VacationRequest::where('company_id', $customerCompanyID);
         return $getEmployeeContract;
+    }
+
+    public static function canViewAny(): bool
+    {
+        $user = auth()->user();
+        return $user && $user->company_id !== null;
     }
 }
