@@ -12,11 +12,16 @@ class Customer extends Authenticatable implements FilamentUser
     use SoftDeletes;
 
     protected $guard = 'customer';
-    protected $fillable = ['name', 'email', 'password', 'company_id'];
+    protected $fillable = ['name', 'email', 'password', 'company_id', 'partner_id'];
 
     public function company()
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function partner()
+    {
+        return $this->belongsTo(Partner::class);
     }
 
     public function canAccessPanel(Panel $panel): bool
