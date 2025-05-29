@@ -47,7 +47,14 @@ class PartnerContractResource extends Resource
                         'title',
                         fn(Builder $query) => $query->where('cluster_name', 'PartnerUruguay')->where('is_payroll', '0')
                     )
-                    ->getOptionLabelFromRecordUsing(fn(Quotation $record) => "{$record->title} ({$record->country->name})")
+                    ->getOptionLabelFromRecordUsing(
+                        fn(Quotation $record) =>
+                        "{$record->title} (" .
+                        ($record->country->name ?? 'Unknown Country') .
+                        ") (" .
+                        ($record->is_freelance ? 'Freelancer' : 'Regular Employee') .
+                        ")"
+                    )
                     ->required(),
                 Forms\Components\TextInput::make('country_work')
                     ->maxLength(255)
