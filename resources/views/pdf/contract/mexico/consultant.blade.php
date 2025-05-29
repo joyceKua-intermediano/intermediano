@@ -815,10 +815,19 @@ $employeeDependents = $record->employee->dependents ?? 'NA';
         <div style="text-align: center; width: 100%; margin-top: 40px;">
             <p style='text-align: center'><b>TRABAJADOR</b></p>
 
-            <div style="width: 70%; border-bottom: 1px solid black; margin: 70px auto 0;"></div>
+            <div style="text-align: center; position: relative; margin-top: 10px">
+                <div style="display: inline-block; position: relative;">
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;">
+                    <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
-            <p style="text-align: center"><b>{{ $employeeName }}</b></p>
-            <p style="text-align: center"><b>Por su propio derecho</b></p>
+                    @endif
+                </div>
+
+                <div style="width: 70%; border-bottom: 1px solid black; margin: -10px auto 0; z-index:100"></div>
+                <p style="text-align: center"><b>{{ $employeeName }}</b></p>
+                <p style="text-align: center; margin-top: -10px;"><b>Por su propio derecho</b></p>
+            </div>
         </div>
 
         @include('pdf.contract.layout.footer')
@@ -867,13 +876,22 @@ $employeeDependents = $record->employee->dependents ?? 'NA';
         </div>
         <div style="width: 100%; border-bottom: 1px solid black; margin: 70px auto 0;"></div>
 
-        <div style="text-align: center; width: 100%; margin-top: 40px;">
+        <div style="text-align: center; width: 100%; margin-top: 10px;">
             <p style='text-align: center'><b>TRABAJADOR</b></p>
 
-            <div style="width: 70%; border-bottom: 1px solid black; margin: 70px auto 0;"></div>
+            <div style="text-align: center; position: relative; margin-top: 0px">
+                <div style="display: inline-block; position: relative;">
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;">
+                    <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
-            <p style="text-align: center"><b>{{ $employeeName }}</b></p>
-            <p style="text-align: center"><b>Por su propio derecho</b></p>
+                    @endif
+                </div>
+
+                <div style="width: 70%; border-bottom: 1px solid black; margin: -10px auto 0; z-index:100"></div>
+                <p style="text-align: center"><b>{{ $employeeName }}</b></p>
+                <p style="text-align: center; margin-top: -10px;"><b>Por su propio derecho</b></p>
+            </div>
         </div>
         @include('pdf.contract.layout.footer')
 
