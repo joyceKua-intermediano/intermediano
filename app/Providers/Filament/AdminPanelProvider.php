@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Dashboard;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -60,15 +61,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->colors([
                 'primary' => [
-                    50 => '#f9f4f4', 
-                    100 => '#f2eae8', 
-                    200 => '#dfcac7', 
-                    300 => '#cbaaa5', 
-                    400 => '#a46b61', 
-                    500 => '#7D2B1D', 
-                    600 => '#71271a', 
-                    700 => '#5e2016', 
-                    800 => '#4b1a11', 
+                    50 => '#f9f4f4',
+                    100 => '#f2eae8',
+                    200 => '#dfcac7',
+                    300 => '#cbaaa5',
+                    400 => '#a46b61',
+                    500 => '#7D2B1D',
+                    600 => '#71271a',
+                    700 => '#5e2016',
+                    800 => '#4b1a11',
                     900 => '#3d150e'
                 ],
             ])
@@ -77,12 +78,12 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->darkMode(false)
             // ->brandLogo(asset('images/logoh.jpg'))
-            ->brandLogo(fn () => view('filament.admin.logo'))
+            ->brandLogo(fn() => view('filament.admin.logo'))
             // ->registration()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -105,15 +106,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentEditProfilePlugin::make()->setIcon('heroicon-o-user')
-                ->shouldShowBrowserSessionsForm(false)
-                ->shouldShowDeleteAccountForm(false)->setSort(4)
-                ->setNavigationGroup("Settings")
-                ->shouldShowAvatarForm(
-                    value: true,
-                    directory: 'avatars', // image will be stored in 'storage/app/public/avatars
-                    rules: 'mimes:jpeg,png|max:1024' //only accept jpeg and png files with a maximum size of 1MB
-                )
-            ]) 
+                    ->shouldShowBrowserSessionsForm(false)
+                    ->shouldShowDeleteAccountForm(false)->setSort(4)
+                    ->setNavigationGroup("Settings")
+                    ->shouldShowAvatarForm(
+                        value: true,
+                        directory: 'avatars', // image will be stored in 'storage/app/public/avatars
+                        rules: 'mimes:jpeg,png|max:1024' //only accept jpeg and png files with a maximum size of 1MB
+                    )
+            ])
             ->navigationGroups([
                 NavigationGroup::make()->label(__('Administration'))->collapsed(),
                 NavigationGroup::make()->label(__('Intermediano Companies'))->collapsed(),
