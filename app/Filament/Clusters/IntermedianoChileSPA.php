@@ -10,4 +10,8 @@ class IntermedianoChileSPA extends Cluster
     protected static ?string $navigationGroup = 'Intermediano Group Companies';
     protected static ?string $navigationLabel = 'Intermediano Chile SPA';
     protected static ?int $navigationSort = 2;
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Intermediano Chile SPA");
+    }
 }
