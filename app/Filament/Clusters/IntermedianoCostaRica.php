@@ -11,4 +11,8 @@ class IntermedianoCostaRica extends Cluster
     protected static ?int $navigationSort = 10;
     protected static ?string $navigationLabel = 'Intermediano SRL CR';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Intermediano SRL CR");
+    }
 }

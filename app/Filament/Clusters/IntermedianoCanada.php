@@ -10,5 +10,9 @@ class IntermedianoCanada extends Cluster
     protected static ?string $navigationGroup = 'Intermediano Group Companies';
     protected static ?int $navigationSort = 1;
     protected static ?string $navigationLabel = 'Gate Intermediano Inc';
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Gate Intermediano Inc");
+    }
 
 }

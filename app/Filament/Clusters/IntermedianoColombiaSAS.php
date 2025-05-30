@@ -10,4 +10,8 @@ class IntermedianoColombiaSAS extends Cluster
     protected static ?string $navigationGroup = 'Intermediano Group Companies';
     protected static ?string $navigationLabel = 'Intermediano Colombia SAS';
     protected static ?int $navigationSort = 3;
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Intermediano Colombia SAS");
+    }
 }
