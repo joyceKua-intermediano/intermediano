@@ -115,7 +115,7 @@ class IntermedianoCompanyResource extends Resource
             'create' => Pages\CreateIntermedianoCompany::route('/create'),
             'view' => Pages\ViewIntermedianoCompany::route('/{record}'),
             'edit' => Pages\EditIntermedianoCompany::route('/{record}/edit'),
-            
+
         ];
     }
 
@@ -125,5 +125,9 @@ class IntermedianoCompanyResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Administration");
     }
 }

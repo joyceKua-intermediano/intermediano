@@ -30,4 +30,8 @@ class InvestmentDashboard extends Page
             YearlyCountryInterestChart::class,
         ];
     }
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Investment");
+    }
 }
