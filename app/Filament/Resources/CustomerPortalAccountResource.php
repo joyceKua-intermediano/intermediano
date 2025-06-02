@@ -34,7 +34,7 @@ class CustomerPortalAccountResource extends Resource
                         'partner' => 'Partner',
                     ])
                     ->required()
-                    ->reactive() 
+                    ->reactive()
                     ->placeholder('Select Company or Partner'),
 
                 Forms\Components\Select::make('company_id')
@@ -46,7 +46,7 @@ class CustomerPortalAccountResource extends Resource
                     ->label('Partner')
                     ->nullable()
                     ->relationship(name: 'partner', titleAttribute: 'partner_name')
-                    ->hidden(fn($get) => $get('type') !== 'partner'), 
+                    ->hidden(fn($get) => $get('type') !== 'partner'),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
@@ -123,5 +123,10 @@ class CustomerPortalAccountResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Administration");
     }
 }

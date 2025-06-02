@@ -242,4 +242,9 @@ class InvestmentResource extends Resource
             \App\Filament\Resources\InvestmentResource\Widgets\InvestmentWidget::class,
         ];
     }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Investment");
+    }
 }

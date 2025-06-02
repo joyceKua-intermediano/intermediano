@@ -117,7 +117,7 @@ class CountryResource extends Resource
                             }
                         } else {
                             foreach ($currencies as $currency) {
-                                $exchangeRates[] =   $currency->currency_quota;
+                                $exchangeRates[] = $currency->currency_quota;
                             }
                         }
                         return $exchangeRates;
@@ -157,5 +157,9 @@ class CountryResource extends Resource
             'view' => Pages\ViewCountry::route('/{record}'),
             'edit' => Pages\EditCountry::route('/{record}/edit'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Country");
     }
 }

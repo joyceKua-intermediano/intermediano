@@ -139,4 +139,9 @@ class PartnerResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->can("Show Partner");
+    }
 }
