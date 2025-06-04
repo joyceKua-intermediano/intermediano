@@ -87,10 +87,10 @@
             <th rowspan="2"> <img src="{{ public_path('images/logo.jpg') }}" alt="logo" style="width: 100px; height: auto;">
             </th>
 
-            <td class="p-4 textWhite textWeightBold" colspan="2">{{ $record->country->name }}</td>
+            <td class="p-4 textWhite textWeightBold" colspan="1">{{ $record->country->name }}</td>
         </tr>
         <tr>
-            <td class="headerTable textWhite textWeightBold" colspan="2">{{ $record->title }}</td>
+            <td class="headerTable textWhite textWeightBold" colspan="1">{{ $record->title }}</td>
         </tr>
         @endif
         <tr style="{{ $record->home_allowance == 0 ? 'display: none' : '' }}">

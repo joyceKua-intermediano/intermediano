@@ -52,7 +52,7 @@
 
 <body>
     @php
-        $quotationDetails = calculatePanamaQuotation($record, $previousMonthRecord);
+        $quotationDetails = calculateFreelanceQuotation($record, $previousMonthRecord);
     @endphp
 
     <table style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: red">
@@ -75,13 +75,13 @@
         <tr>
             <td></td>
             <td style="background-color: #a8a8a8;"></td>
-            <td style="background-color: #a8a8a8; font-weight:bold" align="center">{{ $record->currency_name }} </td>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
         </tr>
 
         <tr>
             <td></td>
             <th>Gross Salary</th>
-            <td align="right">{{ number_format($quotationDetails['grossSalary'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['grossSalary'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
 
@@ -90,7 +90,7 @@
             <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total Gross Income
             </th>
             <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                {{ number_format($quotationDetails['totalGrossIncome'], 2) }}</td>
+                {{ number_format($quotationDetails['totalGrossIncome'] / $record->exchange_rate, 2) }}</td>
         </tr>
 
 
@@ -98,19 +98,19 @@
         <tr class="highlight">
             <td></td>
             <th>Fee</th>
-            <td align="right">{{ number_format($quotationDetails['fee'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['fee'] / $record->exchange_rate, 2) }}</td>
         </tr>
         <tr>
             <td></td>
             <th>Bank Fee</th>
-            <td align="right">{{ number_format($quotationDetails['bankFee'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['bankFee'] / $record->exchange_rate, 2) }}</td>
         </tr>
 
         <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
             <td></td>
             <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total Invoice</th>
             <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                {{ number_format($quotationDetails['totalInvoice'], 2) }}</td>
+                {{ number_format($quotationDetails['totalInvoice'] / $record->exchange_rate, 2) }}</td>
         </tr>
 
         <tr>
