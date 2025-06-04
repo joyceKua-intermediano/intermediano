@@ -50,6 +50,7 @@
             "app/Helpers/Quotation/NicaraguaQuotationHelper.php",
             "app/Helpers/Quotation/HongkongQuotationHelper.php",
             "app/Helpers/Quotation/DominicanRepublicQuotationHelper.php",
+            "app/Helpers/Quotation/ElSalvadorQuotationHelper.php",
             "app/Helpers/CamelCaseToWordsHelper.php",
             "app/Helpers/GetContractContentHelper.php",
             "app/Helpers/GetClientContractContentHelper.php",
