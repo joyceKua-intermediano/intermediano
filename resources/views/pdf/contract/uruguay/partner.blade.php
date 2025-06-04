@@ -620,11 +620,10 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
         </table>
         <div style="margin-top: -20px !important">
             @php
-            // Determine the appropriate view to include
-            $country = strtolower($record->quotation->country->name ?? 'unknown'); // Assuming 'country' is a property of $record->quotation
+            $countryName = strtolower($record->quotation->country->name ?? 'unknown');
+            $country = str_replace(' ', '_', $countryName);
             $isFreelance = $record->quotation->is_freelance === 1;
 
-            // Decide the view name
             $viewName = $isFreelance
             ? 'pdf.freelance_quotation'
             : "pdf.{$country}_quotation";
