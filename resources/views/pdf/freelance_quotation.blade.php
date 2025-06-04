@@ -96,54 +96,52 @@
         <tr style="{{ $record->home_allowance == 0 ? 'display: none' : '' }}">
             <th class="p-4">Home Allowance</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">{{ number_format($record->home_allowance, 2) }}</span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($record->home_allowance / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
         <tr style="{{ $record->transport_allowance == 0 ? 'display: none' : '' }}">
             <th class="p-4">Transport Allowance</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">{{ number_format($record->transport_allowance, 2) }}</span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($record->transport_allowance / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
         <tr style="{{ $record->medical_allowance == 0 ? 'display: none' : '' }}">
             <th class="p-4">Medical Allowance</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">{{ number_format($record->medical_allowance, 2) }}</span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($record->medical_allowance / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
         <tr style="{{ $record->internet_allowance == 0 ? 'display: none' : '' }}">
             <th class="p-4">Internet Allowance</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">{{ number_format($record->internet_allowance, 2) }}</span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($record->internet_allowance / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
         <tr class="">
             <th class="p-4">Gross Salary</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">{{ number_format($quotationDetails['grossSalary'], 2) }}</span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['grossSalary'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
 
         <tr style="{{ $record->bonus == 0 ? 'display: none' : '' }}">
             <th class="p-4">Bonus</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">{{ number_format($record->bonus, 2) }}</span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($record->bonus / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
 
         <tr class="highlight">
             <th class="p-4 textWeightBold">Total Gross Income</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['totalGrossIncome'], 2) }}
-                </span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['totalGrossIncome'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
 
@@ -152,28 +150,22 @@
         <tr class="highlight">
             <th class="p-4 textWeightBold">Fee</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['fee'], 2) }}
-                </span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['fee'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
         <tr>
             <th class="p-4 ">Bank Fee</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['bankFee'], 2) }}
-                </span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['bankFee'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
         <tr class="highlight">
             <th class="p-4 text-left textWeightBold">Total Invoice</th>
             <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['totalInvoice'], 2) }}
-                </span>
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['totalInvoice'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
     </table>
