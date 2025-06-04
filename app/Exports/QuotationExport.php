@@ -27,6 +27,9 @@ class QuotationExport implements FromView, WithEvents
     {
         $isIntegral = $this->record->is_integral;
         switch (true) {
+            case $this->record->is_freelance === 1:
+                $exportFile = 'exports.quotations.freelance';
+                break;
             case $this->record->cluster_name === 'IntermedianoColombiaSAS':
                 $exportFile = $isIntegral ? 'exports.integral_quotation' : 'exports.quotation';
                 break;
@@ -67,12 +70,13 @@ class QuotationExport implements FromView, WithEvents
             case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Dominican Republic':
                 $exportFile = 'exports.quotations.dominican_republic';
                 break;
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'El Salvador':
+                $exportFile = 'exports.quotations.el_salvador';
+                break;
             case $this->record->cluster_name === 'PartnerCostaRica' && $this->record->country->name === 'Panama':
                 $exportFile = 'exports.quotations.panama';
                 break;
-            case $this->record->is_freelance === 1:
-                $exportFile = 'exports.quotations.freelance';
-                break;
+
             default:
                 # code...
                 break;
