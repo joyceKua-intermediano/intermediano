@@ -18,7 +18,7 @@ if (!function_exists('calculateBrasilQuotation')) {
         $inss = $totalGrossIncome * 0.2780;
         $fgts = $totalGrossIncome * 0.08;
         $fgtsFine = $totalGrossIncome * 0.04;
-        $fgtsInss = $totalGrossIncome * 0.0715;
+        $fgtsInss = $totalGrossIncome * 0.071539;
         $medicalInsurance =  $record->payrollCosts->medical_insurance;
         $mealTicket =  $record->payrollCosts->meal;
         $transportationTicket =  $record->payrollCosts->transportation;
@@ -32,10 +32,10 @@ if (!function_exists('calculateBrasilQuotation')) {
             $mealTicket +
             $transportationTicket;
 
-        $salary13th = 0.0833 * $totalGrossIncome;
-        $vacation = 0.0833 * $totalGrossIncome;
+        $salary13th = 0.0833333 * $totalGrossIncome;
+        $vacation = 0.0833333 * $totalGrossIncome;
         $vacationBonus = 0.0278 * $totalGrossIncome;
-        $termination = 0.0833 * $totalGrossIncome;
+        $termination = 0.0833333 * $totalGrossIncome;
         $provisionsTotal = $salary13th + $vacation + $vacationBonus + $termination;
 
         // accumulated provision
