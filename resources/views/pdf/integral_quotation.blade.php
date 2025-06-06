@@ -93,7 +93,7 @@
             <td class="p-4 textWhite textWeightBold" colspan="2">{{ $record->country->name }}</td>
         </tr>
         <tr>
-            <td class="headerTable textWhite textWeightBold" colspan="2">{{ $record->title }} (Ordinary)</td>
+            <td class="headerTable textWhite textWeightBold" colspan="2">{{ $record->title }} (Integral)</td>
         </tr>
         @endif
 
