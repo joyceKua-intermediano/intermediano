@@ -1,3 +1,6 @@
+@php
+$birthdays = app(\App\Filament\Pages\Dashboard::class)->getBirthdays();
+@endphp
 <div style="padding: 2rem; background-color: white; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);">
     <div style="text-align: center;">
         <h1 style="font-size: 1.875rem; font-weight: 700; color: #2d3748; margin-bottom: 1rem;">📢 Announcements</h1>
@@ -32,13 +35,12 @@
             </p>
         </div>
 
+
         <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
-            @if (!empty($birthdays))
-            @foreach ($birthdays as $birthday)
+
+            @if (!empty($birthdaysThisMonth))
+            @foreach ($birthdaysThisMonth as $birthday)
             <div style="padding: 1.5rem; background-color: #ebf8ff; border-left: 0.25rem solid #63b3ed; border-radius: 0.5rem; display: flex; align-items: center;">
-                <div style="flex-shrink: 0;">
-                    <img src="{{ $birthday['photo'] }}" alt="{{ $birthday['name'] }}" style="width: 4rem; height: 4rem; border-radius: 9999px;">
-                </div>
                 <div style="margin-left: 1rem;">
                     <h2 style="font-size: 1.25rem; font-weight: 600; color: #2b6cb0;">{{ $birthday['name'] }}</h2>
                     <p style="color: #4a5568;">
@@ -50,11 +52,10 @@
             @endforeach
             @else
             <div style="padding: 1.5rem; background-color: #f7fafc; border-left: 0.25rem solid #a0aec0; border-radius: 0.5rem;">
-                <p style="color: #4a5568; text-align: center;">No upcoming birthdays this month.</p>
+                <p style="color: #4a5568; text-align: center;">No birthdays this month.</p>
             </div>
             @endif
         </div>
-
         <div style="margin-top: 2rem; text-align: center; color: #a0aec0;">
             <p>Stay tuned for more updates and features coming soon!</p>
         </div>
