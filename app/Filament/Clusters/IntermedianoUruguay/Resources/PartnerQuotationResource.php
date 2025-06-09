@@ -5,7 +5,6 @@ namespace App\Filament\Clusters\IntermedianoUruguay\Resources;
 use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoUruguay;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerQuotationResource\Pages;
-use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerQuotationResource\RelationManagers;
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -16,16 +15,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Set;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
-use Filament\Forms\Components\Hidden;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Filament\Forms\Get;
 
 class PartnerQuotationResource extends Resource
 {
@@ -255,6 +251,8 @@ class PartnerQuotationResource extends Resource
                                 'Nicaragua' => 'filament.quotations.nicaragua_modal',
                                 'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
                                 'El Salvador' => 'filament.quotations.el_salvador_modal',
+                                'Jamaica' => 'filament.quotations.jamaica_modal',
+                                'Honduras' => 'filament.quotations.honduras_modal',
                             ];
                             $viewModal = $viewModal[$record->country->name] ?? null;
 
@@ -286,6 +284,7 @@ class PartnerQuotationResource extends Resource
                                 'Nicaragua' => 'pdf.nicaragua_quotation',
                                 'Dominican Republic' => 'pdf.dominican_republic_quotation',
                                 'El Salvador' => 'pdf.el_salvador_quotation',
+                                'Honduras' => 'pdf.honduras_quotation',
                             ];
                             $pdfPage = $pdfPages[$record->country->name] ?? null;
 
