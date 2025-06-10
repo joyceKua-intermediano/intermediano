@@ -253,6 +253,7 @@ class PartnerQuotationResource extends Resource
                                 'El Salvador' => 'filament.quotations.el_salvador_modal',
                                 'Jamaica' => 'filament.quotations.jamaica_modal',
                                 'Honduras' => 'filament.quotations.honduras_modal',
+                                'Guatemala' => 'filament.quotations.guatemala_modal',
                             ];
                             $viewModal = $viewModal[$record->country->name] ?? null;
 
@@ -285,6 +286,7 @@ class PartnerQuotationResource extends Resource
                                 'Dominican Republic' => 'pdf.dominican_republic_quotation',
                                 'El Salvador' => 'pdf.el_salvador_quotation',
                                 'Honduras' => 'pdf.honduras_quotation',
+                                'Guatemala' => 'pdf.guatemala_quotation',
                             ];
                             $pdfPage = $pdfPages[$record->country->name] ?? null;
 
