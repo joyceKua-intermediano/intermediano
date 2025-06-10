@@ -87,7 +87,13 @@ class QuotationResource extends Resource
                         $component->state($cleanedState);
                     })
                     ->required(),
-
+                Forms\Components\Select::make('is_fix_fee')
+                    ->label('Type of fee')
+                    ->required()
+                    ->options([
+                        '1' => 'Fix Rate',
+                        '0' => 'Percentage Rate',
+                    ]),
                 Forms\Components\TextInput::make('fee')
                     ->required(),
 
@@ -199,7 +205,7 @@ class QuotationResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Quotation title')
-                    ->formatStateUsing(fn ($record) => $record->title . ' (' . ($record->is_integral ? 'Integral' : 'Ordinary') . ')')
+                    ->formatStateUsing(fn($record) => $record->title . ' (' . ($record->is_integral ? 'Integral' : 'Ordinary') . ')')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('country.name')
@@ -258,7 +264,7 @@ class QuotationResource extends Resource
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
-                        return Excel::download($export,  $transformTitle .  '_Quotation for ' . $companyName . '.xlsx');
+                        return Excel::download($export, $transformTitle . '_Quotation for ' . $companyName . '.xlsx');
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
@@ -271,7 +277,7 @@ class QuotationResource extends Resource
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             Str::slug($transformTitle, '.') . '_Quotation for ' . $companyName . '.pdf'
                         );
                     }),

@@ -100,7 +100,13 @@ class PayrollResource extends Resource
                         $component->state($cleanedState);
                     })
                     ->required(),
-
+                Forms\Components\Select::make('is_fix_fee')
+                    ->label('Type of fee')
+                    ->required()
+                    ->options([
+                        '1' => 'Fix Rate',
+                        '0' => 'Percentage Rate',
+                    ]),
                 Forms\Components\TextInput::make('fee')
                     ->required(),
 
@@ -292,7 +298,7 @@ class PayrollResource extends Resource
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
-                        return Excel::download($export,  $transformTitle .  '_Payroll for ' . self::getClusterName() . ' ' . $record->consultant->name . '.xlsx');
+                        return Excel::download($export, $transformTitle . '_Payroll for ' . self::getClusterName() . ' ' . $record->consultant->name . '.xlsx');
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
@@ -305,7 +311,7 @@ class PayrollResource extends Resource
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             Str::slug($transformTitle, '.') . '_Payroll for ' . $companyName . ' ' . self::getClusterName() . '.pdf'
                         );
                     }),
