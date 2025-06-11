@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('consultants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('country_id')->constrained()->cascadeOnDelete();
+            $table->date('date_of_birth')->nullable();
             $table->string('name')->unique();
             $table->string('email')->nullable();
             $table->string('mobile_number')->nullable();

@@ -36,6 +36,7 @@ class ConsultantResource extends Resource
                     ->label('Nationality')
                     ->relationship('country', 'name')
                     ->required(),
+                Forms\Components\DatePicker::make('date_of_birth'),
 
                 TextInput::make('mobile_number'),
                 TextInput::make('email')

@@ -14,6 +14,7 @@ class Consultant extends Model
         'email',    
         'mobile_number',    
         'country_id',
+        'date_of_birth',
         'address',
         'employeer'
 
