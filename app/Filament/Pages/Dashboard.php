@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Consultant;
 use Filament\Pages\Page;
 use Carbon\Carbon;
 
@@ -24,7 +25,7 @@ class Dashboard extends Page
 
     public function getBirthdays(): array
     {
-        $allBirthdays = [
+        $internalEmployeeBirthday = [
             ['name' => 'Pillar Hernandez', 'date' => '6-Nov', 'position' => 'Funcionário'],
             ['name' => 'Claudia Gutierrez', 'date' => '27-Aug', 'position' => 'Funcionário'],
             ['name' => 'Jenniffer Casanova', 'date' => '12-Jul', 'position' => 'Funcionário'],
@@ -39,27 +40,19 @@ class Dashboard extends Page
             ['name' => 'Paulo Magalhães', 'date' => '21-Aug', 'position' => 'Prestador'],
             ['name' => 'Thiago Oliveira', 'date' => '22-Oct', 'position' => 'Prestador'],
             ['name' => 'Paola Femeninas', 'date' => '29-Mar', 'position' => 'Prestador'],
-            ['name' => 'Rodrigo Duarte Ferrari', 'date' => '5-May', 'position' => 'Consultor'],
-            ['name' => 'Patricia Rangel', 'date' => '11-Apr', 'position' => 'Consultor'],
-            ['name' => 'Larsa Youssef', 'date' => '1-Jan', 'position' => 'Consultor'],
-            ['name' => 'Luiz de Lima', 'date' => '17-Jun', 'position' => 'Consultor'],
-            ['name' => 'Emanuel Kozerski', 'date' => '16-May', 'position' => 'Consultor'],
-            ['name' => 'Lucas Rodrigues', 'date' => '25-Aug', 'position' => 'Consultor'],
-            ['name' => 'Cinthia da Silva Cortes', 'date' => '22-May', 'position' => 'Consultor'],
-            ['name' => 'Maria Ximena Bejarano Rojas', 'date' => '18-Apr', 'position' => 'Consultor'],
-            ['name' => 'Teresa Incerto', 'date' => '21-Jul', 'position' => 'Consultor'],
-            ['name' => 'Paola Daza', 'date' => '8-Nov', 'position' => 'Consultor'],
-            ['name' => 'Sebastian Mora', 'date' => '9-Aug', 'position' => 'Consultor'],
-            ['name' => 'David Romero', 'date' => '5-Oct', 'position' => 'Consultor'],
-            ['name' => 'Dario Rojas', 'date' => '18-Nov', 'position' => 'Consultor'],
-            ['name' => 'Sebastian Socha', 'date' => '25-Mar', 'position' => 'Consultor'],
-            ['name' => 'Estibaliz Lippez', 'date' => '14-Dec', 'position' => 'Consultor'],
-            ['name' => 'Erika Torres', 'date' => '13-Apr', 'position' => 'Consultor'],
-            ['name' => 'Astrid Alvarez', 'date' => '11-Aug', 'position' => 'Consultor'],
+
         ];
+        $consultants = Consultant::select(['name', 'date_of_birth'])->get()->map(function ($consultant) {
+            return [
+                'name' => $consultant->name,
+                'date' => $consultant->date_of_birth ? Carbon::parse($consultant->date_of_birth)->format('d-M') : null,
+                'position' => 'Consultant',
+            ];
+        })->toArray();
+        $mergeAllBirthdayData = array_merge($internalEmployeeBirthday, $consultants);
 
         $currentMonth = Carbon::now()->format('M');
-        $birthdaysThisMonth = array_filter($allBirthdays, function ($birthday) use ($currentMonth) {
+        $birthdaysThisMonth = array_filter($mergeAllBirthdayData, function ($birthday) use ($currentMonth) {
             return str_contains($birthday['date'], $currentMonth);
         });
 
