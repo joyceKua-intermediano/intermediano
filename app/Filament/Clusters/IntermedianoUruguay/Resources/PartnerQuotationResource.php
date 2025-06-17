@@ -287,12 +287,11 @@ class PartnerQuotationResource extends Resource
                                 'El Salvador' => 'pdf.el_salvador_quotation',
                                 'Honduras' => 'pdf.honduras_quotation',
                                 'Guatemala' => 'pdf.guatemala_quotation',
+                                'Jamaica' => 'pdf.jamaica_quotation',
                             ];
                             $pdfPage = $pdfPages[$record->country->name] ?? null;
 
                         }
-
-
                         $companyName = $record->company->name;
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);
