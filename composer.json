@@ -51,6 +51,7 @@
             "app/Helpers/Quotation/HongkongQuotationHelper.php",
             "app/Helpers/Quotation/DominicanRepublicQuotationHelper.php",
             "app/Helpers/Quotation/ElSalvadorQuotationHelper.php",
+            "app/Helpers/Quotation/JamaicaQuotationHelper.php",
             "app/Helpers/Quotation/HondurasQuotationHelper.php",
             "app/Helpers/Quotation/GuatemalaQuotationHelper.php",
             "app/Helpers/CamelCaseToWordsHelper.php",
