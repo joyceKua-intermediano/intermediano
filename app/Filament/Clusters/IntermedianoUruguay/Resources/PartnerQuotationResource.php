@@ -50,7 +50,7 @@ class PartnerQuotationResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'USVI', 'Saint Marteen']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'USVI', 'Saint Marteen', 'Argentina']);
                     })
                     ->required(),
 
@@ -254,6 +254,7 @@ class PartnerQuotationResource extends Resource
                                 'Jamaica' => 'filament.quotations.jamaica_modal',
                                 'Honduras' => 'filament.quotations.honduras_modal',
                                 'Guatemala' => 'filament.quotations.guatemala_modal',
+                                'Argentina' => 'filament.quotations.argentina_modal',
                             ];
                             $viewModal = $viewModal[$record->country->name] ?? null;
 
@@ -288,6 +289,7 @@ class PartnerQuotationResource extends Resource
                                 'Honduras' => 'pdf.honduras_quotation',
                                 'Guatemala' => 'pdf.guatemala_quotation',
                                 'Jamaica' => 'pdf.jamaica_quotation',
+                                'Argentina' => 'pdf.argentina_quotation',
                             ];
                             $pdfPage = $pdfPages[$record->country->name] ?? null;
 
