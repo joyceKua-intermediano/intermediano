@@ -54,6 +54,7 @@
             "app/Helpers/Quotation/JamaicaQuotationHelper.php",
             "app/Helpers/Quotation/HondurasQuotationHelper.php",
             "app/Helpers/Quotation/GuatemalaQuotationHelper.php",
+            "app/Helpers/Quotation/ArgentinaQuotationHelper.php",
             "app/Helpers/CamelCaseToWordsHelper.php",
             "app/Helpers/GetContractContentHelper.php",
             "app/Helpers/GetClientContractContentHelper.php",
