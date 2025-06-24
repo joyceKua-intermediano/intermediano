@@ -58,7 +58,8 @@
             "app/Helpers/CamelCaseToWordsHelper.php",
             "app/Helpers/GetContractContentHelper.php",
             "app/Helpers/GetClientContractContentHelper.php",
-            "app/Helpers/Quotation/FreelanceQuotationHelper.php"
+            "app/Helpers/Quotation/FreelanceQuotationHelper.php",
+            "app/Helpers/GetContractTypeOptionHelper.php"
         ]
     },
     "autoload-dev": {

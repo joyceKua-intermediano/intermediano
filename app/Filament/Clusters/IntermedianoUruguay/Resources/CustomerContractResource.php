@@ -14,7 +14,7 @@ use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-
+use Filament\Tables\Columns\BadgeColumn;
 use Carbon\Carbon;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 class CustomerContractResource extends Resource
@@ -102,6 +102,14 @@ class CustomerContractResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gross_salary')
                     ->searchable(),
+                BadgeColumn::make('signature')
+                    ->sortable()
+                    ->colors([
+                        'success' => fn($state) => $state !== null,
+                        'warning' => fn($state) => $state == 'Pending Signature',
+                    ])
+                    ->label('Signature Status')
+                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -175,6 +183,6 @@ class CustomerContractResource extends Resource
     }
     protected static function getClusterName(): string
     {
-        return class_basename(self::$cluster);
+        return 'ClientContractUruguay';
     }
 }
