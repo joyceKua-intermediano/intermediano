@@ -81,9 +81,9 @@ class PartnerContractResource extends Resource
                     })
                     ->maxLength(255)
                     ->default(null),
-                Forms\Components\Hidden::make('cluster_name')
-                    ->default('PartnerUruguay')
-                    ->label('PartnerUruguay'),
+                Forms\Components\TextInput::make('cluster_name')
+                    ->default('PartnerContractUruguay')
+                    ->label('PartnerContractUruguay'),
             ]);
     }
 
@@ -186,7 +186,7 @@ class PartnerContractResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $contractCluster = Contract::where('cluster_name', 'PartnerUruguay')->where('contract_type', 'partner');
+        $contractCluster = Contract::where('cluster_name', 'PartnerContractUruguay')->where('contract_type', 'partner');
         return $contractCluster;
     }
 

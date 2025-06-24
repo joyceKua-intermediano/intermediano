@@ -5,13 +5,25 @@ if (!function_exists('getClientContractFile')) {
     function getClientContractFile($record)
     {
         switch ($record->cluster_name) {
-
-            case 'PartnerUruguay':
+            case 'PartnerContractCanada':
                 $mobile = '';
                 $address = '';
                 $companyTitle = 'Intermediano S.A.S.';
                 $pdfPage = 'pdf.contract.uruguay.partner';
                 break;
+            case 'PartnerContractUruguay':
+                $mobile = '';
+                $address = '';
+                $companyTitle = 'Intermediano S.A.S.';
+                $pdfPage = 'pdf.contract.uruguay.partner';
+                break;
+            case 'ClientContractUruguay':
+                $mobile = '';
+                $address = '';
+                $companyTitle = 'Intermediano S.A.S.';
+                $pdfPage = 'pdf.contract.uruguay.client';
+                break;
+
             default:
                 $mobile = '';
                 $address = '';

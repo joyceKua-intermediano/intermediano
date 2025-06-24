@@ -49,6 +49,7 @@ $contractType = $record->end_date == null ? 'Undefined Period' : 'Defined Period
 $exchangeRate = $record->quotation->exchange_rate;
 $currencyName = $record->quotation->currency_name;
 
+$signatureExists = Storage::disk('public')->exists($record->signature);
 
 @endphp
 <body>
@@ -554,13 +555,13 @@ $currencyName = $record->quotation->currency_name;
                         <b>INTERMEDIANO SAS </b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: -20px">
+                    <div style="text-align: center; margin-top: 65px">
                         <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <div style="text-align: center; margin-top: -20px">
-                        <p>Fernando Gutierrez</p>
-                        <p style="margin-top: -20px">Legal Representative</p>
+                    <div style="text-align: center; margin-top: -65px">
+                        <p style='text-align: center;'>Fernando Gutierrez</p>
+                        <p style="margin-top: -20px; text-align: center;">Legal Representative</p>
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
@@ -568,13 +569,19 @@ $currencyName = $record->quotation->currency_name;
                         <b>{{ $companyName }}</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: -20px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
-                    </div>
+
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                    <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+
+                    @else
+                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
+
+                    @endif
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <div style="text-align: center; margin-top: -20px">
-                        <p>{{ $customerName }} {{ $contactSurname }}</p>
-                        <p style="margin-top: -20px">Legal Representative</p>
+                        <p style='text-align: center;'>{{ $customerName }} {{ $contactSurname }}</p>
+                        <p style="margin-top: -20px; text-align: center;">Legal Representative</p>
                     </div>
                 </td>
             </tr>
