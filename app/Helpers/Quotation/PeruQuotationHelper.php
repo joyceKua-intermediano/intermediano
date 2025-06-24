@@ -20,7 +20,7 @@ if (!function_exists('calculatePeruQuotation')) {
         $healthInsurance = ($totalGrossIncome - $record->medical_allowance) * 0.09;
         $healthInsuranceVacation = ($totalGrossIncome - $record->medical_allowance) * .0075;
         $eps = $record->payrollCosts->eps;
-        $seguroVida = ($totalGrossIncome - $record->medical_allowance) * .0033;
+        $seguroVida = ($totalGrossIncome - $record->medical_allowance) * .003252;
 
         $payrollCostsTotal =
             $healthInsurance +
@@ -84,13 +84,11 @@ if (!function_exists('calculatePeruQuotation')) {
             'healthInsuranceVacation' => $healthInsuranceVacation,
             'eps' => $eps,
             'seguroVida' => $seguroVida,
-            'payrollCostsTotal' => $payrollCostsTotal,
             'gratification' => $gratification,
             'extraOrdinaryGratification' => $extraOrdinaryGratification,
             'vacation' => $vacation,
             'cts' => $cts,
             'termination' => $termination,
-            'provisionsTotal' => $provisionsTotal,
             'previousMonthGrossIncome' => $previousMonthGrossIncome,
             'accumulatedGratification' => $accumulatedGratification,
             'accumulatedExtraOrdinaryGratification' => $accumulatedExtraOrdinaryGratification,
