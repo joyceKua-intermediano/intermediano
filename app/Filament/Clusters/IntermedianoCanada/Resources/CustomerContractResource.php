@@ -36,9 +36,9 @@ class CustomerContractResource extends Resource
             ->schema([
                 Forms\Components\Hidden::make('contract_type')
                     ->default('customer'),
-                Forms\Components\Select::make('partner_id')
-                    ->label('Partner')
-                    ->relationship('partner', 'partner_name')
+                Forms\Components\Select::make('company_id')
+                    ->label('Company')
+                    ->relationship('company', 'name')
                     ->required(),
                 Forms\Components\Select::make('employee_id')
                     ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoCanada'))
@@ -85,8 +85,9 @@ class CustomerContractResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('partner.partner_name')
+                Tables\Columns\TextColumn::make('company.name')
                     ->numeric()
+                    ->label('Customer Company')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('employee.name')
                     ->numeric()
@@ -191,7 +192,8 @@ class CustomerContractResource extends Resource
     }
     protected static function getClusterName(): string
     {
-        return class_basename(self::$cluster);
+        return 'ClientContractCanada';
+
     }
     public static function getEloquentQuery(): Builder
     {

@@ -13,6 +13,15 @@ $formattedDate = now()->format('jS');
 $month = now()->format('F');
 $year = now()->format('Y');
 $currentDate = now()->format('[d/m/Y]');
+$companyName = $record->company->name;
+$companyContactName = $record->companyContact->contact_name;
+$companyContactSurname = $record->companyContact->surname;
+$companyAddress = $record->company->address;
+
+$companyPhone = $record->companyContact->phone;
+$companyEmail = $record->companyContact->email;
+$companyCountry = $record->company->country;
+$companyTaxId = $record->company->tax_id ?? 'NA';
 
 $employeeName = $record->employee->name;
 $employeeJobTitle = $record->job_title ?? null;
@@ -21,6 +30,7 @@ $employeeGrossSalary = $record->gross_salary;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $quotationDate = $record->quotation->title;
+$signatureExists = Storage::disk('public')->exists($record->signature);
 
 @endphp
 
@@ -57,9 +67,8 @@ $quotationDate = $record->quotation->title;
 
         <p><b>GATE INTERMEDIANO INC.</b>, initially referred as INTERMEDIANO INC. (the “Provider”) a Canadian company
             with its principal place of business at 4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada,
-            duly represented by its legal representative; AND <b>WMBE PAYROLLING INC. DBA TCW Global</b> (the
-            “Customer”), with its principal place of business at United States and holding offices at 3545 Aero Ct, San
-            Diego, CA 92123, USA, duly represented by its authorized representative, (each, a “Party “and together, the
+            duly represented by its legal representative; AND <b>{{ $companyName }}</b> (the
+            “Customer”), with its principal place of business at {{ $companyCountry }}, and holding offices at {{ $companyAddress }}, duly represented by its authorized representative, (each, a “Party “and together, the
             “Parties”).</p>
 
         <h4 style='text-align:center; t'> SCHEDULE B</h4>
@@ -105,24 +114,29 @@ $quotationDate = $record->quotation->title;
             the country where the Worker is providing the services. The Parties agree that all applicable law including
             but not limited to, labor and tax, and must be fully complied with the purposes of the local and global
             compliance guidelines. </p>
-            <br>
+        <br>
         <table style="width: 100%; text-align: center; border-collapse: collapse; border: none;">
             <tr style="border: none;">
 
                 <td style="width: 40%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>GATE INTERMEDIANO INC.</h4>
                     <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px;  margin: 15px 0;">
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <p style="margin-top: -30px; text-align: center;"> Fernando Gutierrez </p>
                     <p style="margin-top: -15px; text-align: center;"> CEO</p>
                 </td>
                 <td style="width: 60%; vertical-align: top; border: none; text-align:center !important;">
-                    <h4>WMBE PAYROLLING INC. DBA TCW Global </h4>
-                    <div style="width: 100%; border-bottom: 1px solid black; margin-top: 60px"></div>
+                    <h4>{{ $companyName }}</h4>
+                    @if($signatureExists)
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                    </div>
+                    @endif
+                    <div style="width: 100%; border-bottom: 1px solid black; margin-top: 10px"></div>
 
-                    <p style="margin-top: -30px;  text-align: center;"> Sarah Love </p>
+                    <p style="margin-top: -30px;  text-align: center;">{{ $companyContactName }} </p>
                     <p style="margin-top: -15px;  text-align: center;"> Authorized Responsible </p>
                 </td>
             </tr>

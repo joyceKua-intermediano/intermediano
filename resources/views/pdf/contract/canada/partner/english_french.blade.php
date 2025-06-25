@@ -39,6 +39,7 @@ $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$signatureExists = Storage::disk('public')->exists($record->signature);
 
 @endphp
 
@@ -704,9 +705,14 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                         <b>{{ $partnerName }}</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
-                    </div>
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                    <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+
+                    @else
+                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
+
+                    @endif
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <p style="text-align: center; margin-top: -20px">{{ $partnerContactName }}</p>
                     <p style="text-align: center; margin-top: -20px">Name of the legal representative</p>
@@ -718,9 +724,14 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                         <b>{{ $partnerName }}</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
-                    </div>
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                    <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+
+                    @else
+                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
+
+                    @endif
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <p style="text-align: center; margin-top: -20px">Représentant Légal: {{ $partnerContactName }}</p>
                     <p style="text-align: center; margin-top: -20px">Représentant Légal</p>

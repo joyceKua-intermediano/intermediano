@@ -13,14 +13,19 @@ $formattedDate = now()->format('jS');
 $month = now()->format('F');
 $year = now()->format('Y');
 $currentDate = now()->format('[d/m/Y]');
-$partnerName = $record->partner->partner_name;
-$partnerContactName = $record->partner->contact_name;
-$partnerAddress = $record->partner->address;
+$companyName = $record->company->name;
 
-$partnerPhone = $record->partner->mobile_number;
-$partnerEmail = $record->partner->email;
-$partnerCountry = $record->partner->country->name;
-$partnerTaxId = $record->partner->tax_id ?? 'NA';
+$companyContactName = $record->companyContact->contact_name;
+$companyContactSurname = $record->companyContact->surname;
+
+$companyAddress = $record->company->address;
+
+$companyPhone = $record->companyContact->phone;
+$companyEmail = $record->companyContact->email;
+$companyTaxId = $record->company->tax_id ?? 'NA';
+$companyCountry = $record->company->country;
+
+
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
 $employeeNationality = $record->personalInformation->country ?? null;
@@ -39,6 +44,7 @@ $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$signatureExists = Storage::disk('public')->exists($record->signature);
 
 @endphp
 
@@ -63,11 +69,11 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                         business at 4388 Rue Saint-Denis Suite200 #763,
                         Montreal, QC H2J 2L1, Canada, duly
                         represented by its legal representative; AND
-                        <b>{{ $partnerName }} </b> (the <b>“Customer”</b>), a
-                        {{ $partnerCountry }} company, enrolled
+                        <b>{{ $companyName }} </b> (the <b>“Customer”</b>), a
+                        {{ $companyCountry }} company, enrolled
                         under the fiscal registration number
-                        {{ $partnerTaxId }}, located at
-                        {{ $partnerAddress }}, {{ $partnerCountry }}, duly represented by its
+                        {{ $companyTaxId }}, located at
+                        {{ $companyAddress }}, {{ $companyCountry }}, duly represented by its
                         authorized representative, (each, a “Party”
                         and together, the “Parties”). </p>
 
@@ -84,9 +90,9 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                         société canadienne ayant son siège social au
                         4388 Rue Saint-Denis, Suite 200 #763, Montréal,
                         QC H2J 2L1, Canada, dûment représentée par
-                        son représentant légal; ET <b>{{ $partnerName }}</b> (le
-                        <b>"Client"</b>), une société {{ $partnerCountry }}, inscrite
-                        sous le numéro d'enregistrement fiscal {{ $partnerTaxId }}, située à {{ $partnerAddress }},
+                        son représentant légal; ET <b>{{ $companyName }}</b> (le
+                        <b>"Client"</b>), une société {{ $companyCountry }}, inscrite
+                        sous le numéro d'enregistrement fiscal {{ $companyTaxId }}, située à {{ $companyAddress }},
                         dûment représentée par son représentant
                         autorisé, (chacune, une “Partie” et ensemble,
                         les “Parties”). </p>
@@ -184,7 +190,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>1.4 Subcontracting Authorization:</b></p>
                     <p>The Customer acknowledges and hereby formally and expressly grants the Provider authorization to subcontract the services described herein. </p>
-           
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>1.4 Autorisation de Sous-traitance:</b></p>
@@ -228,7 +234,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>1.6.2 Termination for Default:</b></p>
                     <p>Either Party may terminate this Agreement immediately, without prior notice, in the event that the other Party is in default of any of its obligations under this Agreement. Such termination shall be effective upon the defaulting Party's receipt of written notice specifying the nature of the default. </p>
-            
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>1.6.2 Résiliation pour Manquement:</b></p>
@@ -248,7 +254,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                     <p><b>2) Entire Agreement:
                         </b></p>
                     <p>This Agreement, along with its Appendices, represents the entire understanding between the Parties regarding the subject matter herein and supersedes all prior discussions, agreements, and understandings, whether oral or written, including the aforementioned Freelance Vendor T&C. </p>
-           
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>2) Accord Complet:
@@ -274,7 +280,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                     <p>Payroll Outsourcing Service </p>
                     <p>At Customer’s request, Provider will take whatever steps are necessary under local law to become the employer of record for candidates approved by Customer’s Client or its subcontractor. By law, those individuals will be independent consultants (“freelancers”) or employees of Provider or from its subcontractor (“Workers”) for either an indefinite or definite period. In case of subcontracting a partner for the service, all indemnification responsibilities will be assumed by the subcontractor of the Provider. </p>
                     <p>Provider or subcontractor will place the Workers on engagement with Customer’s Client pursuant to Customer’s instructions. Provider will manage all legal, fiscal, administrative, and similar employer obligations under local law. That includes, but is not limited to, executing a proper employment contract with the Worker, verifying the Worker’s identity and legal right to work, issuing appropriate wages, collecting/remitting social charges and tax or the like as required by local law, and offboarding a Worker compliantly. Extra engagement costs, not part of the regular hiring process such as background checks shall be included in the costs. </p>
-               
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p style=' text-align: center;'> <b style="text-decoration: underline;">ANNEXE A</b></p>
@@ -344,7 +350,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                     <p style="margin: 5; padding: 0; line-height: 1.5;"><b>START DATE:</b> {{ $employeeStartDate }}</p>
                     <p style="margin: 5; padding: 0; line-height: 1.5;"><b>END DATE:</b> {{ $employeeEndDate }}</p>
                     <p style="margin: 5; padding: 0; line-height: 1.5;"><b>GROSS WAGES:</b> CAD {{ number_format($employeeGrossSalary, 2) }} as Gross Monthly Salary.</p>
-          
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p style='line-height: 1.5; text-align: center; font-weight: bold'>ANNEXE B</p>
@@ -376,7 +382,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">LOCAL PAYMENT CONDITIONS:</b>
                     <p>Salaries and/or any other remuneration is set at the local currency of the Country where services is provided. </p>
-               
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">CONDITIONS DE PAIEMENT LOCALES:</b>
@@ -483,7 +489,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">C) LOCAL LEGISLATION - PREVAILS</b>
                     <p>The law that will govern this Service Agreement as well as the Worker’s engagement including their rights as an employee will be the law of the Province of Quebec in Canada where the Worker is providing the services. The Parties agree that all applicable law including but not limited to, labor and tax, and must be fully complied with the purposes of the local and global compliance guidelines. This Service Agreement replaces any other agreement and shall prevail over all other jurisdictions. </p>
-             
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">C) LÉGISLATION LOCALE - PRÉÉMINENCE </b>
@@ -499,7 +505,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
     <main style="page-break-after: avoid">
 
         <table style="margin-top: 35px !important">
-  
+
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; margin-top: 20px;">
@@ -514,7 +520,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                     <p style="text-align: center;margin-top: -20px">CEO</p>
                     <p style="text-align: left;margin-top: 10px">Phone: +1 514 907 5393</p>
                     <p style="text-align: left;margin-top: -10px">Email: <a href="">sac@intermediano.com</a></p>
-            
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; margin-top: 20px;">
@@ -535,32 +541,42 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; margin-top: 20px;">
-                        <b>{{ $partnerName }}</b>
+                        <b>{{ $companyName }}</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
-                    </div>
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px;">
+                    <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+
+                    @else
+                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
+
+                    @endif
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="text-align: center; margin-top: -20px">{{ $partnerContactName }}</p>
+                    <p style="text-align: center; margin-top: -20px">{{ $companyContactName }} {{ $companyContactSurname }}</p>
                     <p style="text-align: center; margin-top: -20px">Name of the legal representative</p>
-                    <p style="text-align: left;margin-top: 10px">Phone: {{ $partnerPhone }}</p>
-                    <p style="text-align: left;margin-top: -10px">Email: <a href="">{{ $partnerEmail }}</a></p>
-              
+                    <p style="text-align: left;margin-top: 10px">Phone: {{ $companyPhone }}</p>
+                    <p style="text-align: left;margin-top: -10px">Email: <a href="">{{ $companyEmail }}</a></p>
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; margin-top: 20px;">
-                        <b>{{ $partnerName }}</b>
+                        <b>{{ $companyName }}</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
-                    </div>
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px;">
+                    <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+
+                    @else
+                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
+
+                    @endif
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="text-align: center; margin-top: -20px">Représentant Légal: {{ $partnerContactName }}</p>
+                    <p style="text-align: center; margin-top: -20px">Représentant Légal: {{ $companyContactName }} {{ $companyContactSurname }}</p>
                     <p style="text-align: center; margin-top: -20px">Représentant Légal</p>
-                    <p style="text-align: left;margin-top: 10px">Téléphone: {{ $partnerPhone }}</p>
-                    <p style="text-align: left;margin-top: -10px">Email: <a href="">{{ $partnerEmail }}</a> </p>
+                    <p style="text-align: left;margin-top: 10px">Téléphone: {{ $companyPhone }}</p>
+                    <p style="text-align: left;margin-top: -10px">Email: <a href="">{{ $companyEmail }}</a> </p>
                 </td>
             </tr>
         </table>

@@ -19,6 +19,7 @@ use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\URL;
+use Filament\Tables\Columns\BadgeColumn;
 
 class ContractResource extends Resource
 {
@@ -97,7 +98,18 @@ class ContractResource extends Resource
                 Tables\Columns\TextColumn::make('contract_type')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('cluster_name')
-                    ->searchable(),
+                    ->searchable()
+                    ->formatStateUsing(function ($state) {
+                        return preg_replace('/(?<!^)([A-Z])/', ' $1', $state);
+                    }),
+                BadgeColumn::make('signature')
+                    ->sortable()
+                    ->colors([
+                        'success' => fn($state) => $state !== null,
+                        'warning' => fn($state) => $state == 'Pending Signature',
+                    ])
+                    ->label('Signature Status')
+                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -189,9 +201,41 @@ class ContractResource extends Resource
                 Tables\Actions\Action::make('pdf')
                     ->label('Download Contract')
                     ->icon('heroicon-o-arrow-down-tray')
-                    ->action(function ($record) {
-                        $content = getClientContractFile($record);
+                    ->form(function ($record) {
+                        $contractSettings = getContractTypeOptions($record->cluster_name);
 
+                        return $contractSettings['visible']
+                            ? [
+                                Forms\Components\Select::make('contractType')
+                                    ->label('Contract Type')
+                                    ->options($contractSettings['options'])
+                                    ->required(),
+                            ]
+                            : [];
+                    })
+                    ->action(function ($record, $data) {
+                        $content = getClientContractFile($record);
+                        $pdfPageMappings = [
+                            'PartnerContractCanada' => [
+                                'english_portuguese' => 'pdf.contract.canada.partner.english_portuguese',
+                                'partner_english' => 'pdf.contract.canada.partner.english',
+                                'english_spanish' => 'pdf.contract.canada.partner.english_spanish',
+                                'english_french' => 'pdf.contract.canada.partner.english_french',
+                            ],
+                            'ClientContractCanada' => [
+                                'tcw' => 'pdf.contract.canada.client.tcw',
+                                'english_french' => 'pdf.contract.canada.client.english_french',
+                                'english' => 'pdf.contract.canada.client.english',
+
+                            ],
+                        ];
+                        $clusterName = $record->cluster_name;
+                        $contractType = $data['contractType'] ?? null;
+                        $pdfPage = $pdfPageMappings[$clusterName][$contractType] ?? $content['pdfPage'];
+
+                        if (!$pdfPage) {
+                            throw new \Exception('Invalid contract type or cluster name.');
+                        }
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
 
@@ -201,14 +245,15 @@ class ContractResource extends Resource
                         $record->translatedPosition = $tr->translate($record->companyContact->position ?? "");
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
-                        $fileName = $startDateFormat . '_Contract with_' . $record->partner->partner_name . '_of employee_PR';
+                        $customerName = $record->partner->partner_name ?? $record->company->name;
+                        $fileName = $startDateFormat . '_Contract with_' . $customerName . '_of employee_PR';
                         $footerDetails = [
                             'companyName' => $content['companyTitle'],
                             'address' => '',
                             'domain' => 'sac@intermediano.com',
                             'mobile' => ''
                         ];
-                        $pdf = Pdf::loadView($content['pdfPage'], ['record' => $record, 'poNumber' => $contractTitle, 'footerDetails' => $footerDetails, 'is_pdf' => true]);
+                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'footerDetails' => $footerDetails, 'is_pdf' => true]);
                         return response()->streamDownload(
                             fn() => print ($pdf->output()),
                             $fileName . '.pdf'
