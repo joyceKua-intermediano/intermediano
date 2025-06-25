@@ -13,14 +13,16 @@ $formattedDate = now()->format('jS');
 $month = now()->format('F');
 $year = now()->format('Y');
 $currentDate = now()->format('[d/m/Y]');
-$partnerName = $record->partner->partner_name;
-$partnerContactName = $record->partner->contact_name;
-$partnerAddress = $record->partner->address;
+$companyName = $record->company->name;
+$companyContactName = $record->companyContact->contact_name;
+$companyContactSurname = $record->companyContact->surname;
+$companyAddress = $record->company->address;
 
-$partnerPhone = $record->partner->mobile_number;
-$partnerEmail = $record->partner->email;
-$partnerCountry = $record->partner->country->name;
-$partnerTaxId = $record->partner->tax_id ?? 'NA';
+$companyPhone = $record->companyContact->phone;
+$companyEmail = $record->companyContact->email;
+$companyCountry = $record->company->country;
+$companyTaxId = $record->company->tax_id ?? 'NA';
+
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
 $employeeNationality = $record->personalInformation->country ?? null;
@@ -39,6 +41,7 @@ $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$signatureExists = Storage::disk('public')->exists($record->signature);
 
 @endphp
 
@@ -74,11 +77,11 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             business at 4388 Rue Saint-Denis Suite200 #763,
             Montreal, QC H2J 2L1, Canada, duly
             represented by its legal representative; AND
-            <b>{{ $partnerName }} </b> (the <b>“Customer”</b>), a
-            {{ $partnerCountry }} company, enrolled
+            <b>{{ $companyName }} </b> (the <b>“Customer”</b>), a
+            {{ $companyCountry }} company, enrolled
             under the fiscal registration number
-            {{ $partnerTaxId }}, located at
-            {{ $partnerAddress }}, {{ $partnerCountry }}, duly represented by its
+            {{ $companyTaxId }}, located at
+            {{ $companyAddress }}, {{ $companyCountry }}, duly represented by its
             authorized representative, (each, a “Party”
             and together, the “Parties”). </p>
         <p><b>WHEREAS,</b> in the event of any discrepancies
@@ -109,11 +112,6 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             indemnification obligations to the Customer.</p>
         <p><b>1.4 Subcontracting Authorization:</b></p>
         <p>The Customer acknowledges and hereby formally and expressly grants the Provider authorization to subcontract the services described herein. </p>
-
-
-
-
-
         @include('pdf.contract.layout.footer')
     </main>
 
@@ -211,17 +209,25 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p style="text-align: left;margin-top: -10px">Email: <a href="">sac@intermediano.com</a></p>
 
         <div style="text-align: center; margin-top: 20px;">
-            <b>{{ $partnerName }}</b>
+            <b>{{ $companyName }}</b>
         </div>
         <br><br>
+        @if($signatureExists)
+        <div style="text-align: center; margin-top: 0px">
+            <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+        </div>
+
+        @else
         <div style="text-align: center; margin-top: 0px">
             <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
         </div>
+        @endif
+
         <div style="width: 80%; border-bottom: 1px solid black; text-align: center; margin: 0 auto;"></div>
-        <p style="text-align: center; margin-top: -20px">{{ $partnerContactName }}</p>
+        <p style="text-align: center; margin-top: -20px">{{ $companyContactName }} {{ $companyContactSurname }}</p>
         <p style="text-align: center; margin-top: -20px">Name of the legal representative</p>
-        <p style="text-align: left;margin-top: -10px">Phone: {{ $partnerPhone }}</p>
-        <p style="text-align: left;margin-top: -10px">Email: <a href="">{{ $partnerEmail }}</a></p>
+        <p style="text-align: left;margin-top: -10px">Phone: {{ $companyPhone }}</p>
+        <p style="text-align: left;margin-top: -10px">Email: <a href="">{{ $companyEmail }}</a></p>
         @include('pdf.contract.layout.footer')
     </main>
 

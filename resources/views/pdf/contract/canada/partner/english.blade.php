@@ -30,6 +30,8 @@ $employeeJobTitle = $record->job_title;
 $employeeStartDate = $record->start_date;
 $employeeEndDate = $record->end_date;
 $employeeGrossSalary = $record->gross_salary;
+$signatureExists = Storage::disk('public')->exists($record->signature);
+
 @endphp
 
 <style>
@@ -215,26 +217,34 @@ $employeeGrossSalary = $record->gross_salary;
     <main class='main-container'>
 
 
-        <p> {{ $currentDate }}</p>
+        <p style="margin-top: -6px !important;"> {{ $currentDate }}</p>
 
-        <table style="width: 100%; text-align: center; border-collapse: collapse; border: none;">
+        <table style="width: 100%; text-align: center; border-collapse: collapse; border: none; margin-top: -35px !important;">
             <tr style="border: none;">
 
-                <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
+                <td style="width: 50%; vertical-align: top; border: none; text-align: center; padding: 10px; padding-top: -20px">
                     <h4>{{ $partnerName }}</h4>
-                    <div style="width: 100%; border-bottom: 1px solid black; margin-top: 60px"></div>
-                    <p style="margin-top: -30px; text-align: center;"> {{ $partnerContactName }}</p>
-                    <p style="margin-top: -15px; text-align: center;"> Representative</p>
+                    @if($signatureExists)
+                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                    <p style="margin: 5px 0; text-align: center;">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                    @else
+                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Blank Signature" style="height: 50px; margin: 10px 0;">
+                    @endif
+                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
+
+                    <p style="margin: 10px 0; text-align: center;">{{ $partnerContactName }}</p>
+                    <p style="margin: 5px 0; text-align: center;">Representative</p>
                 </td>
-                <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
-                    <h4>GATE INTERMEDIANO INC. </h4>
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                <td style="width: 50%; vertical-align: top; border: none; text-align: center; padding: 10px;  padding-top: -20px">
+                    <h4>GATE INTERMEDIANO INC.</h4>
+                    <div style="margin-top: 65px">
+                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px;">
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="margin-top: -30px;  text-align: center;"> Fernando Gutierrez</p>
-                    <p style="margin-top: -15px;  text-align: center;"> CEO</p>
+                    <p style="margin: 10px 0; text-align: center;">Fernando Gutierrez</p>
+                    <p style="margin: 5px 0; text-align: center;">CEO</p>
                 </td>
+
             </tr>
         </table>
 
