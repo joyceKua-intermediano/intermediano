@@ -43,6 +43,7 @@ $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$signatureExists = Storage::disk('public')->exists($record->signature);
 
 @endphp
 
@@ -515,7 +516,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Si al Cliente:</b>
-                    <p style="line-height: 1.5; margin: 2px; margin-top: 10px;">A/C: <b>{{ strtoupper($contactName) }} {{  strtoupper($contactSurname) }}</b></p>
+                    <p style="line-height: 1.5; margin: 2px; margin-top: 10px;">A/C: <b>{{ strtoupper($contactName) }} {{ strtoupper($contactSurname) }}</b></p>
                     <p style="line-height: 1.5; margin: 2px;">Dirección: {{ $customerAddress }} </p>
                     <p style="line-height: 1.5; margin: 2px;">Telefone/Fax: {{ $customerPhone }}</p>
                     <p style="line-height: 1.5; margin: 2px;">Correo electrónico: <a href="#">{{ $customerEmail }}</a> </p>
@@ -566,9 +567,17 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
             <b>{{ strtoupper($companyName) }}</b>
         </div>
         <br><br>
+        @if($signatureExists)
+
+        <div style="text-align: center; margin-top: 0px">
+            <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+        </div>
+        @else
         <div style="text-align: center; margin-top: 0px">
             <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
         </div>
+        @endif
+
         <div style="width: 80%; border-bottom: 1px solid black; text-align: center; margin: 0 auto;"></div>
         <p style="text-align: center; margin-top: -20px">{{ $customerName }}</p>
         <p style="text-align: center; margin-top: -20px">{{ $customerPosition }}</p>

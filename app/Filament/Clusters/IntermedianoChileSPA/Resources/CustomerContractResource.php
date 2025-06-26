@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Filters\Filter;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 class CustomerContractResource extends Resource
@@ -104,6 +105,14 @@ class CustomerContractResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gross_salary')
                     ->searchable(),
+                BadgeColumn::make('signature')
+                    ->sortable()
+                    ->colors([
+                        'success' => fn($state) => $state !== null,
+                        'warning' => fn($state) => $state == 'Pending Signature',
+                    ])
+                    ->label('Signature Status')
+                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
