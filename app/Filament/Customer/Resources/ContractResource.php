@@ -249,9 +249,9 @@ class ContractResource extends Resource
                         $fileName = $startDateFormat . '_Contract with_' . $customerName . '_of employee_PR';
                         $footerDetails = [
                             'companyName' => $content['companyTitle'],
-                            'address' => '',
+                            'address' => $content['address'],
                             'domain' => 'sac@intermediano.com',
-                            'mobile' => ''
+                            'mobile' => $content['mobile']
                         ];
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'footerDetails' => $footerDetails, 'is_pdf' => true]);
                         return response()->streamDownload(
