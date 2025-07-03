@@ -162,7 +162,7 @@ class CustomerContractResource extends Resource
                         $record->translatedPosition = $tr->translate($record->companyContact->position ?? "");
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
-                        $fileName = $startDateFormat . '_Contract with_' . $record->partner->partner_name . '_of employee';
+                        $fileName = $startDateFormat . '_Contract with_' . $record->company->name . '_of employee';
                         $footerDetails = [
                             'companyName' => 'Gate Intermediano Inc.',
                             'address' => '4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada',

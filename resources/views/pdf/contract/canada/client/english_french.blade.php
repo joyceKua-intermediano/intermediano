@@ -267,7 +267,7 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
     </main>
     @include('pdf.contract.layout.header')
     <main>
-        <table>
+        <table style='margin-top: -5px'>
 
             <tr>
                 <td style="width: 50%; vertical-align: top;">
