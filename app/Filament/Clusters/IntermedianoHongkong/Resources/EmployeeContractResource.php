@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -119,14 +120,26 @@ class EmployeeContractResource extends Resource
                     ->label('Sent to Employee')
                     ->sortable()
                     ->toggleable(),
-                BadgeColumn::make('signature')
-                    ->sortable()
-                    ->colors([
-                        'success' => fn($state) => $state !== null,
-                        'warning' => fn($state) => $state == 'Pending Signature',
-                    ])
+                TextColumn::make('signature_status')
                     ->label('Signature Status')
-                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
+                    ->html()
+                    ->getStateUsing(function ($record) {
+                        $employeeSigned = $record->signature !== 'Pending Signature';
+                        $adminSigned = $record->admin_signature !== 'Pending Signature';
+
+                        $employeeColor = $employeeSigned ? 'bg-success-100 text-green-600' : 'bg-warning-100 text-orange-600';
+                        $adminColor = $adminSigned ? 'bg-success-100 text-green-600' : 'bg-warning-100 text-orange-600';
+
+                        $employeeText = $employeeSigned ? 'Employee: Signed' : 'Employee: Pending';
+                        $adminText = $adminSigned ? 'Admin: Signed' : 'Admin: Pending';
+
+                        return "
+            <span class='fi-badge inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {$employeeColor} text-white mr-1'>{$employeeText}</span>
+            <span class='fi-badge inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {$adminColor} text-white'>{$adminText}</span>
+        ";
+                    })
+                    ->sortable(false)
+                    ->searchable(false)
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -152,6 +165,33 @@ class EmployeeContractResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('view_contract')
+                    ->label('View Contract')
+                    ->modal()
+                    ->modalSubmitAction(false)
+                    ->modalContent(function ($record) {
+                        $content = getContractModalContent($record);
+                        $year = date('Y', strtotime($record->created_at));
+                        $formattedId = sprintf('%04d', $record->id);
+                        $tr = new GoogleTranslate();
+                        $tr->setSource();
+                        $tr->setTarget('en');
+                        $record->translatedPosition = $tr->translate($record->job_title ?? "");
+                        $contractTitle = $year . '.' . $formattedId;
+
+                        $footerDetails = [
+                            'companyName' => $content['companyTitle'],
+                            'address' => '',
+                            'domain' => 'www.intermediano.com',
+                            'mobile' => ''
+                        ];
+                        return view($content['pdfPage'], [
+                            'record' => $record,
+                            'poNumber' => $contractTitle,
+                            'is_pdf' => false,
+                            'footerDetails' => $footerDetails,
+                        ]);
+                    }),
                 Tables\Actions\Action::make('uploadSignature')
                     ->label('Upload Signature')
                     ->icon('heroicon-o-arrow-up-tray')
