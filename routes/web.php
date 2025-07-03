@@ -15,7 +15,7 @@ Route::middleware(['auth:employee'])->get('/signatures/{type}/{id}/{filepath}', 
         $path = "private/signatures/admin/{$filename}";
 
     } else {
-        $path = "private/signatures/{$filename}";
+        $path = "private/signatures/employee/{$filename}";
 
     }
     $user = auth('web')->user() ?? auth('employee')->user();
