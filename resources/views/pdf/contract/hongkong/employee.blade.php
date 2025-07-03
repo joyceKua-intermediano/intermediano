@@ -340,7 +340,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <div style="display: inline-block; position: relative; height: 100px; width: 100%;">
                         @if($signatureExists)
                         <img src="{{ $is_pdf
-            ? storage_path('app/private/signatures/employee_' . $record->employee_id . '.webp')
+            ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
             : url('/signatures/' . $type. '/' . $record->employee_id . '/employee') }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
 
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
