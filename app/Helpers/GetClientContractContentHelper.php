@@ -29,18 +29,49 @@ if (!function_exists('getClientContractFile')) {
                 $companyTitle = 'Intermediano Chile SPA ';
                 $pdfPage = 'pdf.contract.chile.client';
                 break;
+            case 'ClientContractHongkong':
+                $mobile = '+1 514-907-5393';
+                $address = 'Flat A11/F. Cheung Lung Ind Bldg 10 Cheung Yee ST, Cheung Sha Wan, Hong Kong';
+                $companyTitle = 'Intermediano Hong Kong Limited';
+                $pdfPage = 'pdf.contract.hongkong.customer';
+                $domain = 'www.intermediano.com';
+                break;
+            case 'PartnerContractHongkong':
+                $mobile = '+1 514-907-5393';
+                $address = 'Flat A11/F. Cheung Lung Ind Bldg 10 Cheung Yee ST, Cheung Sha Wan, Hong Kong';
+                $companyTitle = 'Intermediano Hong Kong Limited';
+                $pdfPage = 'pdf.contract.hongkong.partner';
+                $domain = 'www.intermediano.com';
+                break;
+            case 'IntermedianoColombiaSAS':
+                $mobile = '+1 514-907-5393';
+                $address = 'Calle Carrera 9 #115-30, Edificio Tierra Firme Oficina 1745 Bogotá, Bogotá DC, Colombia';
+                $companyTitle = 'Intermediano Colombia S.A.S';
+                $pdfPage = 'pdf.contract.colombia.customer';
+                break;
+
+            case 'IntermedianoDoBrasilLtda':
+                $mobile = '+1 514-907-5393';
+                $address = '';
+                $companyTitle = 'Intermediano do Brasil Ltda.';
+                $pdfPage = 'pdf.contract.brazil.customer';
+                break;
+
+
             default:
                 $mobile = '';
                 $address = '';
                 $companyTitle = '';
                 $pdfPage = '';
+                $domain = 'sac@intermediano.com';
                 break;
         }
         return [
             'companyTitle' => $companyTitle,
             'pdfPage' => $pdfPage,
             'mobile' => $mobile,
-            'address' => $address
+            'address' => $address,
+            'domain' => $domain
         ];
     }
 }

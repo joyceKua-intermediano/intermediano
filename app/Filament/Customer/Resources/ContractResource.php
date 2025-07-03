@@ -250,7 +250,7 @@ class ContractResource extends Resource
                         $footerDetails = [
                             'companyName' => $content['companyTitle'],
                             'address' => $content['address'],
-                            'domain' => 'sac@intermediano.com',
+                            'domain' => $content['domain'],
                             'mobile' => $content['mobile']
                         ];
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'footerDetails' => $footerDetails, 'is_pdf' => true]);
@@ -310,7 +310,9 @@ class ContractResource extends Resource
         $queryId = $customerCompanyID ?? $customerPartnerID;
         $queryColumn = $customerCompanyID ? 'company_id' : 'partner_id';
         $contractType = $customerCompanyID ? 'customer' : 'partner';
+        // dd($contractType, $queryId, $queryColumn);
         $getEmployeeContract = Contract::where($queryColumn, $queryId)->where('contract_type', '=', $contractType);
+        
         return $getEmployeeContract;
     }
     public static function canCreate(): bool
