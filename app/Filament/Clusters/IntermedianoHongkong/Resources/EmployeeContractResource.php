@@ -127,15 +127,24 @@ class EmployeeContractResource extends Resource
                         $employeeSigned = $record->signature !== 'Pending Signature';
                         $adminSigned = $record->admin_signature !== 'Pending Signature';
 
-                        $employeeColor = $employeeSigned ? 'bg-success-200 text-green-600' : 'bg-warning-200 text-orange-600';
-                        $adminColor = $adminSigned ? 'bg-success-200 text-green-600' : 'bg-warning-200 text-orange-600';
-
                         $employeeText = $employeeSigned ? 'Employee: Signed' : 'Employee: Pending';
                         $adminText = $adminSigned ? 'Admin: Signed' : 'Admin: Pending';
 
+                        $employeeStyle = $employeeSigned
+                            ? "background:#bbf7d0;color:#166534;"
+                            : "background:#fef08a;color:#854d0e;";
+
+                        $adminStyle = $adminSigned
+                            ? "background:#bbf7d0;color:#166534;"
+                            : "background:#fef08a;color:#854d0e;";
+
                         return "
-            <span class='fi-badge inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {$employeeColor} text-white mr-1'>{$employeeText}</span>
-            <span class='fi-badge inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {$adminColor} text-white'>{$adminText}</span>
+            <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$employeeStyle}margin-right:0.25rem'>
+                {$employeeText}
+            </span>
+            <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$adminStyle}'>
+                {$adminText}
+            </span>
         ";
                     })
                     ->sortable(false)

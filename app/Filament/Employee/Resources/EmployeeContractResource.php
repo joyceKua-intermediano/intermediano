@@ -13,6 +13,7 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Filament\Tables\Columns\BadgeColumn;
 use Illuminate\Http\UploadedFile;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 use Illuminate\Support\Facades\Storage;
@@ -51,6 +52,23 @@ class EmployeeContractResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gross_salary')
                     ->searchable(),
+                BadgeColumn::make('signature')
+                    ->sortable()
+                    ->colors([
+                        'success' => fn($state) => $state !== null && $state !== 'Pending Signature',
+                        'warning' => fn($state) => $state === 'Pending Signature',
+                    ])
+                    ->label('Employee Signature')
+                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
+
+                BadgeColumn::make('admin_signature')
+                    ->sortable()
+                    ->colors([
+                        'success' => fn($state) => $state !== null && $state !== 'Pending Signature',
+                        'warning' => fn($state) => $state === 'Pending Signature',
+                    ])
+                    ->label('Admin Signature')
+                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
             ])
 
             ->actions([
@@ -87,7 +105,7 @@ class EmployeeContractResource extends Resource
                     ->label('Upload Signature')
                     ->icon('heroicon-o-arrow-up-tray')
                     ->form([
-                        SignaturePad::make('signature_data') 
+                        SignaturePad::make('signature_data')
                             ->label(__('Sign here'))
                             ->downloadable(false)
                             ->undoable()
