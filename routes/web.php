@@ -5,7 +5,7 @@ use Spatie\WelcomeNotification\WelcomesNewUsers;
 use App\Http\Controllers\Auth\MyWelcomeController;
 use Illuminate\Support\Facades\Storage;
 
-Route::middleware(['auth:employee'])->get('/signatures/{type}/{id}/{filepath}', function ($type, $id, $filepath) {
+Route::middleware(['auth:employee,web'])->get('/signatures/{type}/{id}/{filepath}', function ($type, $id, $filepath) {
     if (!in_array($type, ['admin', 'employee'])) {
         abort(400, 'Invalid type');
     }
@@ -19,7 +19,6 @@ Route::middleware(['auth:employee'])->get('/signatures/{type}/{id}/{filepath}', 
 
     }
     $user = auth('web')->user() ?? auth('employee')->user();
-
     if (!Storage::disk('local')->exists($path)) {
         abort(404, message: "{$type} signature not found.");
     }
