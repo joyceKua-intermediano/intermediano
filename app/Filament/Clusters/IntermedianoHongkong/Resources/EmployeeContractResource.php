@@ -127,8 +127,8 @@ class EmployeeContractResource extends Resource
                         $employeeSigned = $record->signature !== 'Pending Signature';
                         $adminSigned = $record->admin_signature !== 'Pending Signature';
 
-                        $employeeColor = $employeeSigned ? 'bg-success-100 text-green-600' : 'bg-warning-100 text-orange-600';
-                        $adminColor = $adminSigned ? 'bg-success-100 text-green-600' : 'bg-warning-100 text-orange-600';
+                        $employeeColor = $employeeSigned ? 'bg-success-200 text-green-600' : 'bg-warning-200 text-orange-600';
+                        $adminColor = $adminSigned ? 'bg-success-200 text-green-600' : 'bg-warning-200 text-orange-600';
 
                         $employeeText = $employeeSigned ? 'Employee: Signed' : 'Employee: Pending';
                         $adminText = $adminSigned ? 'Admin: Signed' : 'Admin: Pending';
