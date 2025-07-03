@@ -27,9 +27,17 @@ class Contract extends Model
         'cluster_name',
         'signature',
         'signed_contract',
-        'is_integral'
+        'admin_signature',
+        'admin_signed_contract',
+        'is_integral',
+        'partner_id',
+        'intermediano_company_id',
+        'admin_signed_by'
     ];
-
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'admin_signed_by');
+    }
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
@@ -42,6 +50,10 @@ class Contract extends Model
     public function partner(): BelongsTo
     {
         return $this->belongsTo(Partner::class);
+    }
+    public function intermedianoCompany(): BelongsTo
+    {
+        return $this->belongsTo(IntermedianoCompany::class);
     }
     public function quotation(): BelongsTo
     {
@@ -61,8 +73,8 @@ class Contract extends Model
     public function companyContact(): HasOneThrough
     {
         return $this->hasOneThrough(
-            Contact::class, 
-            Company::class,  
+            Contact::class,
+            Company::class,
             'id',
             'company_id',
             'company_id',
@@ -74,13 +86,13 @@ class Contract extends Model
     {
         return $this->hasMany(VacancyResource::class);
     }
-    
+
     public function socialSecurityInfos(): BelongsTo
     {
         return $this->belongsTo(SocialSecurityInfo::class, 'employee_id', 'employee_id');
     }
 
-        public function supplementaryContractDetails()
+    public function supplementaryContractDetails()
     {
         return $this->hasOne(SupplementaryContractDetails::class);
     }

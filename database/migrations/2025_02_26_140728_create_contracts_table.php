@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,6 +14,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('company_id')->constrained()->cascadeOnDelete();
             $table->foreignId('partner_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('intermediano_company_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->foreignId('quotation_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('country_work')->nullable();
@@ -29,6 +29,10 @@ return new class extends Migration
             $table->boolean('is_sent_to_employee')->default(0);
             $table->string('signature')->default('Pending Signature');
             $table->datetime('signed_contract')->nullable();
+            $table->string('admin_signature')->default('Pending Signature');
+            $table->datetime('admin_signed_contract')->nullable();
+            $table->foreignId('admin_signed_by')->constrained('user')->cascadeOnDelete();
+
             $table->boolean('is_integral')->default(0);
             $table->softDeletes();
             $table->timestamps();
