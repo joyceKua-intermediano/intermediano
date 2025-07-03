@@ -107,17 +107,17 @@ class EmployeeContractResource extends Resource
 
                         Forms\Components\FileUpload::make('signature_file')
                             ->label('')
-                            ->disk('public')
-                            ->directory('signatures')
-                            ->visibility('public')
+                            ->disk('private')
+                            ->directory('signatures/employee')
+                            ->visibility('private')
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                             ->optimize('webp')
                             ->resize(50)
                             ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
                                 $fileName = 'employee_' . auth()->user()->id . '.' . $file->getClientOriginalExtension();
-                                $filePath = 'signatures/' . $fileName;
-                                if (Storage::disk('public')->exists($filePath)) {
-                                    Storage::disk('public')->delete($filePath);
+                                $filePath = 'signatures/employee/' . $fileName;
+                                if (Storage::disk('private')->exists($filePath)) {
+                                    Storage::disk('private')->delete($filePath);
                                 }
                                 return $fileName;
                             })
