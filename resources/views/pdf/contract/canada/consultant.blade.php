@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Document</title>
+    @if($is_pdf)
     <link rel="stylesheet" href="css/contract.css">
+
+    @else
+    <link rel="stylesheet" href="{{ asset('css/contract.css') }}">
+    @endif
 </head>
 
 @php
@@ -16,6 +21,9 @@ $currentDate = now()->format('d/m/Y');
 $companyAddress = $record->company->address;
 $companyCity = $record->company->city;
 $companyState = $record->company->state;
+
+$contactName = $record->companyContact->contact_name;
+$contactSurname = $record->companyContact->surname;
 
 $companyName = $record->company->name;
 $companyCountry = $record->company->country;
@@ -39,16 +47,26 @@ $employeeCountryWork = $record->country_work ?? null;
 $employeeGrossSalary = $record->gross_salary;
 $employeeTaxId = $record->document->tax_id ?? null;
 $employeeEmail = $record->employee->email ?? null;
+$customerPosition = $record->companyContact->position;
+
 $employeeSocialSecurityNumber = $record->socialSecurityInfos->social_security_number ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
-
+$signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
+$signatureExists = Storage::disk('private')->exists($signaturePath);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
-
 <style>
     main {
         padding: 40px
     }
+
     h3 {
         font-weight: bold
     }
@@ -82,7 +100,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p><b>Social Insurance Number:</b> {{ $employeeSocialSecurityNumber }}</p>
         <p><b>Date of Birth:</b> {{ $employeeDateBirth }}</p>
         <p><b>Education:</b> {{ $employeeEducation }}</p>
-        <p><b>Permanent Address:</b> {{ $employeeAddress }},  {{ $employeeCity }},  {{ $employeeState }}  {{ $employeeCountry }}</p>
+        <p><b>Permanent Address:</b> {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeState }} {{ $employeeCountry }}</p>
         <h4>3. Validity of Contract</h4>
         <h4>1.1. Form of Contract</h4>
         <p>This contract shall be in force for a period of twelve (12) months, starting on {{ $year }} {{ $month }} {{ $formattedDate }}. This contract can be extended following agreement in writing.</p>
@@ -103,7 +121,7 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p>Employee’s main task at the beginning of this contract: {{ $employeeJobTitle }}</p>
         <p>The Employee agrees also to perform such other tasks corresponding to his skills and experience as may be required by the Employer.</p>
         <p>The Employee is obliged to devote his working capacity exclusively to Intermediano and not to engage himself in any other business for the duration of this contract without the prior consent of the Employer.</p>
-        <p>The Employee home base is {{ $employeeCity }},  {{ $employeeState }}  {{ $employeeCountry }}.</p>
+        <p>The Employee home base is {{ $employeeCity }}, {{ $employeeState }} {{ $employeeCountry }}.</p>
         <h4>5. The General Duties of the Employee</h4>
         <p>The Employee is required to perform his duties with due diligence and following any Employer orders regarding safety, quality and scope of work as well as time and place.</p>
         <p>The Employee is required to sign the Non-Disclosure Agreement as attached.</p>
@@ -156,10 +174,64 @@ $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date
         <p>It is the intention of the parties of this contract that any disputes arising from this contract shall be primarily resolved through negotiations between the parties.</p>
         <p>If a consensus cannot be reached in the negotiations, disputes shall be settled in the court of Montreal.</p>
         <p>This contract is made in two originals, one for the Employer and one for the Employee.</p>
-        <h4>{{ $employeeCity }},  {{ $employeeState }}  {{ $employeeCountry }}, {{ $currentDate }}</h4>
 
         @include('pdf.contract.layout.footer')
     </main>
 
+
+    @include('pdf.contract.layout.header')
+    <main class="main-container" style='page-break-after: avoid'>
+        <h4 style="text-align: center">{{ $employeeCity }}, {{ $employeeState }} {{ $employeeCountry }}, {{ $currentDate }}</h4>
+
+        <table style="width: 100%; text-align: center; border-collapse: collapse; border: none;">
+            <tr style="border: none;">
+                <td style="width: 50%; vertical-align: top; border: none; text-align: center; padding: 10px;  padding-top: -20px">
+                    <h4>GATE INTERMEDIANO INC.</h4>
+                    <div style="text-align: center; position: relative; height: 100px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+        $is_pdf 
+            ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+            : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+    }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        <img src="{{ 
+                                $is_pdf 
+                                    ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                    : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                            }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+
+                        @endif
+                    </div>
+                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    <p style="margin: 10px 0; text-align: center;">{{ $adminSignedBy }}</p>
+                    <p style="margin: 5px 0; text-align: center;">{{ $adminSignedByPosition }}</p>
+                </td>
+
+                <td style="width: 50%; vertical-align: top; border: none; text-align: center; padding: 10px; padding-top: -20px">
+                    <h4>Employee</h4>
+                    <div style="text-align: center; position: relative; height: 100px;">
+
+                        @if($signatureExists)
+                        <img src="{{ 
+        $is_pdf
+            ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+            : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+    }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+
+                        <p style="margin: 5px 0; text-align: center;">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                        {{-- @else --}}
+                        {{-- <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Blank Signature" style="height: 50px; margin: 10px 0;"> --}}
+                        @endif
+                    </div>
+
+                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
+
+                    <p style="margin: 10px 0; text-align: center;">{{ $employeeName }}</p>
+                </td>
+
+            </tr>
+        </table>
+        @include('pdf.contract.layout.footer')
+    </main>
 </body>
 </html>
