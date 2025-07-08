@@ -41,7 +41,13 @@ $exchangeRate = $record->quotation->exchange_rate;
 $currencyName = $record->quotation->currency_name;
 
 $signatureExists = Storage::disk('public')->exists($record->signature);
-
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 <body>
     <!-- Content Section -->
@@ -755,13 +761,20 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                         <b>GATE INTERMEDIANO INC.</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: -20px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                    <div style="text-align: center; position: relative; height: 100px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
+
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <div style="text-align: center; margin-top: -20px">
-                        <p style="text-align: center">Paola Mac Eachen</p>
-                        <p style="margin-top: -20px; text-align: center">Vice-Président</p>
+                        <p style="text-align: center">{{ $adminSignedBy }}</p>
+                        <p style="margin-top: -20px; text-align: center">{{ $adminSignedByPosition }}</p>
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
@@ -769,13 +782,21 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                         <b>GATE INTERMEDIANO INC.</b>
                     </div>
                     <br><br>
-                    <div style="text-align: center; margin-top: -20px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                    <div style="text-align: center; position: relative; height: 100px;">
+                        @if($adminSignatureExists)
+
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
+
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <div style="text-align: center; margin-top: -20px">
-                        <p style="text-align: center">Paola Mac Eachen</p>
-                        <p style="margin-top: -20px; text-align: center">Vice-Président</p>
+                        <p style="text-align: center">{{ $adminSignedBy }}</p>
+                        <p style="margin-top: -20px; text-align: center">{{ $adminSignedByPosition }}</p>
                     </div>
                 </td>
 

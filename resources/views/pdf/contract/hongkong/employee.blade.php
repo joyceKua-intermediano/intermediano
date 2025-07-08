@@ -46,7 +46,7 @@ $signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp
 $signatureExists = Storage::disk('private')->exists($signaturePath);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
-$adminSignedBy = $record->user->name;
+$adminSignedBy = $record->user->name ?? '';
 
 $user = auth()->user();
 $isAdmin = $user instanceof \App\Models\User;

@@ -190,16 +190,10 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <div style="text-align: center; position: relative; height: 100px;">
                         @if($adminSignatureExists)
                         <img src="{{ 
-        $is_pdf 
-            ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
-            : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
-    }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
-                        <img src="{{ 
-                                $is_pdf 
-                                    ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
-                                    : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
-                            }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
-
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
                         @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
