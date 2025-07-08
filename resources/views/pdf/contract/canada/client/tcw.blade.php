@@ -31,7 +31,13 @@ $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $quotationDate = $record->quotation->title;
 $signatureExists = Storage::disk('public')->exists($record->signature);
-
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 
 <style>
@@ -118,23 +124,33 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
         <table style="width: 100%; text-align: center; border-collapse: collapse; border: none;">
             <tr style="border: none;">
 
-                <td style="width: 40%; vertical-align: top; border: none; text-align:center !important;">
+                <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>GATE INTERMEDIANO INC.</h4>
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px;  margin: 15px 0;">
+                    <div style="text-align: center; position: relative; height: 100px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="margin-top: -30px; text-align: center;"> Fernando Gutierrez </p>
-                    <p style="margin-top: -15px; text-align: center;"> CEO</p>
+                    <p style="margin-top: -30px; text-align: center;"> {{ $adminSignedBy }}</p>
+                    <p style="margin-top: -15px; text-align: center;"> {{ $adminSignedByPosition }}</p>
                 </td>
-                <td style="width: 60%; vertical-align: top; border: none; text-align:center !important;">
+                <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>{{ $companyName }}</h4>
                     @if($signatureExists)
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                    <div style="text-align: center; position: relative; height: 100px">
+                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
                     </div>
+
+                    @else
+                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-top: 40px;">
+
                     @endif
-                    <div style="width: 100%; border-bottom: 1px solid black; margin-top: 10px"></div>
+                    <div style="width: 100%; border-bottom: 1px solid black"></div>
 
                     <p style="margin-top: -30px;  text-align: center;">{{ $companyContactName }} </p>
                     <p style="margin-top: -15px;  text-align: center;"> Authorized Responsible </p>

@@ -42,7 +42,13 @@ $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $signatureExists = Storage::disk('public')->exists($record->signature);
-
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 
 <style>
@@ -199,12 +205,19 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             <b>GATE INTERMEDIANO INC.</b>
         </div>
         <br><br>
-        <div style="text-align: center; margin-top: 0px">
-            <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+        <div style="text-align: center; position: relative; height: 50px;">
+            @if($adminSignatureExists)
+            <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%);" />
+            @endif
         </div>
+
         <div style="width: 80%; border-bottom: 1px solid black; text-align: center; margin: 0 auto;"></div>
-        <p style="text-align: center; margin-top: -20px">Fernando Gutierrez</p>
-        <p style="text-align: center;margin-top: -20px">CEO</p>
+        <p style="text-align: center; margin-top: -20px">{{ $adminSignedBy }}</p>
+        <p style="text-align: center;margin-top: -20px">{{ $adminSignedByPosition }}</p>
         <p style="text-align: left;margin-top: -10px">Phone: +1 514 907 5393</p>
         <p style="text-align: left;margin-top: -10px">Email: <a href="">sac@intermediano.com</a></p>
 
@@ -214,7 +227,7 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
         <br><br>
         @if($signatureExists)
         <div style="text-align: center; margin-top: 0px">
-            <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+            <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 0px 0;">
         </div>
 
         @else
@@ -230,6 +243,10 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
         <p style="text-align: left;margin-top: -10px">Email: <a href="">{{ $companyEmail }}</a></p>
         @include('pdf.contract.layout.footer')
     </main>
+
+
+
+    
 
 </body>
 </html>
