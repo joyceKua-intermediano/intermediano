@@ -31,7 +31,13 @@ $employeeStartDate = $record->start_date;
 $employeeEndDate = $record->end_date;
 $employeeGrossSalary = $record->gross_salary;
 $signatureExists = Storage::disk('public')->exists($record->signature);
-
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 
 <style>
@@ -237,12 +243,19 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                 </td>
                 <td style="width: 50%; vertical-align: top; border: none; text-align: center; padding: 10px;  padding-top: -20px">
                     <h4>GATE INTERMEDIANO INC.</h4>
-                    <div style="margin-top: 65px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px;">
+                    <div style="text-align: center; position: relative; height: 100px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
+
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="margin: 10px 0; text-align: center;">Fernando Gutierrez</p>
-                    <p style="margin: 5px 0; text-align: center;">CEO</p>
+                    <p style="margin: 10px 0; text-align: center;">{{ $adminSignedBy }}</p>
+                    <p style="margin: 5px 0; text-align: center;">{{ $adminSignedByPosition }}</p>
                 </td>
 
             </tr>
