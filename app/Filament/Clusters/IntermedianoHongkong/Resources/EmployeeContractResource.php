@@ -16,12 +16,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\RichEditor;
 use Carbon\Carbon;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Filters\Filter;
+
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Illuminate\Support\Facades\Storage;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
@@ -132,11 +130,11 @@ class EmployeeContractResource extends Resource
 
                         $employeeStyle = $employeeSigned
                             ? "background:#bbf7d0;color:#166534;"
-                            : "background:#fef08a;color:#854d0e;";
+                            : "background:#ffb84d;color:#854d0e;";
 
                         $adminStyle = $adminSigned
                             ? "background:#bbf7d0;color:#166534;"
-                            : "background:#fef08a;color:#854d0e;";
+                            : "background:#ffb84d;color:#854d0e;";
 
                         return "
             <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$employeeStyle}margin-right:0.25rem'>
@@ -187,7 +185,6 @@ class EmployeeContractResource extends Resource
                         $tr->setTarget('en');
                         $record->translatedPosition = $tr->translate($record->job_title ?? "");
                         $contractTitle = $year . '.' . $formattedId;
-
                         $footerDetails = [
                             'companyName' => $content['companyTitle'],
                             'address' => '',

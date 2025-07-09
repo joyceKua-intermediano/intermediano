@@ -20,8 +20,9 @@ $customerPhone = $record->companyContact->phone;
 $customerEmail = $record->companyContact->email;
 $customerName = $record->companyContact->contact_name;
 $customerSurname = $record->companyContact->surname;
-$customerPosition = $record->companyContact->position;
-$customerTranslatedPosition = $record->translatedPosition;
+$customerPosition = $record->companyContact->position ? $record->companyContact->position : 'Legal Representative';
+$customerTranslatedPosition = $record->translatedPosition ? $record->translatedPosition : 'Representante Legal';
+$signatureExists = Storage::disk('public')->exists($record->signature);
 
 @endphp
 <body>
@@ -748,7 +749,7 @@ $customerTranslatedPosition = $record->translatedPosition;
                     <p>A/C: Fernando Gutierrez</p>
                     <p>Address: Calle Carrera 7B Bis 126-36, Bogotá, Colombia</p>
                     <p>Phone/Fax: 1 514-907-5393</p>
-                    <p>E-mail: <a href="#">g.colombia@intermediano.com</a> </p>
+                    <p>E-mail: <a href="#">sac@intermediano.com</a> </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b style="text-decoration: underline;">Si al Proveedor:</b>
@@ -837,13 +838,22 @@ $customerTranslatedPosition = $record->translatedPosition;
     </main>
     @include('pdf.contract.layout.header')
     <main>
-        <table>
+        <table style="margin-top: -15px !important">
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="margin-top: 40px; margin-bottom: 75px">
                         <b>{{ $companyName }}</b>
-
                     </div>
+                    @if($signatureExists)
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                    </div>
+                    @else
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                    </div>
+                    @endif
+
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
 
                     <div style="text-align: center; margin-top: -20px">
@@ -855,6 +865,16 @@ $customerTranslatedPosition = $record->translatedPosition;
                     <div style="margin-top: 40px; margin-bottom: 75px">
                         <b>{{ $companyName }}</b>
                     </div>
+                    @if($signatureExists)
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                    </div>
+                    @else
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                    </div>
+                    @endif
+
                     <div style="width: 100%%; border-bottom: 1px solid black;"></div>
 
                     <div style="text-align: center; margin-top: -20px">
