@@ -14,9 +14,9 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
+$formattedDate = (new DateTime($record->start_date))->format('jS');
+$month = (new DateTime($record->start_date))->format('F');
+$year = (new DateTime($record->start_date))->format('Y');
 $currentDate = now()->format('d/m/Y');
 $companyAddress = $record->company->address;
 $companyCity = $record->company->city;
