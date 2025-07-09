@@ -216,6 +216,32 @@ class PartnerContractResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('view_contract')
+                    ->label('View Contract')
+                    ->modal()
+                    ->modalSubmitAction(false)
+                    ->modalContent(function ($record) {
+                        $content = getContractModalContent($record);
+                        $year = date('Y', strtotime($record->created_at));
+                        $formattedId = sprintf('%04d', $record->id);
+                        $tr = new GoogleTranslate();
+                        $tr->setSource();
+                        $tr->setTarget('en');
+                        $record->translatedPosition = $tr->translate($record->job_title ?? "");
+                        $contractTitle = $year . '.' . $formattedId;
+                        $footerDetails = [
+                            'companyName' => $content['companyTitle'],
+                            'address' => '',
+                            'domain' => 'www.intermediano.com',
+                            'mobile' => ''
+                        ];
+                        return view($content['pdfPage'], [
+                            'record' => $record,
+                            'poNumber' => $contractTitle,
+                            'is_pdf' => false,
+                            'footerDetails' => $footerDetails,
+                        ]);
+                    }),
                 Tables\Actions\Action::make('uploadSignature')
                     ->label('Upload Signature')
                     ->icon('heroicon-o-arrow-up-tray')

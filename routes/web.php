@@ -6,18 +6,31 @@ use App\Http\Controllers\Auth\MyWelcomeController;
 use Illuminate\Support\Facades\Storage;
 
 Route::middleware(['auth:employee,web'])->get('/signatures/{type}/{id}/{filepath}', function ($type, $id, $filepath) {
-    if (!in_array($type, ['admin', 'employee'])) {
+    if (!in_array($type, ['admin', 'employee', 'customer'])) {
         abort(400, 'Invalid type');
     }
-
     $filename = "{$filepath}_{$id}.webp";
-    if ($filepath == 'admin') {
-        $path = "private/signatures/admin/{$filename}";
 
-    } else {
-        $path = "private/signatures/employee/{$filename}";
-
+    switch ($filepath) {
+        case 'admin':
+            $path = "private/signatures/admin/{$filename}";
+            break;
+        case 'employee':
+            $path = "private/signatures/employee/{$filename}";
+            break;
+        case 'customer':
+            $path = "private/signatures/clients/{$filename}";
+            break;
+        case 'partner':
+            $path = "private/signatures/clients/{$filename}";
+            break;
+        default:
+            # code...
+            break;
     }
+
+
+
     $user = auth('web')->user() ?? auth('employee')->user();
     if (!Storage::disk('local')->exists($path)) {
         abort(404, message: "{$type} signature not found.");

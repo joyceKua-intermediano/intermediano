@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Document</title>
+    @if($is_pdf)
     <link rel="stylesheet" href="css/contract.css">
+
+    @else
+    <link rel="stylesheet" href="{{ asset('css/contract.css') }}">
+    @endif
 </head>
 
 @php
@@ -201,35 +206,44 @@ $type = $isAdmin ? 'admin' : 'employee';
             <tr style="border: none;">
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>INTERMEDIANO HONG KONG LIMITED</h4>
-                    @if($adminSignatureExists)
-                    <img src="{{ 
+                    <div style="text-align: center; position: relative; height: 100px;">
+
+                        @if($adminSignatureExists)
+                        <img src="{{ 
                             $is_pdf 
                                 ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
                                 : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
-                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+                        }}" alt="Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
 
-                    @else
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                        @else
+                        <div style="text-align: center; margin-top: 0px">
+                            <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                        </div>
+                        @endif
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);"> {{ $adminSignedBy }}</p>
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+
                     </div>
-                    @endif
-                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="margin-top: -30px; text-align: center;"> {{ $adminSignedBy }}</p>
+
                 </td>
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>{{ $companyName }}</h4>
-                    @if($signatureExists)
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
-                    </div>
-                    @else
-                    <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
-                    </div>
-                    @endif
+                    <div style="text-align: center; position: relative; height: 100px;">
 
-                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <p style="margin-top: -30px; text-align: center;"> {{ $customerName }} {{ $customerSurname }}</p>
+                        @if($signatureExists)
+                        <img src="{{ 
+                            $is_pdf
+                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
+                        }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
+                        @else
+                        <div style="text-align: center; position: relative; height: 100px;">
+                            <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;">
+                        </div>
+                        @endif
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);">{{ $customerName }} {{ $customerSurname }}</p>
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+                    </div>
                 </td>
             </tr>
         </table>

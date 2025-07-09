@@ -34,6 +34,18 @@ if (!function_exists('getContractModalContent')) {
                 $companyTitle = 'Intermediano Hong Kong Limited';
                 $pdfPage = 'pdf.contract.hongkong.employee';
                 break;
+            case 'ClientContractHongkong':
+                $mobile = '';
+                $address = 'Flat A11/F. Cheung Lung Ind Bldg 10 Cheung Yee ST, Cheung Sha Wan, Hong Kong';
+                $companyTitle = 'Intermediano Hong Kong Limited';
+                $pdfPage = 'pdf.contract.hongkong.customer';
+                break;
+            case 'PartnerContractHongkong':
+                $mobile = '';
+                $address = 'Flat A11/F. Cheung Lung Ind Bldg 10 Cheung Yee ST, Cheung Sha Wan, Hong Kong';
+                $companyTitle = 'Intermediano Hong Kong Limited';
+                $pdfPage = 'pdf.contract.hongkong.partner';
+                break;
             case 'IntermedianoChileSPA':
                 $mobile = '+1 514-907-5393';
                 $address = 'Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Chile';
