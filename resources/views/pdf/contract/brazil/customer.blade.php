@@ -23,6 +23,7 @@ $customerEmail = $record->companyContact->email;
 $customerName = $record->companyContact->contact_name;
 $customerPosition = $record->companyContact->position;
 $customerTranslatedPosition = $record->translatedPosition;
+$signatureExists = Storage::disk('public')->exists($record->signature);
 
 @endphp
 <body>
@@ -864,8 +865,17 @@ $customerTranslatedPosition = $record->translatedPosition;
                 <td style="width: 50%; vertical-align: top;">
                     <div style="margin-top: 40px; margin-bottom: 75px">
                         <b>{{ $companyName }}</b>
-
                     </div>
+                    @if($signatureExists)
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                    </div>
+                    @else
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                    </div>
+                    @endif
+
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
 
                     <div style="text-align: center; margin-top: -20px">
@@ -877,6 +887,17 @@ $customerTranslatedPosition = $record->translatedPosition;
                     <div style="margin-top: 40px; margin-bottom: 75px">
                         <b>{{ $companyName }}</b>
                     </div>
+
+                    @if($signatureExists)
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                    </div>
+                    @else
+                    <div style="text-align: center; margin-top: 0px">
+                        <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                    </div>
+                    @endif
+
                     <div style="width: 100%%; border-bottom: 1px solid black;"></div>
 
                     <div style="text-align: center; margin-top: -20px">
