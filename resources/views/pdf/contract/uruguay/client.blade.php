@@ -42,7 +42,7 @@ $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeEducation = $record->personalInformation->education_attainment ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 $contractType = $record->end_date == null ? 'Undefined Period' : 'Defined Period';
@@ -278,7 +278,7 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                     <p><b>c)</b> During the term of this Agreement and for a period of five (5) years after its termination, both Parties undertake to maintain the most complete and absolute confidentiality on any information.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>c) Durante la vigencia del presente Acuerdo y durante un periodo de cinco (5) años desde su terminación, ambas Partes se comprometen a mantener la más completa y absoluta confidencialidad sobre cualquier información.</p>
+                    <p><b>c)</b> Durante la vigencia del presente Acuerdo y durante un periodo de cinco (5) años desde su terminación, ambas Partes se comprometen a mantener la más completa y absoluta confidencialidad sobre cualquier información.</p>
                 </td>
             </tr>
             <tr>
@@ -519,12 +519,12 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <b style="text-decoration: underline;">XI. Jurisdiction </b>
+                    <b style="text-decoration: underline;">{{ strtoupper('XI. Jurisdiction') }} </b>
                     <p>The parties elect the courts of Uruguay to settle any doubts and/or disputes arising out of this instrument, with the exclusion of any other jurisdiction, as privileged as it may be and the applicable law shall be of Uruguay.</p>
                     <p>The full text of this contract, as well as the documents derived from it, including the Annexes, have been drawn up in the English and Spanish languages, both versions being considered official, although the Spanish language version is considered as the priority for its interpretation.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <b style="text-decoration: underline;">XI. Jurisdición</b>
+                    <b style="text-decoration: underline;">{{ strtoupper('XI. Jurisdición') }}</b>
                     <p>Las partes eligen a los tribunales de Uruguay, para resolver cualquier duda y / o disputa que surja de este instrumento, con la exclusión de cualquier otra jurisdicción, por privilegiada que sea y la ley aplicable será la de Uruguay.</p>
                     <p>El texto integro de este contrato, así como los documentos que se deriven del mismo, incluidos los Anexos, han sido redactados en los idiomas inglés y español, considerándose ambas versiones como oficiales, si bien se fija como prioritaria para su interpretación la versión en idioma español.</p>
                 </td>
@@ -644,12 +644,19 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                 <td style="width: 50%; vertical-align: top;">
                     <p>Job Title: {{ $employeeJobTitle }}</p>
                     <p>Start Date: {{ $employeeStartDate }}</p>
+                    @if($record->end_date)
+                    <p>End Date: {{ $employeeEndDate }}</p>
+                    @endif
+
                     <p>Contract Type: {{ $contractType }}</p>
                     <p>Remuneration Value: {{ number_format($employeeGrossSalary, 2) }} Gross/Monthly</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p>Cargo: {{ $employeeJobTitle }}</p>
                     <p>Fecha de Inicio: {{ $employeeStartDate }}</p>
+                    @if($record->end_date)
+                    <p>Fecha de finalización: {{ $employeeEndDate }}</p>
+                    @endif
                     <p>Tipo de Contrato: {{ $contractType }}</p>
                     <p>Valor de la Remuneración: {{ number_format($employeeGrossSalary, 2) }} Bruto/Mensual</p>
 
