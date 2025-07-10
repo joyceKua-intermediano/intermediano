@@ -9,10 +9,10 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$formattedDate = (new DateTime($record->created_at))->format('jS');
+$month = (new DateTime($record->created_at))->format('F');
+$year = (new DateTime($record->created_at))->format('Y');
+$createdDate = (new DateTime($record->created_at))->format('[d/m/Y]');
 $companyName = $record->partner->partner_name;
 $contactName = $record->partner->contact_name;
 $customerAddress = $record->partner->address;
@@ -26,7 +26,7 @@ $employeeJobTitle = $record->job_title ?? null;
 $employeeCountryWork = $record->country_work ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $signatureExists = Storage::disk('public')->exists($record->signature);
 @endphp
 <body>
@@ -37,11 +37,11 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">SERVICE AGREEMENT</h4>
-                    <p>This Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }} (the “Effective Date”), by and between <b>INTERMEDIANO SAS.</b>, a Uruguayan company, located at: Calle Faustino Carámbula 1203, Rivera, Uruguay, herein referred to simply as (the “Customer”); and <b>{{ $companyName }}</b>, a company incorporated in [Provider's Country], with mercantile registry number {{ $customerTaxId }} and its principal place of business at {{ $customerAddress }}, {{ $customerCountry }} <b>(the “Provider”).</b></p>
+                    <p>This Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }} (the “Effective Date”), by and between <b>INTERMEDIANO SAS.</b>, a Uruguayan company, located at: Calle Faustino Carámbula 1203, Rivera, Uruguay, herein referred to simply as (the “<b>Customer</b>”); and <b>{{ strtoupper($companyName) }}</b>, a company incorporated in [Provider's Country], with mercantile registry number {{ $customerTaxId }} and its principal place of business at {{ $customerAddress }}, {{ $customerCountry }} <b>(the “Provider”).</b></p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE SERVICIOS</h4>
-                    <p>Este Contrato de Prestación de Servicios (el "Acuerdo") se realiza el {{ $formattedDate }}, {{ $month }}, {{ $year }} (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO SAS.</b>, una empresa uruguaya ubicada en Calle Faustino Carámbula 1203, Rivera, Uruguay, en adelante denominado simplemente como <br> (el “Cliente”); Y <b>{{ $companyName }}</b>, una empresa constituida en {{ $customerCountry }}, con número de registro mercantil {{ $customerTaxId }} y sede en {{ $customerAddress }}, {{ $customerCountry }} <b>(el “Proveedor”).</b></p>
+                    <p>Este Contrato de Prestación de Servicios (el "Acuerdo") se realiza el {{ $formattedDate }}, {{ $month }}, {{ $year }} (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO SAS.</b>, una empresa uruguaya ubicada en Calle Faustino Carámbula 1203, Rivera, Uruguay, en adelante denominado simplemente como <br> (el “<b>Cliente</b>”); Y <b>{{ strtoupper($companyName) }}</b>, una empresa constituida en {{ $customerCountry }}, con número de registro mercantil {{ $customerTaxId }} y sede en {{ $customerAddress }}, {{ $customerCountry }} <b>(el “Proveedor”).</b></p>
                 </td>
             </tr>
             <tr>
@@ -362,7 +362,7 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                     <p><b>b)</b> respect and comply with all Service requests forwarded by Customer before the date of expiration or early termination of this Agreement.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b></b> respetar y cumplir con todas las solicitudes de Servicio enviadas por el Cliente antes de la fecha de vencimiento o terminación anticipada de este Acuerdo.</p>
+                    <p><b>b)</b> respetar y cumplir con todas las solicitudes de Servicio enviadas por el Cliente antes de la fecha de vencimiento o terminación anticipada de este Acuerdo.</p>
                 </td>
             </tr>
 
@@ -499,12 +499,12 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <b style="text-decoration: underline;">XI. Jurisdiction </b>
+                    <b style="text-decoration: underline;">{{ strtoupper('XI. Jurisdiction') }} </b>
                     <p>The parties elect the courts of Uruguay to settle any doubts and/or disputes arising out of this instrument, with the exclusion of any other jurisdiction, as privileged as it may be and the applicable law shall be of Uruguay.</p>
                     <p>The full text of this contract, as well as the documents derived from it, including the Annexes, have been drawn up in the English and Spanish languages, both versions being considered official, although the Spanish language version is considered as the priority for its interpretation.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <b style="text-decoration: underline;">XI. Jurisdición</b>
+                    <b style="text-decoration: underline;">{{ strtoupper('XI. Jurisdición') }}</b>
                     <p>Las partes eligen a los tribunales de Uruguay, para resolver cualquier duda y / o disputa que surja de este instrumento, con la exclusión de cualquier otra jurisdicción, por privilegiada que sea y la ley aplicable será la de Uruguay. </p>
                     <p>El texto integro de este contrato, así como los documentos que se deriven del mismo, incluidos los Anexos, han sido redactados en los idiomas inglés y español, considerándose ambas versiones como oficiales, si bien se fija como prioritaria para su interpretación la versión en idioma español.</p>
                 </td>
@@ -526,13 +526,13 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;">
-                    <p style="margin: 0; text-align: center;">Rivera, {{ $currentDate }}</p>
+                    <p style="margin: 0; text-align: center;">Rivera, {{ $createdDate }}</p>
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center">
-                        <b>{{ $companyName }}</b>
+                        <b>{{ strtoupper($companyName) }}</b>
                     </div>
                     <br><br>
                     @if($signatureExists)
@@ -572,7 +572,7 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; font-weight: bold;margin-bottom: 16px">
-                        <p style='text-align: center;'>ANNEX 1</p>
+                        <p style='text-align: center;'>ANNEX A</p>
                         <p><b>SERVICES</b></p>
                     </div>
                     <p>Consultant: {{ $employeeName }}</p>
@@ -584,7 +584,7 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; font-weight: bold;margin-bottom: 16px">
-                        <p style="text-align: center;">ANEXO 1</p>
+                        <p style="text-align: center;">ANEXO A</p>
                         <p><b>SERVICIOS</b></p>
                     </div>
                     <p>Consultor: {{ $employeeName }}</p>
@@ -606,13 +606,13 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; font-weight: bold;margin-bottom: 16px">
-                        <p>ANNEX II</p>
+                        <p>ANNEX B</p>
                         <p><b>PRICE</b></p>
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center; font-weight: bold;margin-bottom: 16px">
-                        <p>ANEXO II</p>
+                        <p>ANEXO B</p>
                         <p><b>PRECIO</b></p>
                     </div>
                 </td>
