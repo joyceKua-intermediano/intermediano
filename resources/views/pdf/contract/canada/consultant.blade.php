@@ -109,7 +109,7 @@ $type = $isAdmin ? 'admin' : 'employee';
         <h4>3. Validity of Contract</h4>
         <h4>1.1. Form of Contract</h4>
         @if($record->end_date)
-        <p>The parties agree that the duration of this contract will be for a defined term and its starting date will be from {{ $monthStartDate }} {{ $formattedStartDate  }} {{ $yearStartDate }}  to {{ $formattedEndDate  }}  {{ $monthEndDate }} {{ $yearEndDate }}. This contract can be extended following agreement in writing.</p>
+        <p>The parties agree that the duration of this contract will be for a defined term and its starting date will be from {{ $monthStartDate }} {{ $formattedStartDate  }} {{ $yearStartDate }} to {{ $formattedEndDate  }} {{ $monthEndDate }} {{ $yearEndDate }}. This contract can be extended following agreement in writing.</p>
         @else
         <p>The parties agree that the duration of this contract will be for a indefinite term and its starting date will be from {{ $formattedStartDate  }} {{ $monthStartDate }} {{ $yearStartDate }} to indefinite end date. This contract can be extended following agreement in writing</p>
         @endif
@@ -190,7 +190,7 @@ $type = $isAdmin ? 'admin' : 'employee';
 
     @include('pdf.contract.layout.header')
     <main class="main-container" style='page-break-after: avoid'>
-        <h4 style="text-align: center">{{ $employeeCity }}, {{ $employeeState }} {{ $employeeCountry }}, {{ $currentDate }}</h4>
+        <h4 style="text-align: center">Montreal Canada, {{ $currentDate }}</h4>
 
         <table style="width: 100%; text-align: center; border-collapse: collapse; border: none;">
             <tr style="border: none;">
@@ -206,8 +206,10 @@ $type = $isAdmin ? 'admin' : 'employee';
                         @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    @if (!empty($adminSignedBy))
                     <p style="margin: 10px 0; text-align: center;">{{ $adminSignedBy }}</p>
                     <p style="margin: 5px 0; text-align: center;">{{ $adminSignedByPosition }}</p>
+                    @endif
                 </td>
 
                 <td style="width: 50%; vertical-align: top; border: none; text-align: center; padding: 10px; padding-top: -20px">
