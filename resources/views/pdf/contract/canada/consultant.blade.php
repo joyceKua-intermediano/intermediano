@@ -14,9 +14,14 @@
 </head>
 
 @php
-$formattedDate = (new DateTime($record->start_date))->format('jS');
-$month = (new DateTime($record->start_date))->format('F');
-$year = (new DateTime($record->start_date))->format('Y');
+$formattedStartDate = (new DateTime($record->start_date))->format('jS');
+$monthStartDate = (new DateTime($record->start_date))->format('F');
+$yearStartDate = (new DateTime($record->start_date))->format('Y');
+
+$formattedEndDate = (new DateTime($record->end_date))->format('jS');
+$monthEndDate = (new DateTime($record->end_date))->format('F');
+$yearEndDate = (new DateTime($record->end_date))->format('Y');
+
 $currentDate = now()->format('d/m/Y');
 $companyAddress = $record->company->address;
 $companyCity = $record->company->city;
@@ -94,7 +99,7 @@ $type = $isAdmin ? 'admin' : 'employee';
         <p><b> Gate Intermediano Inc.</b></p>
         <p>4388 Rue Saint-Denis Suite 200 #763 Montreal, QC H2J 2L1 Canada</p>
 
-        <p><b>Employee’s Immediate Supervisor at the Beginning of the Contract: </b>: Fernando Gutierrez</p>
+        <p><b>Employee’s Immediate Supervisor at the Beginning of the Contract: </b>Fernando Gutierrez</p>
         <h4>2. Employee</h4>
         <p><b>Complete Name:</b> {{ $employeeName }}</p>
         <p><b>Social Insurance Number:</b> {{ $employeeSocialSecurityNumber }}</p>
@@ -103,7 +108,11 @@ $type = $isAdmin ? 'admin' : 'employee';
         <p><b>Permanent Address:</b> {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeState }} {{ $employeeCountry }}</p>
         <h4>3. Validity of Contract</h4>
         <h4>1.1. Form of Contract</h4>
-        <p>This contract shall be in force for a period of twelve (12) months, starting on {{ $year }} {{ $month }} {{ $formattedDate }}. This contract can be extended following agreement in writing.</p>
+        @if($record->end_date)
+        <p>The parties agree that the duration of this contract will be for a defined term and its starting date will be from {{ $monthStartDate }} {{ $formattedStartDate  }} {{ $yearStartDate }}  to {{ $formattedEndDate  }}  {{ $monthEndDate }} {{ $yearEndDate }}. This contract can be extended following agreement in writing.</p>
+        @else
+        <p>The parties agree that the duration of this contract will be for a indefinite term and its starting date will be from {{ $formattedStartDate  }} {{ $monthStartDate }} {{ $yearStartDate }} to indefinite end date. This contract can be extended following agreement in writing</p>
+        @endif
         <p>This contract is subject to {{ $employeeState }} law and social security regulations unless otherwise provided in this contract or required by binding local legislation, conditions or requirements.</p>
 
         <h4>1.2. Lay-off and termination</h4>
