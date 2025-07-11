@@ -17,7 +17,7 @@
 $formattedDate = now()->format('jS');
 $month = now()->format('F');
 $year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDate = (new DateTime($record->start_date))->format('[d/m/Y]');
 $companyName = $record->company->name;
 $companyTaxId = $record->company->tax_id;
 $companyCountry = $record->company->country;
@@ -308,7 +308,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             Annexes, have been drawn up in the English, being considered official.</p>
         <p> In witness whereof, the Parties sign this Agreement in two (2) copies of equal form and
             content, for one sole purpose.</p>
-        <p> Hong Kong, {{ $currentDate }}</p>
+        <p> Hong Kong, {{ $contractCreatedDate }}</p>
         <table style="width: 100%; text-align: center; border-collapse: collapse; border: none;">
             <tr style="border: none;">
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
