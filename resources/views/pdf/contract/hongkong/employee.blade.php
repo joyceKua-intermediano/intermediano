@@ -38,8 +38,8 @@ $employeeCity = $record->personalInformation->city ?? null;
 $employeeName = $record->employee->name;
 $employeeCountryWork = $record->country_work;
 $employeeJobTitle = $record->job_title;
-$employeeStartDate = \Carbon\Carbon::parse($record->start_date)->format('d m Y');
-$employeeEndDate = \Carbon\Carbon::parse($record->end_date)->format('d m Y');
+$employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeGrossSalary = $record->gross_salary;
 $employeeJobDescription = $record->job_description;
 $signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
@@ -88,7 +88,7 @@ $type = $isAdmin ? 'admin' : 'employee';
     <main class="main-container {{  $is_pdf ? 'is-pdf' : 'non-pdf'  }}">
         <h4 style='text-align:center; text-decoration: underline; margin: 20px 0px'> SERVICE AGREEMENT</h4>
 
-        <p> This Service Agreement (the "Agreement") is made on [DATE] (the "Effective Date"), by
+        <p> This Service Agreement (the "Agreement") is made on{{ $contractCreatedDate }} (the "Effective Date"), by
             and between INTERMEDIANO HONG KONG LIMITED, a Hong Kong company, enrolled
             under the registration number 77682459, located at Flat A11/F. Cheung Lung Ind Bldg 10
             CheungYeeST,CheungShaWan,HongKong,herein referred to simply as (the"Provider");
@@ -352,6 +352,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                         <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 10px; margin-top: 40px; z-index: 1000; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
                         @endif
                         <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);">{{ $employeeName }}</p>
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
                     </div>
 

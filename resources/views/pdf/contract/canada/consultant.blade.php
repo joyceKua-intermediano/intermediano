@@ -56,7 +56,7 @@ $customerPosition = $record->companyContact->position;
 
 $employeeSocialSecurityNumber = $record->socialSecurityInfos->social_security_number ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
 $signatureExists = Storage::disk('private')->exists($signaturePath);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
