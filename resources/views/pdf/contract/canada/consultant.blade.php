@@ -22,7 +22,7 @@ $formattedEndDate = (new DateTime($record->end_date))->format('jS');
 $monthEndDate = (new DateTime($record->end_date))->format('F');
 $yearEndDate = (new DateTime($record->end_date))->format('Y');
 
-$currentDate = now()->format('d/m/Y');
+$createdDate = (new DateTime($record->end_date))->format('d/m/Y');
 $companyAddress = $record->company->address;
 $companyCity = $record->company->city;
 $companyState = $record->company->state;
@@ -93,7 +93,7 @@ $type = $isAdmin ? 'admin' : 'employee';
     <main class="main-container">
         <h3>EMPLOYMENT CONTRACT</h3>
         <b>{{ $employeeName }}</b> <br>
-        <b style='margin-top: -10px'>{{ $currentDate }}</b>
+        <b style='margin-top: -10px'>{{ $createdDate }}</b>
 
         <h4>1. Employer</h4>
         <p><b> Gate Intermediano Inc.</b></p>
@@ -190,7 +190,7 @@ $type = $isAdmin ? 'admin' : 'employee';
 
     @include('pdf.contract.layout.header')
     <main class="main-container" style='page-break-after: avoid'>
-        <h4 style="text-align: center">Montreal Canada, {{ $currentDate }}</h4>
+        <h4 style="text-align: center">Montreal Canada, {{ $createdDate }}</h4>
 
         <table style="width: 100%; text-align: center; border-collapse: collapse; border: none;">
             <tr style="border: none;">

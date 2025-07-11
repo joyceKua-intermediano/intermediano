@@ -9,10 +9,10 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$formattedStartDate = (new DateTime($record->start_date))->format('jS');
+$monthStartDate = (new DateTime($record->start_date))->format('F');
+$yearStartDate = (new DateTime($record->start_date))->format('Y');
+$createdDate = (new DateTime($record->end_date))->format('[d/m/Y]');
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -24,7 +24,13 @@ $customerName = $record->companyContact->contact_name;
 $customerPosition = $record->companyContact->position;
 $customerTranslatedPosition = $record->translatedPosition;
 $signatureExists = Storage::disk('public')->exists($record->signature);
-
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 <body>
     <!-- Content Section -->
@@ -35,13 +41,13 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">PARTNERSHIP AGREEMENT</h4>
                     <p>
-                        This Payroll Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }} (the “Effective Date”), by and between INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA (the “Provider”), a Brazilian company, en-rolled under the fiscal registration number 46.427.519/0001-51, located at Avenida das Americas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, duly represented by its legal representative; AND {{ $companyName }} (the “Customer”), with its principal place of business at {{ $customerAddress }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).
+                        This Payroll Service Agreement (the “Agreement”) is made on {{ $formattedStartDate }} of {{ $monthStartDate }}, {{ $yearStartDate }} (the “Effective Date”), by and between INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA (the “Provider”), a Brazilian company, en-rolled under the fiscal registration number 46.427.519/0001-51, located at Avenida das Americas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, duly represented by its legal representative; AND {{ $companyName }} (the “Customer”), with its principal place of business at {{ $customerAddress }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).
                     </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE PARCERIA</h4>
                     <p>
-                        Este Contrato de Prestação de Serviços de Folha de Pagamento (o “Contrato”) é celebrado no dia {{ $formattedDate }} de {{ $month }}, {{ $year }} (a “Data de Vigência”), INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA (o “Fornecedor”), uma empresa constituída sob as leis de do Brasil, inscrita sob o número de registro fiscal 46.427.519/0001-51, com sede na Avenida das Americas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, devidamente representada por seu representante legal; E {{ $companyName }} (o “Cliente”), com sede principal em {{ $customerAddress }}, devidamente representada por seu representante autorizado, (cada um, uma “Parte” e, em conjunto, as “Partes”).
+                        Este Contrato de Prestação de Serviços de Folha de Pagamento (o “Contrato”) é celebrado no dia {{ $formattedStartDate }} de {{ $monthStartDate }}, {{ $yearStartDate }} (a “Data de Vigência”), INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA (o “Fornecedor”), uma empresa constituída sob as leis de do Brasil, inscrita sob o número de registro fiscal 46.427.519/0001-51, com sede na Avenida das Americas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, devidamente representada por seu representante legal; E {{ $companyName }} (o “Cliente”), com sede principal em {{ $customerAddress }}, devidamente representada por seu representante autorizado, (cada um, uma “Parte” e, em conjunto, as “Partes”).
                     </p>
                 </td>
             </tr>
@@ -824,34 +830,55 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Rio de Janeiro, {{ $currentDate }}</p>
+                    <p>Rio de Janeiro, {{ $createdDate }}</p>
                     <div style="text-align: left">
                         <b>INTERMEDIANO DO BRASIL <br> APOIO ADMINISTRATIVO LTDA </b>
                     </div>
                     <br><br>
                     <div style="text-align: center; margin-top: -20px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px" />
+                        @else
+                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    @if (!empty($adminSignedBy))
                     <div style="text-align: center; margin-top: -20px">
-                        <p>Fernando Gutierrez</p>
-                        <p style="margin-top: -20px">Legal Representative</p>
+                        <p>{{ $adminSignedBy }}</p>
+                        <p style="margin-top: -20px">{{ $adminSignedByPosition }}</p>
                     </div>
+                    @endif
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Rio de Janeiro, {{ $currentDate }}</p>
+                    <p>Rio de Janeiro, {{ $createdDate }}</p>
                     <div style="text-align: left">
                         <b>INTERMEDIANO DO BRASIL <br> APOIO ADMINISTRATIVO LTDA </b>
                     </div>
                     <br><br>
                     <div style="text-align: center; margin-top: -20px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px" />
+                        @else
+                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    @if (!empty($adminSignedBy))
                     <div style="text-align: center; margin-top: -20px">
-                        <p>Fernando Gutierrez</p>
-                        <p style="margin-top: -20px">Representante Legal</p>
+                        <p>{{ $adminSignedBy }}</p>
+                        <p style="margin-top: -20px">{{ $adminSignedByPosition }}</p>
                     </div>
+                    @endif
                 </td>
             </tr>
 
