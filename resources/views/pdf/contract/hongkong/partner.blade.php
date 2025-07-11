@@ -296,7 +296,7 @@ $type = $isAdmin ? 'admin' : 'employee';
         <p> In witness whereof, the Parties sign this Agreement in two (2) copies of equal form and
             content, for one sole purpose.</p>
 
-        <p> Hong Kong, {{ $currentDate }}</p>
+        <p> Hong Kong, {{ $contractCreatedDate }}</p>
 
         <table style="width: 100%; text-align: center; border-collapse: collapse; border: none;">
             <tr style="border: none;">

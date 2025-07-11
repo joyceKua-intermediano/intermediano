@@ -47,6 +47,13 @@ $personalTaxId = $record->document->tax_id ?? null;
 $countryWork = $record->country_work ?? null;
 $signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
 $signatureExists = Storage::disk('public')->exists($signaturePath);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 <style>
     .non-pdf h4 {
@@ -181,7 +188,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     <p class='short-lineheight'>Após a rescisão deste Contrato, por qualquer motivo, o EMPREGADO compromete-se a devolver imediatamente ao EMPREGADOR quaisquer materiais confidenciais em sua posse, seja em formato físico ou eletrônico. Além disso, o EMPREGADO compromete-se a não manter cópias desses documentos e materiais. Todos esses materiais e documentos permanecerão propriedade exclusiva do EMPREGADOR.</p>
                     <p class='short-lineheight'>O EMPREGADO será liberado das obrigações definidas nos parágrafos acima deste Artigo somente mediante consentimento prévio e por escrito do EMPREGADOR.</p>
                     <p class='short-lineheight'>As obrigações deste Artigo não impedirão a divulgação de informações exigidas por lei ou regulamentos obrigatórios.</p>
-                
+
 
                 </td>
             </tr>
@@ -446,8 +453,18 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     <p>Rio de Janeiro, {{ $currentDate }}</p>
                     <div style="text-align: center; position: relative;">
                         <div style="display: inline-block; position: relative;">
-                            <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            @if($adminSignatureExists)
+
+                            <img src="{{ 
+                                $is_pdf 
+                                    ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                    : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                                    }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+                            @else
+                            <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            @endif
                         </div>
+
 
                         <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
 
@@ -483,8 +500,18 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     <p>Rio de Janeiro, {{ $currentDate }}</p>
                     <div style="text-align: center; position: relative;">
                         <div style="display: inline-block; position: relative;">
-                            <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            @if($adminSignatureExists)
+
+                            <img src="{{ 
+                                $is_pdf 
+                                    ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                    : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                                    }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+                            @else
+                            <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            @endif
                         </div>
+
                         <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
 
                         <b>INTERMEDIANO DO BRASIL</b> <br>
