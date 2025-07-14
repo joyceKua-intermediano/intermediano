@@ -46,6 +46,8 @@ $personalId = $record->document->personal_id ?? null;
 $personalTaxId = $record->document->tax_id ?? null;
 $countryWork = $record->country_work ?? null;
 $signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
+$signedDate = $record->signed_contract ? new DateTime($record->signed_contract) : null;
+$cutoffDate = new DateTime('2025-07-11');
 $signatureExists = Storage::disk('public')->exists($signaturePath);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
@@ -352,20 +354,24 @@ $type = $isAdmin ? 'admin' : 'employee';
                 <td style="width: 50%; vertical-align: top;">
                     <p>Rio de Janeiro, {{ $contractCreatedDate }}</p>
                     <div style="text-align: center; position: relative;">
-
-
                         <div style="display: inline-block; position: relative;">
-                            @if($adminSignatureExists)
+                            @if ($signedDate
+                            < $cutoffDate) <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+
+                            @elseif ($adminSignatureExists)
 
                             <img src="{{ 
-                                $is_pdf 
-                                    ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
-                                    : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
-                                    }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+                                    $is_pdf 
+                                        ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                        : url('/signatures/' . $type . '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                                }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+
                             @else
-                            <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            {{-- Use blank signature if none is available --}}
+                            <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
                             @endif
                         </div>
+
 
                         <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
 
@@ -375,7 +381,7 @@ $type = $isAdmin ? 'admin' : 'employee';
 
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
-                            @if($signatureExists)
+                            @if($signatureExists && $signedDate)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;">
                             <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
@@ -401,17 +407,24 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <p>Rio de Janeiro, {{ $contractCreatedDate }}</p>
                     <div style="text-align: center; position: relative;">
                         <div style="display: inline-block; position: relative;">
-                            @if($adminSignatureExists)
+                            @if ($signedDate
+                            < $cutoffDate) <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+
+                            @elseif ($adminSignatureExists)
 
                             <img src="{{ 
-                                $is_pdf 
-                                    ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
-                                    : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
-                                    }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+                                    $is_pdf 
+                                        ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                        : url('/signatures/' . $type . '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                                }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
+
                             @else
-                            <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                            {{-- Use blank signature if none is available --}}
+                            <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
                             @endif
                         </div>
+
+
 
                         <div style="width: 70%; border-bottom: 1px solid black; margin: 10px auto 0; z-index:100"></div>
 
@@ -421,7 +434,7 @@ $type = $isAdmin ? 'admin' : 'employee';
 
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
-                            @if($signatureExists)
+                            @if($signatureExists && $signedDate)
                             <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;margin: 0 auto;">
                             <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                             @endif
