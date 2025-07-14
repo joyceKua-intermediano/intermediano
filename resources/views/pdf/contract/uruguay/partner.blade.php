@@ -28,6 +28,13 @@ $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $signatureExists = Storage::disk('public')->exists($record->signature);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 <body>
     <!-- Content Section -->
@@ -558,12 +565,21 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                     </div>
                     <br><br>
                     <div style="text-align: center; margin-top: 65px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px" />
+                        @endif
+
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <div style="text-align: center; margin-top: -65px">
-                        <p style='text-align: center;'>Fernando Gutierrez</p>
-                        <p style="margin-top: -20px; text-align: center;">Legal Representative</p>
+                        @if (!empty($adminSignedBy))
+                        <p style='text-align: center;'>{{ $adminSignedBy }}</p>
+                        <p style="margin-top: -20px; text-align: center;">{{ $adminSignedByPosition }}</p>
+                        @endif
                     </div>
                 </td>
 

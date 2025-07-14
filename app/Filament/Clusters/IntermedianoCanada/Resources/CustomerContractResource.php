@@ -150,8 +150,6 @@ class CustomerContractResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-
-
                 Tables\Actions\Action::make('uploadSignature')
                     ->label('Upload Signature')
                     ->icon('heroicon-o-arrow-up-tray')

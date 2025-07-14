@@ -9,10 +9,10 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
+$currentDate = $record->created_at->format('[d/m/Y]');
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -50,7 +50,13 @@ $exchangeRate = $record->quotation->exchange_rate;
 $currencyName = $record->quotation->currency_name;
 
 $signatureExists = Storage::disk('public')->exists($record->signature);
-
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 <body>
     <!-- Content Section -->
@@ -60,11 +66,11 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">SERVICE AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }} (the “Effective Date”), by and between <b>INTERMEDIANO SAS</b> (the “Provider”), domiciliated at Calle Faustino Carámbula 1203, Rivera, Uruguay, duly represented by its legal representative; AND <b>{{ $companyName }}</b> (the “Customer”), a company duly incorporated with {{ $customerTaxId }} under the laws of {{ $customerCountry }} and holding offices at {{ $customerAddress }}. </p>
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }} (the “Effective Date”), by and between <b>INTERMEDIANO SAS</b> (the “Provider”), domiciliated at Calle Faustino Carámbula 1203, Rivera, Uruguay, duly represented by its legal representative; AND <b>{{ $companyName }}</b> (the “Customer”), a company duly incorporated with {{ $customerTaxId }} under the laws of {{ $customerCountry }} and holding offices at {{ $customerAddress }}. </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE SERVICIOS</h4>
-                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $formattedDate }}, {{ $month }}, {{ $year }} (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO SAS</b> (el "Proveedor") domiciliado en Calle El Faustino Carámbula 1203, Rivera, Uruguay, debidamente representado por su representante legall; Y <b>{{ $companyName }}</b> (el "Cliente"), una sociedad debidamente constituida con {{ $customerTaxId }} según las leyes de {{ $customerCountry }} y con domicilio en {{ $customerAddress }}. </p>
+                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $contractCreatedDay }}, {{ $contractCreatedmonth }}, {{ $contractCreatedyear }} (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO SAS</b> (el "Proveedor") domiciliado en Calle El Faustino Carámbula 1203, Rivera, Uruguay, debidamente representado por su representante legall; Y <b>{{ $companyName }}</b> (el "Cliente"), una sociedad debidamente constituida con {{ $customerTaxId }} según las leyes de {{ $customerCountry }} y con domicilio en {{ $customerAddress }}. </p>
                 </td>
             </tr>
             <tr>
@@ -556,12 +562,21 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                     </div>
                     <br><br>
                     <div style="text-align: center; margin-top: 65px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; margin-bottom: 0px" />
+                        @endif
+
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
                     <div style="text-align: center; margin-top: -65px">
-                        <p style='text-align: center;'>Fernando Gutierrez</p>
-                        <p style="margin-top: -20px; text-align: center;">Legal Representative</p>
+                        @if (!empty($adminSignedBy))
+                        <p style='text-align: center;'>{{ $adminSignedBy }}</p>
+                        <p style="margin-top: -20px; text-align: center;">{{ $adminSignedByPosition }}</p>
+                        @endif
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
@@ -569,10 +584,12 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                         <b>{{ $companyName }}</b>
                     </div>
                     <br><br>
+                    <div style="text-align: center; margin-top: 7px">
 
-                    @if($signatureExists)
-                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
-                    <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                        @if($signatureExists)
+                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                        <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                    </div>
 
                     @else
                     <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
