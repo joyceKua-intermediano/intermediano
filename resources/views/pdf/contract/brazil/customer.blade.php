@@ -23,7 +23,7 @@ $customerEmail = $record->companyContact->email;
 $customerName = $record->companyContact->contact_name;
 $customerPosition = $record->companyContact->position;
 $customerTranslatedPosition = $record->translatedPosition;
-$signatureExists = Storage::disk('public')->exists($record->signature);
+$signatureExists = Storage::disk('private')->exists($record->signature);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
 $adminSignedBy = $record->user->name ?? '';
@@ -895,7 +895,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     </div>
                     @if($signatureExists)
                     <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                        <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
                     </div>
                     @else
                     <div style="text-align: center; margin-top: 0px">
@@ -917,7 +917,7 @@ $type = $isAdmin ? 'admin' : 'employee';
 
                     @if($signatureExists)
                     <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                        <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
                     </div>
                     @else
                     <div style="text-align: center; margin-top: 0px">

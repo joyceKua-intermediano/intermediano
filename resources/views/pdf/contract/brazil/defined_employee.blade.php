@@ -45,7 +45,7 @@ $countryWork = $record->country_work ?? 'N/A';
 $signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
 $signedDate = $record->signed_contract ? new DateTime($record->signed_contract) : null;
 $cutoffDate = new DateTime('2025-07-11');
-$signatureExists = Storage::disk('public')->exists($signaturePath);
+$signatureExists = Storage::disk('private')->exists($signaturePath);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
 $adminSignedBy = $record->user->name ?? '';
@@ -379,7 +379,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists && $signedDate)
-                            <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;">
+                            <img src="{{ $is_pdf ? storage_path('app/private/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;">
                             <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
                             @endif
@@ -432,7 +432,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists && $signedDate)
-                            <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;margin: 0 auto;">
+                            <img src="{{ $is_pdf ? storage_path('app/private/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;margin: 0 auto;">
                             <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                             @endif
                         </div>
