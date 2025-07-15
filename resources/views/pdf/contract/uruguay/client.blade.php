@@ -49,7 +49,7 @@ $contractType = $record->end_date == null ? 'Undefined Period' : 'Defined Period
 $exchangeRate = $record->quotation->exchange_rate;
 $currencyName = $record->quotation->currency_name;
 
-$signatureExists = Storage::disk('public')->exists($record->signature);
+$signatureExists = Storage::disk('private')->exists($record->signature);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
 $adminSignedBy = $record->user->name ?? '';
