@@ -9,10 +9,8 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+
+$contractCreatedDate = $record->created_at->format('[d/m/Y]');
 $partnerName = $record->partner->partner_name;
 $partnerTaxId = $record->partner->tax_id;
 $partnerCountry = $record->partner->country->name;
@@ -223,7 +221,7 @@ $type = $isAdmin ? 'admin' : 'employee';
     <main class='main-container'>
 
 
-        <p style="margin-top: -6px !important;"> {{ $currentDate }}</p>
+        <p style="margin-top: -6px !important;"> {{ $contractCreatedDate }}</p>
 
         <table style="width: 100%; text-align: center; border-collapse: collapse; border: none; margin-top: -35px !important;">
             <tr style="border: none;">
@@ -254,8 +252,11 @@ $type = $isAdmin ? 'admin' : 'employee';
 
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    @if (!empty($adminSignedBy))
                     <p style="margin: 10px 0; text-align: center;">{{ $adminSignedBy }}</p>
                     <p style="margin: 5px 0; text-align: center;">{{ $adminSignedByPosition }}</p>
+                    @endif
+
                 </td>
 
             </tr>

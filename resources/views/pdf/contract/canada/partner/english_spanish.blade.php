@@ -9,10 +9,10 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
+$contractCreatedDate = (new DateTime($record->created_at))->format('[d/m/Y]');
 $partnerName = $record->partner->partner_name;
 $partnerContactName = $record->partner->contact_name;
 $partnerAddress = $record->partner->address;
@@ -23,21 +23,21 @@ $partnerCountry = $record->partner->country->name;
 $partnerTaxId = $record->partner->tax_id ?? 'NA';
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
-$employeeNationality = $record->personalInformation->country ?? null;
-$employeeState = $record->personalInformation->state ?? null;
-$employeeCivilStatus = $record->personalInformation->civil_status ?? null;
-$employeeJobTitle = $record->job_title ?? null;
-$employeeCountryWork = $record->country_work ?? null;
+$employeeNationality = $record->personalInformation->country ?? 'N/A';
+$employeeState = $record->personalInformation->state ?? 'N/A';
+$employeeCivilStatus = $record->personalInformation->civil_status ?? 'N/A';
+$employeeJobTitle = $record->job_title ?? 'N/A';
+$employeeCountryWork = $record->country_work ?? 'N/A';
 $employeeGrossSalary = $record->gross_salary;
-$employeeTaxId = $record->document->tax_id ?? null;
-$employeeEmail = $record->employee->email ?? null;
-$employeeAddress = $record->personalInformation->address ?? null;
-$employeeCity = $record->personalInformation->city ?? null;
-$employeeDateBirth = $record->personalInformation->date_of_birth ?? null;
-$employeePhone = $record->personalInformation->phone ?? null;
-$employeeMobile = $record->personalInformation->mobile ?? null;
-$employeeCountry = $record->personalInformation->country ?? null;
-$employeeEducation = $record->personalInformation->education_attainment ?? null;
+$employeeTaxId = $record->document->tax_id ?? 'N/A';
+$employeeEmail = $record->employee->email ?? 'N/A';
+$employeeAddress = $record->personalInformation->address ?? 'N/A';
+$employeeCity = $record->personalInformation->city ?? 'N/A';
+$employeeDateBirth = $record->personalInformation->date_of_birth ?? 'N/A';
+$employeePhone = $record->personalInformation->phone ?? 'N/A';
+$employeeMobile = $record->personalInformation->mobile ?? 'N/A';
+$employeeCountry = $record->personalInformation->country ?? 'N/A';
+$employeeEducation = $record->personalInformation->education_attainment ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $translatedJobDescription = $record->translated_job_description;
@@ -62,12 +62,12 @@ $type = $isAdmin ? 'admin' : 'employee';
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">PARTNERSHIP AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }} (the <b>“Effective Date”</b>), by and between <b>{{ $partnerName }}</b> (the <b>“Provider”</b>), a {{ $partnerCountry }} company, enrolled under the fiscal registration number {{ $partnerTaxId }}, located at {{ $partnerAddress }}, {{ $partnerCountry }}, duly represented by its legal representative; AND <b>GATE INTERMEDIANO INC.</b> (the <b>“Customer”</b>), a Canadian company, enrolled under the fiscal registration number 733087506RC0001, located at 4388 Rue SaintDenis Suite200 #763, Montreal, QC H2J 2L1, Canada, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”). </p>
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }} (the <b>“Effective Date”</b>), by and between <b>{{ $partnerName }}</b> (the <b>“Provider”</b>), a {{ $partnerCountry }} company, enrolled under the fiscal registration number {{ $partnerTaxId }}, located at {{ $partnerAddress }}, {{ $partnerCountry }}, duly represented by its legal representative; AND <b>GATE INTERMEDIANO INC.</b> (the <b>“Customer”</b>), a Canadian company, enrolled under the fiscal registration number 733087506RC0001, located at 4388 Rue SaintDenis Suite200 #763, Montreal, QC H2J 2L1, Canada, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”). </p>
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE PARTNER</h4>
-                    <p>El presente Contrato de servicios de nómina y recursos humanos (el <b>"Contrato"</b>) se celebra a partir del {{ $formattedDate }}, {{ $month }}, {{ $year }} (la <b>"Fecha de entrada en vigor"</b>), entre <b>{{ $partnerName }}</b> (el <b>"Proveedor"</b>), una empresa {{ $partnerCountry }}, registrada con el número de registro corporativo {{ $partnerTaxId }}, ubicada en {{ $partnerAddress }}, {{ $partnerCountry }}, debidamente representada por su representante legal; Y <b>GATE INTERMEDIANO INC.</b> (el <b>"Cliente"</b>), una empresa canadiense, inscrita bajo el número de registro fiscal 733087506RC0001, con domicilio en 4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada, debidamente representada por su representante autorizado, (cada uno, una
+                    <p>El presente Contrato de servicios de nómina y recursos humanos (el <b>"Contrato"</b>) se celebra a partir del {{ $contractCreatedDay }}, {{ $contractCreatedmonth }}, {{ $contractCreatedyear }} (la <b>"Fecha de entrada en vigor"</b>), entre <b>{{ $partnerName }}</b> (el <b>"Proveedor"</b>), una empresa {{ $partnerCountry }}, registrada con el número de registro corporativo {{ $partnerTaxId }}, ubicada en {{ $partnerAddress }}, {{ $partnerCountry }}, debidamente representada por su representante legal; Y <b>GATE INTERMEDIANO INC.</b> (el <b>"Cliente"</b>), una empresa canadiense, inscrita bajo el número de registro fiscal 733087506RC0001, con domicilio en 4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada, debidamente representada por su representante autorizado, (cada uno, una
                         "Parte" y juntos, las "Partes").
                     </p>
                 </td>
@@ -743,7 +743,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;">
-                    <p style="margin: 0;"> {{ $currentDate }}</p>
+                    <p style="margin: 0;"> {{ $contractCreatedDate }}</p>
                 </td>
             </tr>
             <tr>
