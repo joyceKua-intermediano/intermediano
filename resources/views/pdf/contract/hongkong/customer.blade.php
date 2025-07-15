@@ -14,14 +14,12 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+
 $contractCreatedDay= $record->created_at->format('jS');
 $contractCreatedmonth = $record->created_at->format('F');
 $contractCreatedyear = $record->created_at->format('Y');
-$contractCreatedDate = "$month $contractCreatedDay, $year";
+$contractCreatedDate = (new DateTime($record->created_at))->format('[m/d/Y]');
+
 
 $companyName = $record->company->name;
 $companyCountry = $record->company->country;

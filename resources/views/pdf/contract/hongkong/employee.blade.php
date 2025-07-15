@@ -14,10 +14,7 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$contractCreatedDate = (new DateTime($record->start_date))->format('[d/m/Y]');
+$contractCreatedDate = (new DateTime($record->created_at))->format('[m/d/Y]');
 $companyName = $record->company->name;
 $companyTaxId = $record->company->tax_id;
 $companyCountry = $record->company->country;
