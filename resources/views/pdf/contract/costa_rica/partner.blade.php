@@ -9,18 +9,15 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
-$day = now()->format('j');
+$yearContractDate = (new DateTime($record->created_at))->format('Y');
+$translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
+$day = (new DateTime($record->created_at))->format('j');
+$createdDate = (new DateTime($record->created_at))->format('[d/m/Y]');
 
-$currentDate = now()->format('[d/m/Y]');
 $partnerName = $record->partner->partner_name;
 $partnerTaxId = $record->partner->tax_id;
 $partnerCountry = $record->partner->country->name;
 $partnerAddress = $record->partner->address;
-
 
 $partnerPhone = $record->partner->mobile_number;
 $partnerEmail = $record->partner->email;
@@ -33,7 +30,15 @@ $employeeJobTitle = $record->job_title;
 $employeeStartDate = $record->start_date;
 $employeeEndDate = $record->end_date;
 $employeeGrossSalary = $record->gross_salary;
+$signatureExists = Storage::disk('private')->exists($record->signature);
 
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 
 <style>
@@ -67,7 +72,7 @@ $employeeGrossSalary = $record->gross_salary;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $currentDate }} (the “Effective Date”), by and between <b>INTERMEDIANO S.R.L.</b>, a Costa Rican company with mercantil registry No. 3-102-728410, resident at Avenidas 2 y 4, calle 5, Escazú San Jose, Costa Rica,herein referred to simply as (the <b>“Customer”</b>); {{ $partnerName }} (the <b>“Provider”</b>), with its principal place {{ $partnerAddress }} duly represented by its authorized representative, (the <b>“Provider”</b>).</p>
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $createdDate }} (the “Effective Date”), by and between <b>INTERMEDIANO S.R.L.</b>, a Costa Rican company with mercantil registry No. 3-102-728410, resident at Avenidas 2 y 4, calle 5, Escazú San Jose, Costa Rica,herein referred to simply as (the <b>“Customer”</b>); {{ $partnerName }} (the <b>“Provider”</b>), with its principal place {{ $partnerAddress }} duly represented by its authorized representative, (the <b>“Provider”</b>).</p>
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
@@ -631,7 +636,7 @@ $employeeGrossSalary = $record->gross_salary;
             <tr>
                 <td colspan="2" style="text-align: center;">
                     <p style="margin: 0; text-align: center; font-weight: bold;">
-                        San Jose, {{$day}} de {{ $translatedMonth }} de {{ $year }}.
+                        San Jose, {{$day}} de {{ $translatedMonth }} de {{ $yearContractDate }}.
                     </p>
                 </td>
             </tr>
@@ -641,9 +646,13 @@ $employeeGrossSalary = $record->gross_salary;
 
                     <div style="text-align: center; position: relative; height: 120px;">
                         <p style='text-align: center'><b>{{ $partnerName }}</b></p>
-
-                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
+                        @if($signatureExists)
+                        <img src="{{ 
+                            $is_pdf
+                                ? storage_path('app/private/signatures/clients/partner_' . $record->partner_id . '.webp')
+                                : url('/signatures/customer/' . $record->partner_id . '/partner') . '?v=' . filemtime(storage_path('app/private/signatures/clients/partner_' . $record->partner_id . '.webp')) 
+                        }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
                         <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">{{ $partnerContactName }}</p>
                         <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%;">Authorized Representative</p>
