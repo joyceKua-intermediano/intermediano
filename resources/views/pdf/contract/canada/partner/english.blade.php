@@ -28,7 +28,7 @@ $employeeJobTitle = $record->job_title;
 $employeeStartDate = $record->start_date;
 $employeeEndDate = $record->end_date;
 $employeeGrossSalary = $record->gross_salary;
-$signatureExists = Storage::disk('public')->exists($record->signature);
+$signatureExists = Storage::disk('private')->exists($record->signature);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
 $adminSignedBy = $record->user->name ?? '';
@@ -229,7 +229,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                 <td style="width: 50%; vertical-align: top; border: none; text-align: center; padding: 10px; padding-top: -20px">
                     <h4>{{ $partnerName }}</h4>
                     @if($signatureExists)
-                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                    <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
                     <p style="margin: 5px 0; text-align: center;">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                     @else
                     <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Blank Signature" style="height: 50px; margin: 10px 0;">

@@ -160,10 +160,10 @@ class ContractResource extends Resource
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                             ->optimize('webp')
                             ->resize(50)
-                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, $record): string {
                                 $companyId = auth()->user()->company_id;
                                 $partnerId = auth()->user()->partner_id;
-                                $signaturePath = $companyId ? 'customer_' . $companyId : 'partner_' . $partnerId;
+                                $signaturePath = $companyId ? 'customer_' . $companyId . '_' . $record->id: 'partner_' . $partnerId . '_' . $record->id;
                                 $fileName = $signaturePath . '.' . $file->getClientOriginalExtension();
                                 $filePath = 'signatures/clients' . $fileName;
                                 if (Storage::disk('private')->exists($filePath)) {
@@ -284,7 +284,6 @@ class ContractResource extends Resource
         $tempFile = new UploadedFile($tempFilePath, basename($filename), $mimeType, null, true);
 
         $path = Storage::putFile('livewire-tmp', $tempFile);
-
         $file = TemporaryUploadedFile::createFromLivewire($path);
 
         return URL::temporarySignedRoute(

@@ -27,7 +27,7 @@ $employeeGrossSalary = $record->gross_salary;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $quotationDate = $record->quotation->title;
-$signatureExists = Storage::disk('public')->exists($record->signature);
+$signatureExists = Storage::disk('private')->exists($record->signature);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
 $adminSignedBy = $record->user->name ?? '';
@@ -140,7 +140,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <h4>{{ $companyName }}</h4>
                     @if($signatureExists)
                     <div style="text-align: center; position: relative; height: 100px">
-                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
                     </div>
 
                     @else
