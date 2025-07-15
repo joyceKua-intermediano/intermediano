@@ -9,11 +9,11 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$day = now()->format('j');
-$year = now()->format('Y');
-$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractDay = $record->created_at->format('j');
+$contractCreatedyear = $record->created_at->format('Y');
+$translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
 
 $currentDate = now()->format('[d/m/Y]');
 $companyName = $record->company->name;
@@ -49,9 +49,19 @@ $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeStartDateFFormated = $record->start_date
 ? \Carbon\Carbon::parse($record->start_date)->translatedFormat('j \\of F \\of Y')
-: 'N/A';$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+: 'N/A';
+$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 
 $currencyName = $record->quotation->currency_name;
+$signedDate = $record->signed_contract ? \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y'): null;
+$signatureExists = Storage::disk('private')->exists($record->signature);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 
 @endphp
 
@@ -572,7 +582,7 @@ $currencyName = $record->quotation->currency_name;
 
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>{{ $employeeCity }}, {{ $formattedDate }} of {{ $month }} of {{ $year }}.</p>
+                    <p>{{ $employeeCity }}, {{ $contractCreatedDay }} of {{ $contractCreatedmonth }} of {{ $contractCreatedyear }}.</p>
 
                     <div style="text-align: center; position: relative; height: 120px;">
                         <p style='text-align: center'><b>INTERMEDIANO S.R.L. </b></p>
@@ -586,7 +596,7 @@ $currencyName = $record->quotation->currency_name;
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>{{ $employeeCity }}, {{$day}} de {{ $translatedMonth }} de {{ $year }}.</p>
+                    <p>{{ $employeeCity }}, {{$contractDay}} de {{ $translatedMonth }} de {{ $contractCreatedyear }}.</p>
 
                     <div style="text-align: center; position: relative; height: 120px;">
                         <p style='text-align: center'><b>INTERMEDIANO S.R.L. </b></p>
@@ -603,29 +613,54 @@ $currencyName = $record->quotation->currency_name;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-
-                    <div style="margin-top: 40px; margin-bottom: 75px">
+                    <div style="margin-top: 20px;">
                         <p style='text-align: center'><b>{{ $companyName }}</b></p>
-
                     </div>
-                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    <div style="text-align: center; position: relative; height: 100px;">
 
-                    <div style="text-align: center; margin-top: -20px">
-                        <p style='text-align: center'>{{ $customerName }} {{ $contactSurname }}</p>
-                        <p style="margin-top: -20px; text-align: center;">{{ $customerPosition }}</p>
+                        @if($signatureExists)
+                        <img src="{{ 
+                            $is_pdf
+                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
+                        }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
+                        @else
+                        <div style="text-align: center; position: relative; height: 100px;">
+                            <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;">
+                        </div>
+                        @endif
+                        <p style='position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);'>{{ $signedDate }}</p>
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);">{{ $customerName }} {{ $contactSurname }}</p>
+                        <p style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);">{{ $customerPosition }}</p>
+
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
 
-                    <div style="margin-top: 40px; margin-bottom: 75px">
+                    <div style="margin-top: 20px;">
                         <p style='text-align: center'><b>{{ $companyName }}</b></p>
-
                     </div>
-                    <div style="width: 100%%; border-bottom: 1px solid black;"></div>
+                    <div style="text-align: center; position: relative; height: 100px;">
 
-                    <div style="text-align: center; margin-top: -20px">
-                        <p style='text-align: center'>{{ $customerName }} {{ $contactSurname }}</p>
-                        <p style="margin-top: -20px; text-align: center;">{{ $customerTranslatedPosition }}</p>
+                        @if($signatureExists)
+                        <img src="{{ 
+                            $is_pdf
+                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
+                        }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
+                        @else
+                        <div style="text-align: center; position: relative; height: 100px;">
+                            <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;">
+                        </div>
+                        @endif
+                        <p style='position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);'>{{ $signedDate }}</p>
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);">{{ $customerName }} {{ $contactSurname }}</p>
+                        <p style="position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%);">{{ $customerPosition }}</p>
+
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+
                     </div>
                 </td>
             </tr>
