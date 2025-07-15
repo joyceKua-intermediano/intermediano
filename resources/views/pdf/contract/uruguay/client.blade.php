@@ -12,7 +12,7 @@
 $contractCreatedDay = $record->created_at->format('jS');
 $contractCreatedmonth = $record->created_at->format('F');
 $contractCreatedyear = $record->created_at->format('Y');
-$currentDate = $record->created_at->format('[d/m/Y]');
+$contractCreatedDate = $record->created_at->format('[d/m/Y]');
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -552,7 +552,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;">
-                    <p style="margin: 0;">Rivera, {{ $currentDate }}</p>
+                    <p style="margin: 0;">Rivera, {{ $contractCreatedDate }}</p>
                 </td>
             </tr>
             <tr>
