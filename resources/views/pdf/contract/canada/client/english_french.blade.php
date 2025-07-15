@@ -9,12 +9,11 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
-$companyName = $record->company->name;
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
 
+$companyName = $record->company->name;
 $companyContactName = $record->companyContact->contact_name;
 $companyContactSurname = $record->companyContact->surname;
 
@@ -28,20 +27,20 @@ $companyCountry = $record->company->country;
 
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
-$employeeNationality = $record->personalInformation->country ?? null;
-$employeeState = $record->personalInformation->state ?? null;
-$employeeCivilStatus = $record->personalInformation->civil_status ?? null;
-$employeeJobTitle = $record->job_title ?? null;
-$employeeCountryWork = $record->country_work ?? null;
+$employeeNationality = $record->personalInformation->country ?? 'N/A';
+$employeeState = $record->personalInformation->state ?? 'N/A';
+$employeeCivilStatus = $record->personalInformation->civil_status ?? 'N/A';
+$employeeJobTitle = $record->job_title ?? 'N/A';
+$employeeCountryWork = $record->country_work ?? 'N/A';
 $employeeGrossSalary = $record->gross_salary;
-$employeeTaxId = $record->document->tax_id ?? null;
-$employeeEmail = $record->employee->email ?? null;
-$employeeAddress = $record->personalInformation->address ?? null;
-$employeeCity = $record->personalInformation->city ?? null;
-$employeeDateBirth = $record->personalInformation->date_of_birth ?? null;
-$employeePhone = $record->personalInformation->phone ?? null;
-$employeeMobile = $record->personalInformation->mobile ?? null;
-$employeeCountry = $record->personalInformation->country ?? null;
+$employeeTaxId = $record->document->tax_id ?? 'N/A';
+$employeeEmail = $record->employee->email ?? 'N/A';
+$employeeAddress = $record->personalInformation->address ?? 'N/A';
+$employeeCity = $record->personalInformation->city ?? 'N/A';
+$employeeDateBirth = $record->personalInformation->date_of_birth ?? 'N/A';
+$employeePhone = $record->personalInformation->phone ?? 'N/A';
+$employeeMobile = $record->personalInformation->mobile ?? 'N/A';
+$employeeCountry = $record->personalInformation->country ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $signatureExists = Storage::disk('public')->exists($record->signature);
@@ -68,7 +67,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">SERVICES AGREEMENT</h4>
-                    <p>This Services Agreement ("Agreement") signed and entered into on {{ $formattedDate }} of {{ $month }}, {{ $year }}, by and between: </p>
+                    <p>This Services Agreement ("Agreement") signed and entered into on {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, by and between: </p>
                     <p><b>GATE INTERMEDIANO INC.</b>, initially referred as
                         INTERMEDIANO INC. (the <b>“Provider”</b>) a
                         Canadian company with its principal place of
@@ -89,7 +88,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <h4 style="text-align:center !important; text-decoration: underline;">ENTENTE DE SERVICES</h4>
 
                     <p>Cette Entente de Services ("Entente") est signée
-                        et entrée en vigueur le {{ $formattedDate }} of {{ $month }}, {{ $year }}, par et entre : </p>
+                        et entrée en vigueur le {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, par et entre : </p>
 
                     <p><b>GATE INTERMEDIANO INC.</b>, désignée
                         INTERMEDIANO INC. (le <b>"Fournisseur"</b>), une

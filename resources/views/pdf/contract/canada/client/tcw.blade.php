@@ -9,23 +9,20 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+
 $companyName = $record->company->name;
 $companyContactName = $record->companyContact->contact_name;
 $companyContactSurname = $record->companyContact->surname;
 $companyAddress = $record->company->address;
 
-$companyPhone = $record->companyContact->phone;
-$companyEmail = $record->companyContact->email;
-$companyCountry = $record->company->country;
+$companyPhone = $record->companyContact->phone ?? 'N/A';
+$companyEmail = $record->companyContact->email ?? 'N/A';
+$companyCountry = $record->company->country ?? 'N/A';
 $companyTaxId = $record->company->tax_id ?? 'NA';
 
 $employeeName = $record->employee->name;
-$employeeJobTitle = $record->job_title ?? null;
-$employeeCountryWork = $record->country_work ?? null;
+$employeeJobTitle = $record->job_title ?? 'N/A';
+$employeeCountryWork = $record->country_work ?? 'N/A';
 $employeeGrossSalary = $record->gross_salary;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';

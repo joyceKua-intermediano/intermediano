@@ -14,10 +14,7 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDate = (new DateTime($record->created_at))->format('[d/m/Y]');
 $companyName = $record->company->name;
 $customerAddress = $record->company->address;
 $customerPhone = $record->companyContact->phone;
@@ -25,26 +22,26 @@ $customerEmail = $record->companyContact->email;
 $customerName = $record->companyContact->contact_name;
 $customerPosition = $record->companyContact->position;
 $employeeName = $record->employee->name;
-$employeeNationality = $record->personalInformation->nationality ?? null;
-$employeeCivilStatus = $record->personalInformation->civil_status ?? null;
-$employeeJobTitle = $record->job_title ?? null;
+$employeeNationality = $record->personalInformation->nationality ?? 'N/A';
+$employeeCivilStatus = $record->personalInformation->civil_status ?? 'N/A';
+$employeeJobTitle = $record->job_title ?? 'N/A';
 $employeeGrossSalary = $record->gross_salary;
-$employeeReferringGrossSalary = $employeeGrossSalary / 1.4;
-$employeePositionTrustSalary = $employeeGrossSalary - $employeeReferringGrossSalary;
+$employeeReferringGrossSalary = number_format($employeeGrossSalary / 1.4, 2);
+$employeePositionTrustSalary = number_format($employeeGrossSalary - $employeeReferringGrossSalary, 2);
 $jobDescription = $record->job_description;
 $translatedJobDescription = $record->translated_job_description;
-$employeeAddress = $record->personalInformation->address ?? null;
-$employeeCity = $record->personalInformation->city ?? null;
-$employeeState = $record->personalInformation->state ?? null;
-$employeePostal = $record->personalInformation->postal_code ?? null;
-$employeeEducation = $record->personalInformation->education_attainment ?? null;
+$employeeAddress = $record->personalInformation->address ?? 'N/A';
+$employeeCity = $record->personalInformation->city ?? 'N/A';
+$employeeState = $record->personalInformation->state ?? 'N/A';
+$employeePostal = $record->personalInformation->postal_code ?? 'N/A';
+$employeeEducation = $record->personalInformation->education_attainment ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
 $formatterLocal = new \NumberFormatter('pt_BR', \NumberFormatter::SPELLOUT);
-$personalId = $record->document->personal_id ?? null;
-$personalTaxId = $record->document->tax_id ?? null;
-$countryWork = $record->country_work ?? null;
+$personalId = $record->document->personal_id ?? 'N/A';
+$personalTaxId = $record->document->tax_id ?? 'N/A';
+$countryWork = $record->country_work ?? 'N/A';
 $signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
 $signatureExists = Storage::disk('public')->exists($signaturePath);
 $signedDate = $record->signed_contract ? new DateTime($record->signed_contract) : null;
@@ -82,13 +79,13 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <p>Through this instrument and in accordance with the law,</p>
                     <p><b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA, </b>a Brazilian company, enrolled under the fiscal registration number 46.427.519/0001-51, located at Avenida das Américas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, Zip Code: 22.631-002, herein referred to simply as, represented hereby by its legal representative in accordance with his Articles of Association, herein referred to simply as EMPLOYER.</p>
                     <p>And</p>
-                    <p>{{ $employeeName }}, {{ $employeeNationality }}, {{ $employeeCivilStatus }}, {{ $employeeEducation }}, holder of Identification Card no. {{ $personalId }}, registered with the CPF under no. {{ $personalTaxId }}, residing and domiciled at {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeState }}, {{ $employeePostal }}, hereinafter referred to simply as the EMPLOYEE</p>
+                    <p>{{ $employeeName }}, {{ $employeeNationality }}, {{ $employeeCivilStatus }}, {{ $employeeEducation }}, holder of Identification Card no. {{ $personalId }}, registered with the CPF under no. {{ $personalTaxId }}, residing and domiciled at {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeState }}, {{ $employeePostal }}, hereinafter referred to simply as the EMPLOYEE;</p>
                     <p>To Sign this <b>INDIVIDUAL AGREEMENT OF EMPLOYMENT FOR A FIXED TERM,</b> pursuant to Decree-Law no. 5452/1943 (Labour Code – CLT) and the following agreed clauses:</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO INDIVIDUAL DE TRABALHO POR PRAZO DETERMINADO</h4>
                     <p>Pelo presente instrumento e na melhor forma de direito, </p>
-                    <p><b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA, </b>uma empresa brasileira, inscrita sob o número de registro fiscal 46.427.519/0001-51, localizado na Avenida das Américas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, doravante denominada simplesmente de EMPREGADORA;</p>
+                    <p><b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA, </b>uma empresa brasileira, inscrita sob o número de registro fiscal 46.427.519/0001-51, localizado na Avenida das Américas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, doravante denominada simplesmente de EMPREGADORA.</p>
                     <br><br><b></b>
                     <p>e</p>
                     <p>{{ $employeeName }}, {{ $employeeNationality }}, {{ $employeeCivilStatus }}, {{ $employeeEducation }}, portador(a) da Carteira de Identidade nº {{ $personalId }}, inscrito(a) no CPF sob o nº {{ $personalTaxId }}, residente e domiciliado(a) à {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeState }}, {{ $employeePostal }}, doravante denominado(a) simplesmente EMPREGADO(A);</p>
@@ -228,7 +225,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Cláusula 5ª – Da Remuneração</b>
-                    <p>Pela prestação de seus serviços, o EMPREGADO fará jus a um salário bruto de R$ {{ number_format($employeeGrossSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} Reais), a ser pago mensalmente pela EMPREGADORA, até o 5º dia útil do mês subsequente à prestação dos serviços. Este valor inclui uma gratificação de 40% correspondente ao cargo de confiança, no montante de R$ {{ number_format($employeePositionTrustSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeePositionTrustSalary)) }} Reais), além de R$ {{ number_format($employeeReferringGrossSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeeReferringGrossSalary)) }} Reais) referente ao salário bruto mensal."</p>
+                    <p>Pela prestação de seus serviços, o EMPREGADO fará jus a um salário bruto de R$ {{ number_format($employeeGrossSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeeGrossSalary)) }} Reais), a ser pago mensalmente pela EMPREGADORA, até o 5º dia útil do mês subsequente à prestação dos serviços. Este valor inclui uma gratificação de 40% correspondente ao cargo de confiança, no montante de R$ {{ number_format($employeePositionTrustSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeePositionTrustSalary)) }} Reais), além de R$ {{ number_format($employeeReferringGrossSalary, 2) }} ({{ strtoupper($formatterLocal->format($employeeReferringGrossSalary)) }} Reais) referente ao salário bruto mensal.</p>
                 </td>
             </tr>
         </table>
@@ -452,7 +449,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Rio de Janeiro, {{ $currentDate }}</p>
+                    <p>Rio de Janeiro, {{ $contractCreatedDate }}</p>
                     <div style="text-align: center; position: relative;">
                         <div style="display: inline-block; position: relative;">
                             @if ($signedDate
@@ -505,7 +502,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <p>RG:</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Rio de Janeiro, {{ $currentDate }}</p>
+                    <p>Rio de Janeiro, {{ $contractCreatedDate }}</p>
                     <div style="text-align: center; position: relative;">
                         <div style="display: inline-block; position: relative;">
                             @if ($signedDate

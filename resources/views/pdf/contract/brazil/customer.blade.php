@@ -9,10 +9,10 @@
 </head>
 
 @php
-$formattedStartDate = (new DateTime($record->start_date))->format('jS');
-$monthStartDate = (new DateTime($record->start_date))->format('F');
-$yearStartDate = (new DateTime($record->start_date))->format('Y');
-$createdDate = (new DateTime($record->end_date))->format('[d/m/Y]');
+$formattedContractDate = (new DateTime($record->created_at))->format('jS');
+$monthContractDate = (new DateTime($record->created_at))->format('F');
+$yearContractDate = (new DateTime($record->created_at))->format('Y');
+$createdDate = (new DateTime($record->created_at))->format('[d/m/Y]');
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -41,13 +41,13 @@ $type = $isAdmin ? 'admin' : 'employee';
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">PARTNERSHIP AGREEMENT</h4>
                     <p>
-                        This Payroll Service Agreement (the “Agreement”) is made on {{ $formattedStartDate }} of {{ $monthStartDate }}, {{ $yearStartDate }} (the “Effective Date”), by and between INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA (the “Provider”), a Brazilian company, en-rolled under the fiscal registration number 46.427.519/0001-51, located at Avenida das Americas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, duly represented by its legal representative; AND {{ $companyName }} (the “Customer”), with its principal place of business at {{ $customerAddress }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).
+                        This Payroll Service Agreement (the “Agreement”) is made on {{ $formattedContractDate }} of {{ $monthContractDate }}, {{ $yearContractDate }} (the “Effective Date”), by and between <b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA</b> (the <b>“Provider”</b>), a Brazilian company, en-rolled under the fiscal registration number 46.427.519/0001-51, located at Avenida das Americas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, duly represented by its legal representative; AND <b>{{ $companyName }}</b> (the <b>“Customer”</b>), with its principal place of business at {{ $customerAddress }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).
                     </p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE PARCERIA</h4>
                     <p>
-                        Este Contrato de Prestação de Serviços de Folha de Pagamento (o “Contrato”) é celebrado no dia {{ $formattedStartDate }} de {{ $monthStartDate }}, {{ $yearStartDate }} (a “Data de Vigência”), INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA (o “Fornecedor”), uma empresa constituída sob as leis de do Brasil, inscrita sob o número de registro fiscal 46.427.519/0001-51, com sede na Avenida das Americas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, devidamente representada por seu representante legal; E {{ $companyName }} (o “Cliente”), com sede principal em {{ $customerAddress }}, devidamente representada por seu representante autorizado, (cada um, uma “Parte” e, em conjunto, as “Partes”).
+                        Este Contrato de Prestação de Serviços de Folha de Pagamento (o “Contrato”) é celebrado no dia {{ $formattedContractDate }} de {{ $monthContractDate }}, {{ $yearContractDate }} (a “Data de Vigência”), <b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA</b> (o <b>“Fornecedor”</b>), uma empresa constituída sob as leis de do Brasil, inscrita sob o número de registro fiscal 46.427.519/0001-51, com sede na Avenida das Americas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, CEP:22.631-002, devidamente representada por seu representante legal; E <b>{{ $companyName }}</b> (o <b>“Cliente”</b>), com sede principal em {{ $customerAddress }}, devidamente representada por seu representante autorizado, (cada um, uma “Parte” e, em conjunto, as “Partes”).
                     </p>
                 </td>
             </tr>
@@ -567,7 +567,7 @@ $type = $isAdmin ? 'admin' : 'employee';
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>(c)</b> If either Party becomes or is declared insolvent or bankrupt, is the subject of any proceedings relating to its liquidation or insolvency or for the appointment of a receiver, conservator, or similar officer, or makes an assignment for the benefit of all or substantially all of its creditors or enters into any agreement for the composition, extension, or readjustment of all or substantially all of its obligations, then the other party may, by giving prior written notice thereof to the nonterminating Party, terminate this Agreement as of a date specified in such notice.;</p>
+                    <p><b>(c)</b> If either Party becomes or is declared insolvent or bankrupt, is the subject of any proceedings relating to its liquidation or insolvency or for the appointment of a receiver, conservator, or similar officer, or makes an assignment for the benefit of all or substantially all of its creditors or enters into any agreement for the composition, extension, or readjustment of all or substantially all of its obligations, then the other party may, by giving prior written notice thereof to the nonterminating Party, terminate this Agreement as of a date specified in such notice.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>(c)</b> Se qualquer uma das Partes se tornar ou for declarada insolvente ou falida, for objeto de qualquer processo relacionado à sua liquidação ou insolvência ou à nomeação de um administrador judicial, conservador ou funcionário similar, ou fizer uma cessão em benefício de todos ou substancialmente todos os seus credores ou celebra qualquer acordo para a composição, extensão ou reajuste de todas ou substancialmente todas as suas obrigações, então a outra parte poderá, mediante prévio escrito dez avisos para a Parte não rescindível, rescindir este Contrato a partir da data especificada em tal aviso.</p>
@@ -812,11 +812,11 @@ $type = $isAdmin ? 'admin' : 'employee';
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <b style="text-decoration: underline;">XIII. – Arbitration/Government Law</b>
+                    <b style="text-decoration: underline;">XIII. – {{ strtoupper('Arbitration/Government Law') }}</b>
                     <p>Any disputes between Customer and Provider that arise under this Agreement will be resolved through binding arbitration administered by the Cámara de Comercio Brasil - Canada, in accordance with the Arbitration Rules then in affect at that time. Partner agrees that sole venue and jurisdiction for disputes arising from this Agreement shall be conducted in Brazil – São Paulo city. Procedures and judgment upon the award rendered by the arbitrator may be entered in any court having jurisdiction thereof.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <b style="text-decoration: underline;">XIII. – Arbitragem/Lei Governamental</b>
+                    <b style="text-decoration: underline;">XIII. – {{ strtoupper('Arbitragem/Lei Governamental') }}</b>
                     <p>Quaisquer disputas entre Cliente e Provedor que surjam sob este Contrato serão resolvidas por meio de arbitragem vinculante administrada pela Câmara de Comércio Brasil - Canadá, de acordo com as Regras de Arbitragem então em vigor. O Parceiro concorda que o único foro e jurisdição para disputas decorrentes deste Contrato será realizado no Brasil - cidade de São Paulo. Os procedimentos e julgamento sobre a sentença proferida pelo árbitro podem ser apresentados em qualquer tribunal com jurisdição sobre o assunto.</p>
                 </td>
             </tr>

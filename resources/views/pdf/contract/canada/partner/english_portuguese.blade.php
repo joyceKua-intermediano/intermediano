@@ -9,29 +9,30 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
+$contractCreatedDate = (new DateTime($record->created_at))->format('[d/m/Y]');
+
 $partnerName = $record->partner->partner_name;
 $partnerContactName = $record->partner->contact_name;
 $partnerAddress = $record->partner->address;
 $employeeName = $record->employee->name;
-$employeeNationality = $record->personalInformation->country ?? null;
-$employeeState = $record->personalInformation->state ?? null;
-$employeeCivilStatus = $record->personalInformation->civil_status ?? null;
-$employeeJobTitle = $record->job_title ?? null;
-$employeeCountryWork = $record->country_work ?? null;
+$employeeNationality = $record->personalInformation->country ?? 'N/A';
+$employeeState = $record->personalInformation->state ?? 'N/A';
+$employeeCivilStatus = $record->personalInformation->civil_status ?? 'N/A';
+$employeeJobTitle = $record->job_title ?? 'N/A';
+$employeeCountryWork = $record->country_work ?? 'N/A';
 $employeeGrossSalary = $record->gross_salary;
-$employeeTaxId = $record->document->tax_id ?? null;
-$employeeEmail = $record->employee->email ?? null;
-$employeeAddress = $record->personalInformation->address ?? null;
-$employeeCity = $record->personalInformation->city ?? null;
-$employeeDateBirth = $record->personalInformation->date_of_birth ?? null;
-$employeePhone = $record->personalInformation->phone ?? null;
-$employeeMobile = $record->personalInformation->mobile ?? null;
-$employeeCountry = $record->personalInformation->country ?? null;
-$employeeEducation = $record->personalInformation->education_attainment ?? null;
+$employeeTaxId = $record->document->tax_id ?? 'N/A';
+$employeeEmail = $record->employee->email ?? 'N/A';
+$employeeAddress = $record->personalInformation->address ?? 'N/A';
+$employeeCity = $record->personalInformation->city ?? 'N/A';
+$employeeDateBirth = $record->personalInformation->date_of_birth ?? 'N/A';
+$employeePhone = $record->personalInformation->phone ?? 'N/A';
+$employeeMobile = $record->personalInformation->mobile ?? 'N/A';
+$employeeCountry = $record->personalInformation->country ?? 'N/A';
+$employeeEducation = $record->personalInformation->education_attainment ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $translatedJobDescription = $record->translated_job_description;
@@ -57,7 +58,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">PARTNERSHIP AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }} (the “Effective Date”), by and between <b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA</b> (the <b>“Provider”</b>), a Brazilian company, enrolled under the fiscal registration number 46.427.519/0001-51, located at Avenida das
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }} (the “Effective Date”), by and between <b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA</b> (the <b>“Provider”</b>), a Brazilian company, enrolled under the fiscal registration number 46.427.519/0001-51, located at Avenida das
                         Américas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, Zip Code: 22.631-002, Brazil, duly represented by its legal representative;
                         AND <b>GATE INTERMEDIANO INC.</b> (the
                         <b>“Customer”</b>), a Canadian company, enrolled under the fiscal registration number 733087506RC0001, located at 4388 Rue SaintDenis Suite200 #763, Montreal, QC H2J 2L1, Canada, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).
@@ -65,7 +66,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE PARCERIA</h4>
-                    <p>Este Contrato de Serviços de Folha de Pagamento e Recursos Humanos (o "Contrato") é celebrado em {{ $formattedDate }}, {{ $month }}, {{ $year }} (a <b>"Data de Vigência"</b>), por e entre <b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA</b> (o <b>“Fornecedor”</b>), uma empresa brasileira, inscrita no número de registro empresarial 46.427.519/0001-51, localizada na Avenida das Américas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, Zip Code: 22.631-002, Brasil, devidamente representada pelo seu representante legal; E <b>GATE INTERMEDIANO INC.</b> (o <b>“Cliente”</b>), uma empresa Canadense, inscrita sob o número de registro fiscal 733087506RC0001, localizada em 4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada, devidamente representada por seu representante autorizado, (cada um, uma "Parte" e, em conjunto, as "Partes"). </p>
+                    <p>Este Contrato de Serviços de Folha de Pagamento e Recursos Humanos (o "Contrato") é celebrado em {{ $contractCreatedDay }}, {{ $contractCreatedmonth }}, {{ $contractCreatedyear }} (a <b>"Data de Vigência"</b>), por e entre <b>INTERMEDIANO DO BRASIL APOIO ADMINISTRATIVO LTDA</b> (o <b>“Fornecedor”</b>), uma empresa brasileira, inscrita no número de registro empresarial 46.427.519/0001-51, localizada na Avenida das Américas 02901, sala 516, Barra da Tijuca, Rio de Janeiro/RJ, Zip Code: 22.631-002, Brasil, devidamente representada pelo seu representante legal; E <b>GATE INTERMEDIANO INC.</b> (o <b>“Cliente”</b>), uma empresa Canadense, inscrita sob o número de registro fiscal 733087506RC0001, localizada em 4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada, devidamente representada por seu representante autorizado, (cada um, uma "Parte" e, em conjunto, as "Partes"). </p>
                 </td>
             </tr>
             <tr>
@@ -752,7 +753,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             </tr>
             <tr>
                 <td colspan="2" style="text-align: center;">
-                    <p style="margin: 0;"> {{ $currentDate }}</p>
+                    <p style="margin: 0;"> {{ $contractCreatedDate }}</p>
                 </td>
             </tr>
             <tr>

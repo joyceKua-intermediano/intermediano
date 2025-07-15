@@ -9,10 +9,9 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
 $companyName = $record->company->name;
 $companyContactName = $record->companyContact->contact_name;
 $companyContactSurname = $record->companyContact->surname;
@@ -25,20 +24,20 @@ $companyTaxId = $record->company->tax_id ?? 'NA';
 
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
-$employeeNationality = $record->personalInformation->country ?? null;
-$employeeState = $record->personalInformation->state ?? null;
-$employeeCivilStatus = $record->personalInformation->civil_status ?? null;
-$employeeJobTitle = $record->job_title ?? null;
-$employeeCountryWork = $record->country_work ?? null;
+$employeeNationality = $record->personalInformation->country ?? 'N/A';
+$employeeState = $record->personalInformation->state ?? 'N/A';
+$employeeCivilStatus = $record->personalInformation->civil_status ?? 'N/A';
+$employeeJobTitle = $record->job_title ?? 'N/A';
+$employeeCountryWork = $record->country_work ?? 'N/A';
 $employeeGrossSalary = $record->gross_salary;
-$employeeTaxId = $record->document->tax_id ?? null;
-$employeeEmail = $record->employee->email ?? null;
-$employeeAddress = $record->personalInformation->address ?? null;
-$employeeCity = $record->personalInformation->city ?? null;
-$employeeDateBirth = $record->personalInformation->date_of_birth ?? null;
-$employeePhone = $record->personalInformation->phone ?? null;
-$employeeMobile = $record->personalInformation->mobile ?? null;
-$employeeCountry = $record->personalInformation->country ?? null;
+$employeeTaxId = $record->document->tax_id ?? 'N/A';
+$employeeEmail = $record->employee->email ?? 'N/A';
+$employeeAddress = $record->personalInformation->address ?? 'N/A';
+$employeeCity = $record->personalInformation->city ?? 'N/A';
+$employeeDateBirth = $record->personalInformation->date_of_birth ?? 'N/A';
+$employeePhone = $record->personalInformation->phone ?? 'N/A';
+$employeeMobile = $record->personalInformation->mobile ?? 'N/A';
+$employeeCountry = $record->personalInformation->country ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $signatureExists = Storage::disk('public')->exists($record->signature);
@@ -76,7 +75,7 @@ $type = $isAdmin ? 'admin' : 'employee';
     @include('pdf.contract.layout.header')
     <main class="main-container">
         <h4 style='text-align:center; text-decoration: underline; margin: 20px 0px'> SERVICES AGREEMENT</h4>
-        <p>This Services Agreement ("Agreement") signed and entered into on {{ $formattedDate }} of {{ $month }}, {{ $year }}, by and between: </p>
+        <p>This Services Agreement ("Agreement") signed and entered into on {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, by and between: </p>
         <p><b>GATE INTERMEDIANO INC.</b>, initially referred as
             INTERMEDIANO INC. (the <b>“Provider”</b>) a
             Canadian company with its principal place of
@@ -216,8 +215,11 @@ $type = $isAdmin ? 'admin' : 'employee';
         </div>
 
         <div style="width: 80%; border-bottom: 1px solid black; text-align: center; margin: 0 auto;"></div>
+        @if (!empty($adminSignedBy))
         <p style="text-align: center; margin-top: -20px">{{ $adminSignedBy }}</p>
         <p style="text-align: center;margin-top: -20px">{{ $adminSignedByPosition }}</p>
+        @endif
+
         <p style="text-align: left;margin-top: -10px">Phone: +1 514 907 5393</p>
         <p style="text-align: left;margin-top: -10px">Email: <a href="">sac@intermediano.com</a></p>
 
@@ -229,7 +231,6 @@ $type = $isAdmin ? 'admin' : 'employee';
         <div style="text-align: center; margin-top: 0px">
             <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 0px 0;">
         </div>
-
         @else
         <div style="text-align: center; margin-top: 0px">
             <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
@@ -246,7 +247,7 @@ $type = $isAdmin ? 'admin' : 'employee';
 
 
 
-    
+
 
 </body>
 </html>

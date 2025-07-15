@@ -9,10 +9,9 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
 $partnerName = $record->partner->partner_name;
 $partnerContactName = $record->partner->contact_name;
 $partnerAddress = $record->partner->address;
@@ -23,20 +22,20 @@ $partnerCountry = $record->partner->country->name;
 $partnerTaxId = $record->partner->tax_id ?? 'NA';
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
-$employeeNationality = $record->personalInformation->country ?? null;
-$employeeState = $record->personalInformation->state ?? null;
-$employeeCivilStatus = $record->personalInformation->civil_status ?? null;
-$employeeJobTitle = $record->job_title ?? null;
-$employeeCountryWork = $record->country_work ?? null;
+$employeeNationality = $record->personalInformation->country ?? 'N/A';
+$employeeState = $record->personalInformation->state ?? 'N/A';
+$employeeCivilStatus = $record->personalInformation->civil_status ?? 'N/A';
+$employeeJobTitle = $record->job_title ?? 'N/A';
+$employeeCountryWork = $record->country_work ?? 'N/A';
 $employeeGrossSalary = $record->gross_salary;
-$employeeTaxId = $record->document->tax_id ?? null;
-$employeeEmail = $record->employee->email ?? null;
-$employeeAddress = $record->personalInformation->address ?? null;
-$employeeCity = $record->personalInformation->city ?? null;
-$employeeDateBirth = $record->personalInformation->date_of_birth ?? null;
-$employeePhone = $record->personalInformation->phone ?? null;
-$employeeMobile = $record->personalInformation->mobile ?? null;
-$employeeCountry = $record->personalInformation->country ?? null;
+$employeeTaxId = $record->document->tax_id ?? 'N/A';
+$employeeEmail = $record->employee->email ?? 'N/A';
+$employeeAddress = $record->personalInformation->address ?? 'N/A';
+$employeeCity = $record->personalInformation->city ?? 'N/A';
+$employeeDateBirth = $record->personalInformation->date_of_birth ?? 'N/A';
+$employeePhone = $record->personalInformation->phone ?? 'N/A';
+$employeeMobile = $record->personalInformation->mobile ?? 'N/A';
+$employeeCountry = $record->personalInformation->country ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $signatureExists = Storage::disk('public')->exists($record->signature);
@@ -63,7 +62,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">SERVICES AGREEMENT </h4>
-                    <p>This Services Agreement ("Agreement") signed and entered into on {{ $formattedDate }} of {{ $month }}, {{ $year }}, by and between: </p>
+                    <p>This Services Agreement ("Agreement") signed and entered into on {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, by and between: </p>
                     <p><b>GATE INTERMEDIANO INC.</b>, initially referred as INTERMEDIANO INC. (the <b>“Customer”</b>) a Canadian company with its principal place of business at 4388 Rue Saint-Denis Suite200 #763, Montreal, QC H2J 2L1, Canada, duly represented by its legal representative; AND
                         <b>{{ $partnerName }}</b> (the <b>“Provider”</b>), a {{ $partnerCountry }} company, enrolled under the fiscal registration number {{ $partnerTaxId }}, located at {{ $partnerAddress }}, {{ $partnerCountry }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).
                     </p>
@@ -71,7 +70,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">ENTENTE DE SERVICES</h4>
-                    <p>Cette Entente de Services ("Entente") est signée et entrée en vigueur le {{ $formattedDate }}, {{ $month }}, {{ $year }}, par et entre: </p>
+                    <p>Cette Entente de Services ("Entente") est signée et entrée en vigueur le {{ $contractCreatedDay }}, {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, par et entre: </p>
                     <p><b>GATE INTERMEDIANO INC.</b>, désignée
                         INTERMEDIANO INC. (le <b>"Client"</b>), une société
                         canadienne ayant son siège social au 4388
