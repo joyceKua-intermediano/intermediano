@@ -41,7 +41,7 @@ $contractType = $record->end_date == null ? 'Undefined Period' : 'Defined Period
 $exchangeRate = $record->quotation->exchange_rate;
 $currencyName = $record->quotation->currency_name;
 
-$signatureExists = Storage::disk('public')->exists($record->signature);
+$signatureExists = Storage::disk('private')->exists($record->signature);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
 $adminSignedBy = $record->user->name ?? '';
@@ -810,7 +810,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     </div>
                     <br><br>
                     @if($signatureExists)
-                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                    <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
                     <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
                     @else
@@ -830,7 +830,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     </div>
                     <br><br>
                     @if($signatureExists)
-                    <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                    <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
                     <p style="text-align: center; margin-bottom: 0px">{{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
                     @else
