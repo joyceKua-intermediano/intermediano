@@ -322,7 +322,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                         @if($signatureExists)
                         <img src="{{ 
                             $is_pdf
-                                ? storage_path('app/private/signatures/clients/customer_' . $record->partner_id . '.webp')
+                                ? storage_path('app/private/signatures/clients/partner_' . $record->partner_id . '.webp')
                                 : url('/signatures/customer/' . $record->partner_id . '/partner') . '?v=' . filemtime(storage_path('app/private/signatures/clients/partner_' . $record->partner_id . '.webp')) 
                         }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
                         @else
