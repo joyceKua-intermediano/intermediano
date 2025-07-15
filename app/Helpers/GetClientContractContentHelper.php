@@ -62,8 +62,20 @@ if (!function_exists('getClientContractFile')) {
                 $pdfPage = 'pdf.contract.brazil.customer';
                 $domain = 'www.intermediano.com';
                 break;
-
-
+            case 'PartnerCostaRica':
+                $mobile = '+1 514-907-5393';
+                $address = 'Avenidas 2 y 4, calle 5, Escazú, San José, Costa Rica';
+                $companyTitle = 'Intermediano S.R.L.';
+                $pdfPage = 'pdf.contract.costa_rica.partner';
+                $domain = 'www.intermediano.com';
+                break;
+            case 'IntermedianoCostaRica':
+                $mobile = '+1 514-907-5393';
+                $address = 'Avenidas 2 y 4, calle 5, Escazú, San José, Costa Rica';
+                $companyTitle = 'Intermediano S.R.L.';
+                $pdfPage = 'pdf.contract.costa_rica.client';
+                $domain = 'www.intermediano.com';
+                break;
             default:
                 $mobile = '';
                 $address = '';

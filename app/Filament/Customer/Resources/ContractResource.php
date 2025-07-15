@@ -154,9 +154,9 @@ class ContractResource extends Resource
 
                         Forms\Components\FileUpload::make('signature_file')
                             ->label('')
-                            ->disk('public')
+                            ->disk('private')
                             ->directory('signatures/clients')
-                            ->visibility('public')
+                            ->visibility('private')
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                             ->optimize('webp')
                             ->resize(50)
@@ -166,8 +166,8 @@ class ContractResource extends Resource
                                 $signaturePath = $companyId ? 'customer_' . $companyId : 'partner_' . $partnerId;
                                 $fileName = $signaturePath . '.' . $file->getClientOriginalExtension();
                                 $filePath = 'signatures/clients' . $fileName;
-                                if (Storage::disk('public')->exists($filePath)) {
-                                    Storage::disk('public')->delete($filePath);
+                                if (Storage::disk('private')->exists($filePath)) {
+                                    Storage::disk('private')->delete($filePath);
                                 }
                                 return $fileName;
                             })
