@@ -64,9 +64,15 @@ $formatterLocal = new \NumberFormatter('es_CR', \NumberFormatter::SPELLOUT);
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 
-$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
-$signatureExists = Storage::disk('public')->exists($signaturePath);
-
+$signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
+$signatureExists = Storage::disk('private')->exists($signaturePath);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 
 
 @endphp
@@ -158,7 +164,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     <p><b>PRIMERA. RELACIÓN LABORAL.</b></p>
                     <p>La relación laboral consistirá en la prestación de servicios personales del TRABAJADOR quien realizará las funciones de {{ $employeeJobTitle }} para el PATRONO (INTERMEDIANO S.R.L.)</p>
                     <p><b>SEGUNDA. PLAZO DE CONTRATO.</b></p>
-                    <p>El plazo será por tiempo  a partir del {{ $employeeStartDateLocal }} y terminará el {{ $employeeEndDateLocal }}. A conveniencia de ambas partes este contrato podrá ser renovado por acuerdo de partes, para lo cual se suscribirá un anexo. En caso de que el PATRONO de manera unilateral quiera rescindir del presente contrato, tendrá la facultad de hacerlo ajustándose a toda la normativa laboral existente al momento del finiquito.</p>
+                    <p>El plazo será por tiempo a partir del {{ $employeeStartDateLocal }} y terminará el {{ $employeeEndDateLocal }}. A conveniencia de ambas partes este contrato podrá ser renovado por acuerdo de partes, para lo cual se suscribirá un anexo. En caso de que el PATRONO de manera unilateral quiera rescindir del presente contrato, tendrá la facultad de hacerlo ajustándose a toda la normativa laboral existente al momento del finiquito.</p>
                 </td>
             </tr>
 
@@ -406,34 +412,60 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
 
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <div style="text-align: center; position: relative; height: 120px;">
-                        <p style='text-align: left'><b>Employer:</b></p>
-                        <p style='text-align: left; text-weight:bold; padding-bottom: 70px;'><b>INTERMEDIANO SRL</b></p>
-                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">C. J. 3-102-728410</p>
+                    <div style="text-align: center; position: relative; height: 200px;">
+                        <div style="text-align: left;">
+                            <p><b>Employer:</b> <span style="font-weight: bold; padding-left: 5px;">INTERMEDIANO SRL</span></p>
+                        </div>
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
                     </div>
+                    @if (!empty($adminSignedBy))
+                    <div style="margin-top: -25px;">
+                        <p style="text-align: center; margin: 0;">C. J. 3-102-728410</p>
+                        <p style="text-align: center; margin: 0;">{{ $adminSignedBy }}</p>
+                        <p style="text-align: center; margin: 0;">{{ $adminSignedByPosition }}</p>
+                    </div>
+                    @endif
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <div style="text-align: center; position: relative; height: 120px;">
-                        <p style='text-align: left'><b>Empleador:</b></p>
-                        <p style='text-align: left; text-weight:bold; mapaddingrgin-bottom: 70px;'><b>INTERMEDIANO SRL</b></p>
-                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">C. J. 3-102-728410</p>
+                    <div style="text-align: center; position: relative; height: 200px;">
+                        <div style="text-align: left;">
+                            <p><b>Employer:</b> <span style="font-weight: bold; padding-left: 5px;">INTERMEDIANO SRL</span></p>
+                        </div>
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
                     </div>
+                    @if (!empty($adminSignedBy))
+                    <div style="margin-top: -25px;">
+                        <p style="text-align: center; margin: 0;">C. J. 3-102-728410</p>
+                        <p style="text-align: center; margin: 0;">{{ $adminSignedBy }}</p>
+                        <p style="text-align: center; margin: 0;">{{ $adminSignedByPosition }}</p>
+                    </div>
+                    @endif
                 </td>
-
             </tr>
 
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <div style="display: inline-block; position: relative; height: 140px; width: 100%;">
-                        <p style='text-align: left'><b>Worker:</b></p>
-                        <p style='text-align: left; text-weight:bold;padding-bottom: 70px;'><b>{{ $employeeName }}</b></p>
+                    <div style="display: inline-block; position: relative; height: 200px; width: 100%;">
+                        <div style="text-align: left;">
+                            <p><b>Worker:</b> <span style="font-weight: bold; padding-left: 5px;">{{ $employeeName }}</span></p>
+                        </div>
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        <img src="{{ 
+                                $is_pdf
+                                    ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                    : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                                }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
                         <p style="position: absolute; bottom: -22px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                         @else
@@ -444,11 +476,16 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <div style="display: inline-block; position: relative; height: 140px; width: 100%;">
-                        <p style='text-align: left'><b>Trabajador:</b></p>
-                        <p style='text-align: left; text-weight:bold; padding-bottom: 70px;'><b>{{ $employeeName }}</b></p>
+                    <div style="display: inline-block; position: relative; height: 200px; width: 100%;">
+                        <div style="text-align: left;">
+                            <p><b>Worker:</b> <span style="font-weight: bold; padding-left: 5px;">{{ $employeeName }}</span></p>
+                        </div>
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        <img src="{{ 
+                                $is_pdf
+                                    ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                    : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                                }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
                         <p style="position: absolute; bottom: -22px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                         @else
