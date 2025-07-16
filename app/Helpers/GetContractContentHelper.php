@@ -76,6 +76,12 @@ if (!function_exists('getContractModalContent')) {
                 $companyTitle = 'Gate Intermediano Inc.';
                 $pdfPage = 'pdf.contract.canada.consultant';
                 break;
+            case 'IntermedianoCostaRica':
+                $mobile = '+1 514-907-5393';
+                $address = 'Avenidas 2 y 4, calle 5, Escazú, San José, Costa Rica';
+                $companyTitle = 'Intermediano S.R.L.';
+                $pdfPage = 'pdf.contract.costa_rica.consultant';
+                break;
             default:
                 $mobile = '';
                 $address = '';
