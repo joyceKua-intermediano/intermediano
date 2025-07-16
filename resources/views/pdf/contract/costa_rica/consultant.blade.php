@@ -416,10 +416,20 @@ $type = $isAdmin ? 'admin' : 'employee';
                         <div style="text-align: left;">
                             <p><b>Employer:</b> <span style="font-weight: bold; padding-left: 5px;">INTERMEDIANO SRL</span></p>
                         </div>
-                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">C. J. 3-102-728410</p>
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
                     </div>
+                    @if (!empty($adminSignedBy))
+                    <div style="margin-top: -25px;">
+                        <p style="text-align: center; margin: 0;">C. J. 3-102-728410</p>
+                        <p style="text-align: center; margin: 0;">{{ $adminSignedBy }}</p>
+                        <p style="text-align: center; margin: 0;">{{ $adminSignedByPosition }}</p>
+                    </div>
+                    @endif
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
@@ -427,12 +437,21 @@ $type = $isAdmin ? 'admin' : 'employee';
                         <div style="text-align: left;">
                             <p><b>Employer:</b> <span style="font-weight: bold; padding-left: 5px;">INTERMEDIANO SRL</span></p>
                         </div>
-                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">C. J. 3-102-728410</p>
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
                     </div>
+                    @if (!empty($adminSignedBy))
+                    <div style="margin-top: -25px;">
+                        <p style="text-align: center; margin: 0;">C. J. 3-102-728410</p>
+                        <p style="text-align: center; margin: 0;">{{ $adminSignedBy }}</p>
+                        <p style="text-align: center; margin: 0;">{{ $adminSignedByPosition }}</p>
+                    </div>
+                    @endif
                 </td>
-
             </tr>
 
             <tr>
