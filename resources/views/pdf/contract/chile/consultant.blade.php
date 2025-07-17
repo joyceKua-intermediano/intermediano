@@ -14,10 +14,9 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$formattedStartDate = now()->format('jS');
+$monthStartDate = now()->format('F');
+$yearStartDate = now()->format('Y');
 
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
@@ -46,9 +45,15 @@ $formatterLocal = new \NumberFormatter('es_CL', \NumberFormatter::SPELLOUT);
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 
-$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
-$signatureExists = Storage::disk('public')->exists($signaturePath);
-
+$signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
+$signatureExists = Storage::disk('private')->exists($signaturePath);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 
 <style>
@@ -77,7 +82,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">EMPLOYMENT CONTRACT</h4>
-                    <p style='line-height: 1.6'>In Santiago, Chile, <b>{{ $formattedDate }} of {{ $month }}, {{ $year }},</b> between <b>Intermediano Chile SPA,</b>
+                    <p style='line-height: 1.6'>In Santiago, Chile, <b>{{ $formattedStartDate }} of {{ $monthStartDate }}, {{ $yearStartDate }},</b> between <b>Intermediano Chile SPA,</b>
                         Unique Tax Identification Nº. 77.223.3612, domiciliated at Calle El Gobernador 20, Oficina 202, Providencia, Santiago,
                         Región Metropolitana, legally represented by Mr. Fabian Castro Sepúlveda, both with residing at Santiago, Chile, hereinafter <b>"the Employer"</b> or <b>"Intermediano Chile SPA",</b> by one side; and by the other, <b>{{ $employeeName }}</b>, with RUN {{ $employeeTaxId }}, Nationality {{ $employeeNationality }}, with address at {{ $employeeAddress }}, hereinafter referred to as <b>"the Employee,"</b> in accordance with the following individual employment contract:
                     </p>
@@ -86,7 +91,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE TRABAJO </h4>
-                    <p style='line-height: 1.6'>En Santiago de Chile, <b>{{ $formattedDate }} {{ $month }}, {{ $year }},</b> entre <b>Intermediano Chile
+                    <p style='line-height: 1.6'>En Santiago de Chile, <b>{{ $formattedStartDate }} {{ $monthStartDate }}, {{ $yearStartDate }},</b> entre <b>Intermediano Chile
                             SPA,</b> Rol Único Tributario Nº.
                         77.223.361-2, con domicilio en Calle
                         El Gobernador 20, Oficina 202,
@@ -151,7 +156,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>SECOND:</b>The Employee will work from  &nbsp; [XXXX]  &nbsp;  and agrees to follow the
+                    <p><b>SECOND:</b>The Employee will work from &nbsp; [XXXX] &nbsp; and agrees to follow the
                         guidelines given by the employer to
                         give orders as well as to be compliant
                         with the policies and standards of
@@ -159,7 +164,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p><b>SEGUNDO:</b> El Trabajador trabajará en  &nbsp; [XXXX] &nbsp;  se compromete a seguir las
+                    <p><b>SEGUNDO:</b> El Trabajador trabajará en &nbsp; [XXXX] &nbsp; se compromete a seguir las
                         directrices dadas por el empleador,
                         y a cumplir con las políticas y normas
                         de conducta establecidas por el
@@ -607,67 +612,91 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                 </td>
             </tr>
             <tr>
-                <td style="width: 50%; vertical-align: top;">
-
-                    <div style="text-align: center; position: relative; height: 120px;">
-                        <img src="{{ $is_pdf ? public_path('images/fabian_signature.png') : asset('images/fabian_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
-                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);  margin-bottom: 20px;">Intermediano Chile SPA</p>
-                        <p style="position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);">R.U.T.: 77.223.361-2</p>
+                <td style="width: 50%; vertical-align: top; text-align: center; padding: 0 10px;  margin-top: -20px">
+                    <h4 style=''>Intermediano Chile SPA</h4>
+                    <div style="text-align: center; position: relative; height: 40px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 40px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);" />
+                        @endif
                     </div>
-
+                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    @if (!empty($adminSignedBy))
+                    <p style="margin: 0; text-align: center;">{{ $adminSignedBy }}</p>
+                    <p style="margin: 0; text-align: center;">{{ $adminSignedByPosition }}</p>
+                    <p style="margin: 0; text-align: center;">R.U.T.: 77.223.361-2</p>
+                    @endif
                 </td>
-                <td style="width: 50%; vertical-align: top;">
-
-                    <div style="text-align: center; position: relative; height: 120px;">
-                        <img src="{{ $is_pdf ? public_path('images/fabian_signature.png') : asset('images/fabian_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
-                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px;">Intermediano Chile SPA</p>
-                        <p style="position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);">R.U.T.: 77.223.361-2</p>
+                <td style="width: 50%; vertical-align: top; text-align: center; padding: 0 10px;  margin-top: -20px">
+                    <h4 style=''>Intermediano Chile SPA</h4>
+                    <div style="text-align: center; position: relative; height: 40px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 40px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);" />
+                        @endif
                     </div>
+                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    @if (!empty($adminSignedBy))
+                    <p style="margin: 0; text-align: center;">{{ $adminSignedBy }}</p>
+                    <p style="margin: 0; text-align: center;">{{ $adminSignedByPosition }}</p>
+                    <p style="margin: 0; text-align: center;">R.U.T.: 77.223.361-2</p>
+                    @endif
                 </td>
+
 
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
 
                     <div style="display: inline-block; position: relative; height: 140px; width: 100%;">
+                        <p style="text-align: center">RUT {{ $employeeTaxId }}</p>
+
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        <img src="{{ 
+                            $is_pdf
+                                ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                        }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
 
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
-                        <p style="position: absolute; bottom: -22px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                        <p style="position: absolute; bottom: -15px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                         @else
                         <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 10px; margin-top: 40px; z-index: 1000; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
                         @endif
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px;">{{ $employeeName }}</p>
-                        <p style="position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);">RUT {{ $employeeTaxId }}</p>
+                        <p style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); margin-bottom: 20px;">{{ $employeeName }}</p>
 
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
 
                     <div style="display: inline-block; position: relative; height: 140px; width: 100%;">
+                        <p style="text-align: center">RUT {{ $employeeTaxId }}</p>
+
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        <img src="{{ 
+                            $is_pdf
+                                ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                        }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
 
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
-                        <p style="position: absolute; bottom: -22px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                        <p style="position: absolute; bottom: -15px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                         @else
                         <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 10px; margin-top: 40px; z-index: 1000; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
                         @endif
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px;">{{ $employeeName }}</p>
-                        <p style="position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%);">RUT {{ $employeeTaxId }}</p>
+                        <p style="position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); margin-bottom: 20px;">{{ $employeeName }}</p>
 
                     </div>
                 </td>
