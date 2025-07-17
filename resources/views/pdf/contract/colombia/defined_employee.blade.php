@@ -5,14 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Document</title>
+    @if($is_pdf)
     <link rel="stylesheet" href="css/contract.css">
+
+    @else
+    <link rel="stylesheet" href="{{ asset('css/contract.css') }}">
+    @endif
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+
+$contractCreatedDate = (new DateTime($record->created_at))->format('[d/m/Y]');
 $companyName = $record->company->name;
 $customerAddress = $record->company->address;
 $customerPhone = $record->companyContact->phone;
@@ -34,6 +37,14 @@ $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
 $personalId = $record->document->personal_id ?? null;
 $personalTaxId = $record->document->tax_id ?? null;
 $countryWork = $record->country_work ?? null;
+
+$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
+$signedDate = $record->signed_contract ? new DateTime($record->signed_contract) : null;
+$cutoffDate = new DateTime('2025-07-11');
+$signatureExists = Storage::disk('private')->exists($signaturePath);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
 
 @endphp
 <body>
@@ -320,7 +331,7 @@ $countryWork = $record->country_work ?? null;
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Rio de Janeiro, {{ $currentDate }}</p>
+                    <p>Rio de Janeiro, {{ $contractCreatedDate }}</p>
                     <div style="text-align: center;">
                         <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom:-50px">
                         <div style="text-align:center; width: 70%; border-bottom: 1px solid black; margin: 30px auto 0;"></div>
@@ -340,7 +351,7 @@ $countryWork = $record->country_work ?? null;
                     <p>RG:</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Rio de Janeiro, {{ $currentDate }}</p>
+                    <p>Rio de Janeiro, {{ $contractCreatedDate }}</p>
                     <div style="text-align: center;">
                         <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom:-50px">
                         <div style="text-align:center; width: 70%; border-bottom: 1px solid black; margin: 30px auto 0;"></div>
