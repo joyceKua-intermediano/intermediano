@@ -9,9 +9,9 @@
 </head>
 
 @php
-$contractCreatedDay = now()->format('jS');
-$contractCreatedmonth = now()->format('F');
-$contractCreatedyear = now()->format('Y');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -568,8 +568,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                             $is_pdf 
                                 ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
                                 : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
-                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" 
-                        />
+                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" />
             @endif
         </div>
         <div style="width: 80%; border-bottom: 1px solid black; text-align: center; margin: 0 auto;"></div>

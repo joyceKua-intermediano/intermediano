@@ -14,9 +14,9 @@
 </head>
 
 @php
-$formattedStartDate = now()->format('jS');
-$monthStartDate = now()->format('F');
-$yearStartDate = now()->format('Y');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
 
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
@@ -82,7 +82,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">EMPLOYMENT CONTRACT</h4>
-                    <p style='line-height: 1.6'>In Santiago, Chile, <b>{{ $formattedStartDate }} of {{ $monthStartDate }}, {{ $yearStartDate }},</b> between <b>Intermediano Chile SPA,</b>
+                    <p style='line-height: 1.6'>In Santiago, Chile, <b>{{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }},</b> between <b>Intermediano Chile SPA,</b>
                         Unique Tax Identification Nº. 77.223.3612, domiciliated at Calle El Gobernador 20, Oficina 202, Providencia, Santiago,
                         Región Metropolitana, legally represented by Mr. Fabian Castro Sepúlveda, both with residing at Santiago, Chile, hereinafter <b>"the Employer"</b> or <b>"Intermediano Chile SPA",</b> by one side; and by the other, <b>{{ $employeeName }}</b>, with RUN {{ $employeeTaxId }}, Nationality {{ $employeeNationality }}, with address at {{ $employeeAddress }}, hereinafter referred to as <b>"the Employee,"</b> in accordance with the following individual employment contract:
                     </p>
@@ -91,7 +91,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE TRABAJO </h4>
-                    <p style='line-height: 1.6'>En Santiago de Chile, <b>{{ $formattedStartDate }} {{ $monthStartDate }}, {{ $yearStartDate }},</b> entre <b>Intermediano Chile
+                    <p style='line-height: 1.6'>En Santiago de Chile, <b>{{ $contractCreatedDay }} {{ $contractCreatedmonth }}, {{ $contractCreatedyear }},</b> entre <b>Intermediano Chile
                             SPA,</b> Rol Único Tributario Nº.
                         77.223.361-2, con domicilio en Calle
                         El Gobernador 20, Oficina 202,
