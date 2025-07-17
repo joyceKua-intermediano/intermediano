@@ -83,11 +83,6 @@ class EmployeeContractResource extends Resource
                         $tr = new GoogleTranslate();
                         $tr->setSource();
                         $tr->setTarget('en');
-                        $trEs = new GoogleTranslate();
-                        $trEs->setSource();
-                        $trEs->setTarget('es');
-                        $record->translatedMonth = $trEs->translate($record->created_at->format('F'));
-
                         $record->translatedPosition = $tr->translate($record->job_title ?? "");
                         $contractTitle = $year . '.' . $formattedId;
                         $startDateFormat = Carbon::parse($record->start_date)->format('d.m.y');
@@ -182,10 +177,6 @@ class EmployeeContractResource extends Resource
                         $tr = new GoogleTranslate();
                         $tr->setSource();
                         $tr->setTarget('en');
-                        $trEs = new GoogleTranslate();
-                        $trEs->setSource();
-                        $trEs->setTarget('es');
-                        $record->translatedMonth = $trEs->translate($record->created_at->format('F'));
 
                         $record->translatedPosition = $tr->translate($record->job_title ?? "");
                         $contractTitle = $year . '.' . $formattedId;

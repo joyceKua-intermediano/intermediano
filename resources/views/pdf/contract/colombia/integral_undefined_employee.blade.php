@@ -17,7 +17,8 @@
 
 $contractCreatedDay = $record->created_at->format('jS');
 $contractCreatedyear = $record->created_at->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
+
 $companyName = $record->company->name;
 $customerAddress = $record->company->address;
 $customerPhone = $record->companyContact->phone;
@@ -1019,7 +1020,7 @@ break;
                 </td>
             </tr>
         </table>
-        <div style="text-align: center; padding: 60px 40px">En constancia se firma en Bogotá, el {{ $contractCreatedDay }} día del mes de {{ $record->translatedMonth }} del {{ $contractCreatedyear }}, en dos ejemplares de un mismo tenor, uno (1) para el empleador y uno (1) para el empleado.</div>
+        <div style="text-align: center; padding: 60px 40px">En constancia se firma en Bogotá, el {{ $contractCreatedDay }} día del mes de {{ $translatedMonth }} del {{ $contractCreatedyear }}, en dos ejemplares de un mismo tenor, uno (1) para el empleador y uno (1) para el empleado.</div>
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
