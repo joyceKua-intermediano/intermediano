@@ -4,7 +4,6 @@ namespace App\Filament\Clusters\IntermedianoUruguay\Resources;
 
 use App\Filament\Clusters\IntermedianoUruguay;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\CustomerContractResource\Pages;
-use App\Filament\Clusters\IntermedianoUruguay\Resources\CustomerContractResource\RelationManagers;
 use App\Models\Contract;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
@@ -14,7 +13,6 @@ use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Columns\BadgeColumn;
 use Carbon\Carbon;
 use Filament\Tables\Columns\TextColumn;
 use Stichoza\GoogleTranslate\GoogleTranslate;
@@ -117,7 +115,7 @@ class CustomerContractResource extends Resource
                         $employeeSigned = $record->signature !== 'Pending Signature';
                         $adminSigned = $record->admin_signature !== 'Pending Signature';
 
-                        $employeeText = $employeeSigned ? 'Employee: Signed' : 'Employee: Pending';
+                        $customerText = $employeeSigned ? 'Customer: Signed' : 'Customer: Pending';
                         $adminText = $adminSigned ? 'Admin: Signed' : 'Admin: Pending';
 
                         $employeeStyle = $employeeSigned
@@ -130,7 +128,7 @@ class CustomerContractResource extends Resource
 
                         return "
             <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$employeeStyle}margin-right:0.25rem'>
-                {$employeeText}
+                {$customerText}
             </span>
             <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$adminStyle}'>
                 {$adminText}

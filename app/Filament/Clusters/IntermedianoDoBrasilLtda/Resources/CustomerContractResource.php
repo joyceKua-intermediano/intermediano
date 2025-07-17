@@ -4,7 +4,6 @@ namespace App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources;
 
 use App\Filament\Clusters\IntermedianoDoBrasilLtda;
 use App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources\CustomerContractResource\Pages;
-use App\Filament\Clusters\IntermedianoDoBrasilLtda\Resources\CustomerContractResource\RelationManagers;
 use App\Models\Contract;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
@@ -12,14 +11,11 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Illuminate\Support\Facades\Storage;
 use Saade\FilamentAutograph\Forms\Components\SignaturePad;
@@ -116,7 +112,7 @@ class CustomerContractResource extends Resource
                         $employeeSigned = $record->signature !== 'Pending Signature';
                         $adminSigned = $record->admin_signature !== 'Pending Signature';
 
-                        $employeeText = $employeeSigned ? 'Employee: Signed' : 'Employee: Pending';
+                        $customerText = $employeeSigned ? 'Customer: Signed' : 'Customer: Pending';
                         $adminText = $adminSigned ? 'Admin: Signed' : 'Admin: Pending';
 
                         $employeeStyle = $employeeSigned
@@ -129,7 +125,7 @@ class CustomerContractResource extends Resource
 
                         return "
             <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$employeeStyle}margin-right:0.25rem'>
-                {$employeeText}
+                {$customerText}
             </span>
             <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$adminStyle}'>
                 {$adminText}
