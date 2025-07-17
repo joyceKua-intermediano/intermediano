@@ -9,10 +9,8 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDay = $record->created_at->format('jS');
+$createdDate = (new DateTime($record->created_at))->format('[d/m/Y]');
 $companyName = $record->company->name;
 $customerAddress = $record->company->address;
 $customerCity = $record->company->city;
@@ -22,8 +20,15 @@ $customerName = $record->companyContact->contact_name;
 $customerSurname = $record->companyContact->surname;
 $customerPosition = $record->companyContact->position ? $record->companyContact->position : 'Legal Representative';
 $customerTranslatedPosition = $record->translatedPosition ? $record->translatedPosition : 'Representante Legal';
-$signatureExists = Storage::disk('public')->exists($record->signature);
-
+$signedDate = $record->signed_contract ? \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y'): null;
+$signatureExists = Storage::disk('private')->exists($record->signature);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 <body>
     <!-- Content Section -->
@@ -33,11 +38,11 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">PARTNERSHIP AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “<b>Agreement</b>”) is made on {{ $formattedDate }} (the “<b>Effective Date</b>”), by and between <b>INTERMEDIANO COLOMBIA SAS</b> (the <b>“Provider”</b>), a Colombian company, NIT 901.389.463-5, located at Avenida carrera 9# 115-30 Oficina 1745 Edificio Tierra Firme, duly represented by its legal representative; AND {{ $companyName }} (the “<b>Customer</b>”), with its principal place {{ $customerCity }} City, {{ $customerAddress }} duly represented by its authorized representative, (each, a “<b>Party</b>“ and together, the “<b>Parties</b>”).</p>
+                    <p>This Payroll and HR Service Agreement (the “<b>Agreement</b>”) is made on {{ $contractCreatedDay }} (the “<b>Effective Date</b>”), by and between <b>INTERMEDIANO COLOMBIA SAS</b> (the <b>“Provider”</b>), a Colombian company, NIT 901.389.463-5, located at Avenida carrera 9# 115-30 Oficina 1745 Edificio Tierra Firme, duly represented by its legal representative; AND {{ $companyName }} (the “<b>Customer</b>”), with its principal place {{ $customerCity }} City, {{ $customerAddress }} duly represented by its authorized representative, (each, a “<b>Party</b>“ and together, the “<b>Parties</b>”).</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE PARTNERSHIP</h4>
-                    <p>Este Contrato de servicios de nómina y recursos humanos (el "<b>Contrato</b>") se celebra el {{ $formattedDate }} e (la "<b>Fecha de entrada en vigencia</b>"), por y entre <b>INTERMEDIANO COLOMBIA SAS</b> <br> (el "<b>Proveedor</b>”), empresa de Colombia, NIT 901.389.463-5, ubicada en la Calle Avenida carrera 9# 115-30 Oficina 1745 Edificio Tierra Firme, debidamente representada por su representante legal; Y {{ $companyName }} (el “<b>Cliente</b>") con sede principal en la Ciudad de {{ $customerCity }}, {{ $customerAddress }} debidamente representados por su representante autorizado, (cada uno, una “<b>Parte</b>” y en conjunto, las “<b>Partes</b>”).</p>
+                    <p>Este Contrato de servicios de nómina y recursos humanos (el "<b>Contrato</b>") se celebra el {{ $contractCreatedDay }} e (la "<b>Fecha de entrada en vigencia</b>"), por y entre <b>INTERMEDIANO COLOMBIA SAS</b> <br> (el "<b>Proveedor</b>”), empresa de Colombia, NIT 901.389.463-5, ubicada en la Calle Avenida carrera 9# 115-30 Oficina 1745 Edificio Tierra Firme, debidamente representada por su representante legal; Y {{ $companyName }} (el “<b>Cliente</b>") con sede principal en la Ciudad de {{ $customerCity }}, {{ $customerAddress }} debidamente representados por su representante autorizado, (cada uno, una “<b>Parte</b>” y en conjunto, las “<b>Partes</b>”).</p>
                 </td>
             </tr>
             <tr>
@@ -802,33 +807,49 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>{{ $currentDate }}</p>
+                    <p>{{ $createdDate }}</p>
                     <div style="text-align: left">
                         <b>INTERMEDIANO COLOMBIA SAS </b>
                     </div>
                     <br><br>
                     <div style="text-align: center; margin-top: -20px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px" />
+                        @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <div style="text-align: center; margin-top: -20px">
-                        <p>Fernando Gutierrez</p>
-                        <p style="margin-top: -20px">CEO</p>
+                    <div style="margin-top: -20px">
+                        @if (!empty($adminSignedBy))
+                        <p style='text-align: center;'>{{ $adminSignedBy }}</p>
+                        <p style="text-align: center;margin-top: -20px">{{ $adminSignedByPosition }}</p>
+                        @endif
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>{{ $currentDate }}</p>
+                    <p>{{ $createdDate }}</p>
                     <div style="text-align: left">
                         <b>INTERMEDIANO COLOMBIA SAS </b>
                     </div>
                     <br><br>
                     <div style="text-align: center; margin-top: -20px">
-                        <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px" />
+                        @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
-                    <div style="text-align: center; margin-top: -20px">
-                        <p>Fernando Gutierrez</p>
-                        <p style="margin-top: -20px">CEO</p>
+                    <div style="margin-top: -20px">
+                        @if (!empty($adminSignedBy))
+                        <p style='text-align: center;'>{{ $adminSignedBy }}</p>
+                        <p style="text-align: center;margin-top: -20px">{{ $adminSignedByPosition }}</p>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -846,7 +867,11 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                     </div>
                     @if($signatureExists)
                     <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                        <img src="{{ 
+                            $is_pdf
+                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
+                        }}" alt="Employee Signature" style="height: 50px; margin: 10px 0;" />
                     </div>
                     @else
                     <div style="text-align: center; margin-top: 0px">
@@ -856,9 +881,9 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
 
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
 
-                    <div style="text-align: center; margin-top: -20px">
-                        <p>{{ $customerName }} {{ $customerSurname }}</p>
-                        <p style="margin-top: -20px">{{ $customerPosition }}</p>
+                    <div style=" margin-top: -20px">
+                        <p style='text-align: center;'>{{ $customerName }} {{ $customerSurname }}</p>
+                        <p style="text-align: center;margin-top: -20px">{{ $customerTranslatedPosition }}</p>
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
@@ -867,7 +892,11 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
                     </div>
                     @if($signatureExists)
                     <div style="text-align: center; margin-top: 0px">
-                        <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+                        <img src="{{ 
+                            $is_pdf
+                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
+                        }}" alt="Employee Signature" style="height: 50px; margin: 10px 0;" />
                     </div>
                     @else
                     <div style="text-align: center; margin-top: 0px">
@@ -877,9 +906,9 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
 
                     <div style="width: 100%%; border-bottom: 1px solid black;"></div>
 
-                    <div style="text-align: center; margin-top: -20px">
-                        <p>{{ $customerName }} {{ $customerSurname }}</p>
-                        <p style="margin-top: -20px">{{ $customerTranslatedPosition }}</p>
+                    <div style=" margin-top: -20px">
+                        <p style='text-align: center;'>{{ $customerName }} {{ $customerSurname }}</p>
+                        <p style="text-align: center;margin-top: -20px">{{ $customerTranslatedPosition }}</p>
                     </div>
                 </td>
             </tr>
