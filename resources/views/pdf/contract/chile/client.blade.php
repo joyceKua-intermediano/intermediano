@@ -9,10 +9,9 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDay = now()->format('jS');
+$contractCreatedmonth = now()->format('F');
+$contractCreatedyear = now()->format('Y');
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -43,8 +42,15 @@ $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
-$signatureExists = Storage::disk('public')->exists($record->signature);
-
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$signatureExists = Storage::disk('private')->exists($record->signature);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 @endphp
 
 <style>
@@ -61,11 +67,11 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">SERVICE AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $formattedDate }} of {{ $month }}, {{ $year }}, (the “Effective Date”), by and between <b>INTERMEDIANO CHILE SPA.</b> (the <b>“Provider”</b>) Unique Tax Identification Nº. 77.223.361-2, domiciliated at Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Región Metropolitana, Chile, duly represented by its legal representative; AND <b>{{ strtoupper($customerName) }} {{ strtoupper($contactSurname) }}</b> (the <b>“Customer”</b>), a {{ $customerCountry }} company, enrolled under the fiscal registration number {{ $customerTaxId }}, located at {{ $customerAddress }} {{ $customerCity }} {{ $customerCountry }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).</p>
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, (the “Effective Date”), by and between <b>INTERMEDIANO CHILE SPA.</b> (the <b>“Provider”</b>) Unique Tax Identification Nº. 77.223.361-2, domiciliated at Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Región Metropolitana, Chile, duly represented by its legal representative; AND <b>{{ strtoupper($customerName) }} {{ strtoupper($contactSurname) }}</b> (the <b>“Customer”</b>), a {{ $customerCountry }} company, enrolled under the fiscal registration number {{ $customerTaxId }}, located at {{ $customerAddress }} {{ $customerCity }} {{ $customerCountry }}, duly represented by its authorized representative, (each, a “Party” and together, the “Parties”).</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE SERVICIOS</h4>
-                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $formattedDate }} of {{ $month }}, {{ $year }}, (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO CHILE SPA.</b> (el <b>"Proveedor"</b>) Identificación Fiscal Única Nº. 77.223.361-2, domiciliado en Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Región Metropolitana, Chile, debidamente representado por su representante legall; Y <b>{{ strtoupper($customerName) }} {{ strtoupper($contactSurname) }}</b> (el <b>"Cliente"</b>), una empresa de {{ $customerCountry }}, inscrita bajo el número de registro fiscal {{ $customerTaxId }}, con domicilio en {{ $customerAddress }} {{ $customerCity }} {{ $customerCountry }}, debidamente representada por su representante autorizado, (cada uno, una "Parte" y juntos, las "Partes").</p>
+                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO CHILE SPA.</b> (el <b>"Proveedor"</b>) Identificación Fiscal Única Nº. 77.223.361-2, domiciliado en Calle El Gobernador 20, Oficina 202, Providencia, Santiago, Región Metropolitana, Chile, debidamente representado por su representante legall; Y <b>{{ strtoupper($customerName) }} {{ strtoupper($contactSurname) }}</b> (el <b>"Cliente"</b>), una empresa de {{ $customerCountry }}, inscrita bajo el número de registro fiscal {{ $customerTaxId }}, con domicilio en {{ $customerAddress }} {{ $customerCity }} {{ $customerCountry }}, debidamente representada por su representante autorizado, (cada uno, una "Parte" y juntos, las "Partes").</p>
                 </td>
             </tr>
             <tr>
@@ -552,25 +558,33 @@ $signatureExists = Storage::disk('public')->exists($record->signature);
             </tr>
         </table>
         <div style="text-align: center; margin-top: 0px;">
-            <p style='margin-bottom: 40px; text-align: center;'>Santiago, {{ $formattedDate }} de {{ $month }} de {{ $year }}</p>
+            <p style='margin-bottom: 40px; text-align: center;'>Santiago, {{ $contractCreatedDay }} de {{ $contractCreatedmonth }} de {{ $contractCreatedyear }}</p>
             <b>INTERMEDIANO CHILE SPA. </b>
         </div>
         <br><br>
         <div style="text-align: center; margin-top: 0px">
-            <img src="{{ public_path('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;">
+            @if($adminSignatureExists)
+            <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px;" 
+                        />
+            @endif
         </div>
         <div style="width: 80%; border-bottom: 1px solid black; text-align: center; margin: 0 auto;"></div>
-        <p style="text-align: center; margin-top: -20px">Fernando Gutierrez</p>
-        <p style="text-align: center;margin-top: -20px">Legal Representative</p>
+        @if (!empty($adminSignedBy))
+        <p style="text-align: center; margin-top: -20px">{{ $adminSignedBy }}</p>
+        <p style="text-align: center;margin-top: -20px">{{ $adminSignedByPosition }}</p>
+        @endif
 
         <div style="text-align: center; margin-top: 70px;">
             <b>{{ strtoupper($companyName) }}</b>
         </div>
         <br><br>
         @if($signatureExists)
-
         <div style="text-align: center; margin-top: 0px">
-            <img src="{{ $is_pdf ? storage_path('app/public/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
+            <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin: 10px 0;">
         </div>
         @else
         <div style="text-align: center; margin-top: 0px">
