@@ -4,17 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Document</title>
+    @if($is_pdf)
     <link rel="stylesheet" href="css/contract.css">
+    @else
+    <link rel="stylesheet" href="{{ asset('css/contract.css') }}">
+    @endif
 </head>
 
 @php
 
-$formattedDate = now()->format('jS');
-$dayNumber = now()->format('d');
-$month = now()->format('F');
-$year = now()->format('Y');
-$currentDate = now()->format('[d/m/Y]');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedyear = $record->created_at->format('Y');
+
 $companyName = $record->company->name;
 $customerAddress = $record->company->address;
 $customerPhone = $record->companyContact->phone;
@@ -43,8 +44,14 @@ $countryWork = $record->country_work ?? null;
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 $pensionFund = $record->socialSecurityInfos->pension_fund ?? 'N/A';
-$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
-$signatureExists = Storage::disk('public')->exists($signaturePath);
+$signatureExists = Storage::disk('private')->exists($record->signature);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 switch (true) {
 case $employeeCountry == 'Colombia':
 $employeeLocality = 'colombiana';
@@ -251,13 +258,13 @@ break;
                     <p>Salario</p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
-                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'>  {{ strtoupper($formatterLocal->format($employeeGrossSalary)) }}</span></p>
+                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'> {{ strtoupper($formatterLocal->format($employeeGrossSalary)) }}</span></p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
                     <p>Salary</p>
                 </td>
                 <td style="width: 25%; vertical-align: top;">
-                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'>  {{ strtoupper($formatter->format($employeeGrossSalary)) }}</span></p>
+                    <p>COP {{ number_format($employeeGrossSalary, 2) }} <span style='font-size: 10px'> {{ strtoupper($formatter->format($employeeGrossSalary)) }}</span></p>
                 </td>
             </tr>
             <tr>
@@ -993,15 +1000,28 @@ break;
                 </td>
             </tr>
         </table>
-        <div style="text-align: center; padding: 60px 40px">En constancia se firma en Bogotá, el {{ $formattedDate }} día del mes de {{ $record->translatedMonth }} del {{ $year }}, en dos ejemplares de un mismo tenor, uno (1) para el empleador y uno (1) para el empleado.</div>
+        <div style="text-align: center; padding: 60px 40px">En constancia se firma en Bogotá, el {{ $contractCreatedDay }} día del mes de {{ $record->translatedMonth }} del {{ $contractCreatedyear }}, en dos ejemplares de un mismo tenor, uno (1) para el empleador y uno (1) para el empleado.</div>
         <table>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <div style="text-align: center;">
                         <p style="margin-bottom: 20px"><b>EL EMPLEADOR</b></p>
-                        <img src="{{ $is_pdf ? public_path('images/jenniffer_signature.png') : asset('images/jenniffer_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
+                        @if($adminSignatureExists)
+
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 65px" />
+                        @else
+                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
+
+                        @endif
+
                         <div style="width: 100%; border-bottom: 1px solid black; padding-top: -80px"></div>
-                        <p style="margin-top: -50px">JENNIFFER K. CASANOVA OSPINA <br>MSC COLOMBIA S.A.S. <br>NIT: 901.389.463-5</p>
+                        @if (!empty($adminSignedBy))
+                        <p style="margin-top: -50px">{{ $adminSignedBy }} <br>MSC COLOMBIA S.A.S. <br>NIT: 901.389.463-5</p>
+                        @endif
 
                     </div>
                 </td>
@@ -1009,12 +1029,11 @@ break;
                     <div style="text-align: center;">
                         <p style="margin-bottom: 20px"><b>EL EMPLEADO</b></p>
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
+                        <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 30px">
                         <p style="text-align: center; margin-bottom: 0px">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
-                        @else 
+                        @else
                         <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin-top: 65px">
-                        
                         @endif
                         <div style="width: 100%; border-bottom: 1px solid black; padding-top: -80px"></div>
                         <p style="margin-top: -20px">{{ $employeeName }} <br> {{ $personalId }} de {{ $employeeState }}</p>
