@@ -4,7 +4,6 @@ namespace App\Filament\Clusters\IntermedianoCanada\Resources;
 
 use App\Filament\Clusters\IntermedianoCanada;
 use App\Filament\Clusters\IntermedianoCanada\Resources\PartnerContractResource\Pages;
-use App\Filament\Clusters\IntermedianoCanada\Resources\PartnerContractResource\RelationManagers;
 use App\Models\Contract;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
@@ -15,7 +14,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Illuminate\Support\Facades\Storage;
