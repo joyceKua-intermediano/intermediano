@@ -76,6 +76,14 @@ if (!function_exists('getClientContractFile')) {
                 $pdfPage = 'pdf.contract.costa_rica.client';
                 $domain = 'www.intermediano.com';
                 break;
+            case 'IntermedianoEcuadorSAS':
+                $mobile = '+1 514-907-5393';
+                $address = 'Av Francisco Orellana E12-148 y Av 12 de Octubre, Oficina 206, Mariscal Sucre, Quito, Pichincha, Ecuador';
+                $companyTitle = 'INTERMEDIANO ECUADOR SAS';
+                $pdfPage = 'pdf.contract.ecuador.client';
+                $domain = 'www.intermediano.com';
+                break;
+
             default:
                 $mobile = '';
                 $address = '';
