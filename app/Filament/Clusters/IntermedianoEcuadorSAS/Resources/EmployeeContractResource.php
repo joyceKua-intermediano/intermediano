@@ -4,7 +4,6 @@ namespace App\Filament\Clusters\IntermedianoEcuadorSAS\Resources;
 
 use App\Filament\Clusters\IntermedianoEcuadorSAS;
 use App\Filament\Clusters\IntermedianoEcuadorSAS\Resources\EmployeeContractResource\Pages;
-use App\Filament\Clusters\IntermedianoEcuadorSAS\Resources\EmployeeContractResource\RelationManagers;
 use App\Models\Contract;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
@@ -15,13 +14,16 @@ use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\RichEditor;
 use Carbon\Carbon;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Filters\Filter;
+use Filament\Tables\Columns\TextColumn;
 use Stichoza\GoogleTranslate\GoogleTranslate;
+use Illuminate\Support\Facades\Storage;
+use Saade\FilamentAutograph\Forms\Components\SignaturePad;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\URL;
 
 class EmployeeContractResource extends Resource
 {
@@ -112,14 +114,35 @@ class EmployeeContractResource extends Resource
                     ->label('Sent to Employee')
                     ->sortable()
                     ->toggleable(),
-                BadgeColumn::make('signature')
-                    ->sortable()
-                    ->colors([
-                        'success' => fn($state) => $state !== null,
-                        'warning' => fn($state) => $state == 'Pending Signature',
-                    ])
+                TextColumn::make('signature_status')
                     ->label('Signature Status')
-                    ->formatStateUsing(fn($state) => $state !== 'Pending Signature' ? 'Signed' : 'Pending Signature'),
+                    ->html()
+                    ->getStateUsing(function ($record) {
+                        $employeeSigned = $record->signature !== 'Pending Signature';
+                        $adminSigned = $record->admin_signature !== 'Pending Signature';
+
+                        $employeeText = $employeeSigned ? 'Employee: Signed' : 'Employee: Pending';
+                        $adminText = $adminSigned ? 'Admin: Signed' : 'Admin: Pending';
+
+                        $employeeStyle = $employeeSigned
+                            ? "background:#bbf7d0;color:#166534;"
+                            : "background:#ffb84d;color:#854d0e;";
+
+                        $adminStyle = $adminSigned
+                            ? "background:#bbf7d0;color:#166534;"
+                            : "background:#ffb84d;color:#854d0e;";
+
+                        return "
+            <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$employeeStyle}margin-right:0.25rem'>
+                {$employeeText}
+            </span>
+            <span style='display:inline-flex;align-items:center;padding:2px 8px;border-radius:9999px;font-size:0.75rem;font-weight:500;{$adminStyle}'>
+                {$adminText}
+            </span>
+        ";
+                    })
+                    ->sortable(false)
+                    ->searchable(false)
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -145,6 +168,74 @@ class EmployeeContractResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('uploadSignature')
+                    ->label('Upload Signature')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->form([
+                        SignaturePad::make('signature_data')
+                            ->label(__('Sign here'))
+                            ->downloadable(false)
+                            ->undoable()
+                            ->live()
+                            // ->visible(fn($get) => empty($get('signature_file')))
+                            ->confirmable(true)
+                            ->afterStateUpdated(function ($state, $livewire) {
+                                if ($state) {
+                                    $base64_string = substr($state, strpos($state, ',') + 1);
+                                    $image_data = base64_decode($base64_string);
+                                    $file_name = Str::random(40) . '.png';
+                                    $file = self::createTemporaryFileUploadFromUrl($image_data, $file_name);
+                                    $livewire->dispatch('signature-uploaded', $file);
+                                }
+                            })
+                            ->columnSpan(4),
+
+                        Forms\Components\FileUpload::make('signature_file')
+                            ->label('')
+                            ->disk('private')
+                            ->directory('signatures/admin')
+                            ->visibility('private')
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->optimize('webp')
+                            ->resize(50)
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file, $record): string {
+
+                                $contractId = $record->id;
+                                $fileName = 'admin_' . $contractId . '.' . $file->getClientOriginalExtension();
+                                $filePath = 'signatures/admin/' . $fileName;
+                                if (Storage::disk('private')->exists($filePath)) {
+                                    Storage::disk('private')->delete($filePath);
+                                }
+                                return $fileName;
+                            })
+                            ->required()
+                            ->extraAttributes(['style' => 'display: none;'])
+
+                            ->extraAlpineAttributes([
+                                'x-data' => '{ fileReady: false }',
+                                'x-on:signature-uploaded.window' => '
+                                const pond = FilePond.find($el.querySelector(".filepond--root"));
+                                fileReady = false; // Reset to false before starting
+                                pond.removeFiles({ revert: false });
+                                pond.addFile($event.detail).then(() => {
+                                    fileReady = true; // Set to true once the file is fully uploaded
+                                }).catch(error => {
+                                    console.error("File upload failed:", error);
+                                    fileReady = false; // Ensure it’s marked as not ready in case of failure
+                                });
+                                  ',
+                            ])
+                            ->columnSpanFull(),
+                        Forms\Components\Hidden::make('signed_contract')
+                            ->default(now()->toDateTimeString()),
+                    ])
+                    ->action(function ($record, $data) {
+                        $record->update([
+                            'admin_signature' => $data['signature_file'],
+                            'admin_signed_contract' => $data['signed_contract'],
+                            'admin_signed_by' => auth()->user()->id
+                        ]);
+                    }),
                 Tables\Actions\Action::make('pdf')
                     ->label('Download Contract')
                     ->icon('heroicon-o-arrow-down-tray')
@@ -191,13 +282,24 @@ class EmployeeContractResource extends Resource
     }
 
 
-    public static function getRelations(): array
+    public static function createTemporaryFileUploadFromUrl($imageData, $filename): string
     {
-        return [
-            //
-        ];
-    }
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+        file_put_contents($tempFilePath, $imageData);
 
+        $mimeType = mime_content_type($tempFilePath);
+        $tempFile = new UploadedFile($tempFilePath, basename($filename), $mimeType, null, true);
+
+        $path = Storage::putFile('livewire-tmp', $tempFile);
+
+        $file = TemporaryUploadedFile::createFromLivewire($path);
+
+        return URL::temporarySignedRoute(
+            'livewire.preview-file',
+            now()->addMinutes(30),
+            ['filename' => $file->getFilename()]
+        );
+    }
     public static function getPages(): array
     {
         return [
