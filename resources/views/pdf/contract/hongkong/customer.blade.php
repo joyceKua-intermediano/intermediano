@@ -231,9 +231,9 @@ $type = $isAdmin ? 'admin' : 'employee';
                         @if($signatureExists)
                         <img src="{{ 
                             $is_pdf
-                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                ? Storage::disk('private')->path($record->signature)
                                 : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
-                        }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
+                        }}" alt="Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
                         @else
                         <div style="text-align: center; position: relative; height: 100px;">
                             <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;">

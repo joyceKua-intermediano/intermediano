@@ -14,15 +14,12 @@
 </head>
 
 @php
-$formattedDate = now()->format(format: 'jS');
-$day = now()->format('j');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractDay = $record->created_at->format('j');
 
-$month = now()->format('F');
-$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
-
-$year = now()->format('Y');
-$currentDate = now()->format('d/m/Y');
-
+$contractCreatedmonth = $record->created_at->format('F');
+$translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
+$contractCreatedyear = $record->created_at->format('Y');
 
 $customerTranslatedPosition = $record->translatedPosition;
 $employeeName = $record->employee->name;
@@ -56,7 +53,7 @@ $employeeEndDateFormated = $record->end_date
 $employeeEndDateLocal = $record->end_date
 ? \Carbon\Carbon::parse($record->end_date)->translatedFormat('j \\de F \\ Y')
 : 'Período indefinido';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeTaxId = $record->document->tax_id ?? null;
 
 $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
@@ -73,7 +70,6 @@ $adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adm
 $user = auth()->user();
 $isAdmin = $user instanceof \App\Models\User;
 $type = $isAdmin ? 'admin' : 'employee';
-
 
 @endphp
 
@@ -399,13 +395,13 @@ $type = $isAdmin ? 'admin' : 'employee';
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>FOURTHEENTH. APPLICABLE LAW AND JURISDICTION. </b></p>
                     <p>For all matters relating to the interpretation, performance and execution of this Agreement, the parties submit to the applicable provisions of the Civil Code of Commerce and the Republic of Costa Rica’s Labor Code and to the Tribunals jurisdiction of the city San Jose, renouncing any other jurisdiction that by reason of their present or future addresses could correspond to them. Having read the present Contract, the parties sign it in two copies in the city of <b>San José, on </b> </p>
-                    <p>{{ $formattedDate }} of {{ $month }} of {{ $year }}.</p>
+                    <p>{{ $contractCreatedDay }} of {{ $contractCreatedmonth }} of {{ $contractCreatedyear }}.</p>
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>DECIMA CUARTA. LEY APLICABLE Y JURISDIC-CIÓN.</b></p>
                     <p>Para todo lo relativo a la interpretación, cumplimiento y ejecución del presente Contrato, las partes se someten a las disposiciones aplicables del Código Civil de Comercio y el Código del Trabajo de la República de Costa Rica y a la jurisdicción de los Tribunales de la Ciudad de San José, renunciando a cualquier otro fuero que por razón de sus domicilios presentes o futuros pudiera corresponderles. Leído que fue el presente Contrato, lo firman las partes en dos tantos en la ciudad de <b>San José, el</b> </p>
-                    <p> {{$day}} de {{ $translatedMonth }} de {{ $year }}.</p>
+                    <p> {{$contractDay}} de {{ $translatedMonth }} de {{ $contractCreatedyear }}.</p>
 
                 </td>
             </tr>
@@ -437,11 +433,14 @@ $type = $isAdmin ? 'admin' : 'employee';
                         <div style="text-align: left;">
                             <p><b>Employer:</b> <span style="font-weight: bold; padding-left: 5px;">INTERMEDIANO SRL</span></p>
                         </div>
+                        @if($adminSignatureExists)
                         <img src="{{ 
                             $is_pdf 
                                 ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
                                 : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
                         }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
+
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
                     </div>
                     @if (!empty($adminSignedBy))
