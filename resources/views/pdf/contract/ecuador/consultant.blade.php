@@ -14,14 +14,10 @@
 </head>
 
 @php
-$formattedDate = now()->format(format: 'jS');
-$day = now()->format('j');
-
-$month = now()->format('F');
-$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
-
-$year = now()->format('Y');
-$currentDate = now()->format('d/m/Y');
+$contractDay = $record->created_at->format('j');
+$contractCreatedmonth = $record->created_at->format('F');
+$translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
+$contractCreatedyear = $record->created_at->format('Y');
 
 
 $customerTranslatedPosition = $record->translatedPosition;
@@ -43,9 +39,8 @@ $employeePhone = $record->personalInformation->phone ?? null;
 $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
-$employeeStartDateFFormated = $record->start_date
-? \Carbon\Carbon::parse($record->start_date)->translatedFormat('j \\of F \\of Y')
-: 'N/A';$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$employeeStartDateFFormated = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->translatedFormat('j \\of F \\of Y') : 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeTaxId = $record->document->tax_id ?? null;
 
 $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
@@ -53,8 +48,15 @@ $formatterLocal = new \NumberFormatter('es_EC', \NumberFormatter::SPELLOUT);
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 
-$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
-$signatureExists = Storage::disk('public')->exists($signaturePath);
+$signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
+$signatureExists = Storage::disk('private')->exists($signaturePath);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 
 @endphp
 
@@ -80,17 +82,19 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
         margin: 5;
         padding: 0
     }
+
     .footer {
         height: 70px;
     }
+
     .footer img {
         padding-top: 10px;
 
     }
+
     .footer-address {
         width: 50% !important
     }
-
 
 </style>
 <body>
@@ -101,13 +105,13 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">INDEFINITE-TERM EMPLOYMENT CONTRACT WITH PROBATIONARY PERIOD</h4>
-                    <p>In the city of Quito, on the {{ $day }} day of the month of {{ $month }} of the year {{ $year }}, appear, on the one hand, Intermediano Ecuador Intermecu SAS with RUC number 0993273333001, duly represented by Mr. Carlos Arturo Garcia Luzuriaga, holder of citizenship ID No. 1708047186, in his capacity as EMPLOYER; and on the other hand, {{ $employeeName }}, holder of citizenship ID No. {{ $employeePersonalId }}, in his capacity as WORKER. The appearing parties are of {{ $employeeNationality }}, respectively domiciled at Av. Francisco Orellana E12-148 and Av. 12 de Octubre, Office 206, Mariscal Sucre, Quito, Pichincha, Ecuador, and {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeCountry }} and are capable of entering into contracts. They freely and voluntarily agree to execute this INDEFINITE CONTRACT subject to the declarations and stipulations contained in the following clauses:</p>
+                    <p>In the city of Quito, on the {{ $contractDay }} day of the month of {{ $contractCreatedmonth }} of the year {{ $contractCreatedyear }}, appear, on the one hand, Intermediano Ecuador Intermecu SAS with RUC number 0993273333001, duly represented by Mr. Carlos Arturo Garcia Luzuriaga, holder of citizenship ID No. 1708047186, in his capacity as EMPLOYER; and on the other hand, {{ $employeeName }}, holder of citizenship ID No. {{ $employeePersonalId }}, in his capacity as WORKER. The appearing parties are of {{ $employeeNationality }}, respectively domiciled at Av. Francisco Orellana E12-148 and Av. 12 de Octubre, Office 206, Mariscal Sucre, Quito, Pichincha, Ecuador, and {{ $employeeAddress }}, {{ $employeeCity }}, {{ $employeeCountry }} and are capable of entering into contracts. They freely and voluntarily agree to execute this INDEFINITE CONTRACT subject to the declarations and stipulations contained in the following clauses:</p>
 
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE TRABAJO POR TIEMPO INDEFINIDO CON PERÍODO DE PRUEBA</h4>
-                    <p>En la ciudad de Quito, a los {{ $day }} días del mes de {{ $translatedMonth }} del año {{ $year }}, comparecen, por una parte Intermediano Ecuador Intermecu SAS con número de RUC 0993273333001 debidamente representada por el Sr. Carlos Arturo Garcia Luzuriaga, portador de la cédula de ciudadanía Nro. 1708047186, en calidad de EMPLEADOR; y por otra parte, el señor [NOMBRE DEL TRABAJADOR], portador de la cédula de ciudadanía Nro. [CÉDULA DEL TRABAJADOR], en calidad de TRABAJADOR. Los comparecientes son de nacionalidad [NACIONALIDAD], respectivamente domiciliado en Av. Francisco Orellana E12-148 y Av. 12 de Octubre, Oficina 206, Mariscal Sucre, Quito, Pichincha, Ecuador, y [DOMICILIO DEL TRABAJADOR], y son capaces para contratar, quienes libre y voluntariamente convienen en celebrar este CONTRATO INDEFINIDO con sujeción a las declaraciones y estipulaciones contenidas en las siguientes cláusulas:</p>
+                    <p>En la ciudad de Quito, a los {{ $contractDay }} días del mes de {{ $translatedMonth }} del año {{ $contractCreatedyear }}, comparecen, por una parte Intermediano Ecuador Intermecu SAS con número de RUC 0993273333001 debidamente representada por el Sr. Carlos Arturo Garcia Luzuriaga, portador de la cédula de ciudadanía Nro. 1708047186, en calidad de EMPLEADOR; y por otra parte, el señor [NOMBRE DEL TRABAJADOR], portador de la cédula de ciudadanía Nro. [CÉDULA DEL TRABAJADOR], en calidad de TRABAJADOR. Los comparecientes son de nacionalidad [NACIONALIDAD], respectivamente domiciliado en Av. Francisco Orellana E12-148 y Av. 12 de Octubre, Oficina 206, Mariscal Sucre, Quito, Pichincha, Ecuador, y [DOMICILIO DEL TRABAJADOR], y son capaces para contratar, quienes libre y voluntariamente convienen en celebrar este CONTRATO INDEFINIDO con sujeción a las declaraciones y estipulaciones contenidas en las siguientes cláusulas:</p>
                 </td>
             </tr>
             <tr>
@@ -263,36 +267,48 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>TENTH - SUBSCRIPTION:</b></p>
-                    <p>The parties ratify each one of the preceding clauses and for proof and full validity of the provisions they sign this contract in original and two copies of equal tenor and value, in the city of Quito the {{ $day }} day of the month of {{ $month }} of the year {{ $year }}.</p>
+                    <p>The parties ratify each one of the preceding clauses and for proof and full validity of the provisions they sign this contract in original and two copies of equal tenor and value, in the city of Quito the {{ $contractDay }} day of the month of {{ $contractCreatedmonth }} of the year {{ $contractCreatedyear }}.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p><b>DÉCIMA - SUSCRIPCIÓN:</b></p>
-                    <p>Las partes se ratifican en todas y cada una de las cláusulas precedentes y para constancia y plena validez de lo estipulado firman este contrato en original y dos ejemplares de igual tenor y valor, en la ciudad de Quito el día {{ $day }} del mes de {{ $translatedMonth }} del año {{ $year }}.</p>
+                    <p>Las partes se ratifican en todas y cada una de las cláusulas precedentes y para constancia y plena validez de lo estipulado firman este contrato en original y dos ejemplares de igual tenor y valor, en la ciudad de Quito el día {{ $contractDay }} del mes de {{ $translatedMonth }} del año {{ $contractCreatedyear }}.</p>
                 </td>
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-
-                    <div style="text-align: center; position: relative; height: 120px;">
-
-                        <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
+                    <h4 style='text-align: center; font-weight: bold'>INTERMECU SAS</h4>
+                    <div style="text-align: center; position: relative; height: 180px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%; font-weight: bold;">INTERMECU SAS</p>
+                        @if (!empty($adminSignedBy))
+                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%; font-weight: bold;">{{ $adminSignedBy }}</p>
                         <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%; font-weight: bold;">R.U.C.: 0993273333001</p>
-                    </div>
+                        @endif
 
+                    </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-
-                    <div style="text-align: center; position: relative; height: 120px;">
-
-                        <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
+                    <h4 style='text-align: center; font-weight: bold'>INTERMECU SAS</h4>
+                    <div style="text-align: center; position: relative; height: 180px;">
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%; font-weight: bold;">INTERMECU SAS</p>
+                        @if (!empty($adminSignedBy))
+                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%; font-weight: bold;">{{ $adminSignedBy }}</p>
                         <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%; font-weight: bold;">R.U.C.: 0993273333001</p>
+                        @endif
+
                     </div>
                 </td>
 
@@ -301,11 +317,16 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                 <td style="width: 50%; vertical-align: top;">
                     <div style="display: inline-block; position: relative; height: 140px; width: 100%;">
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        <img src="{{ 
+                                $is_pdf
+                                    ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                    : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                                }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);
+                                " />
 
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
-                        <p style="position: absolute; bottom: -22px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                        <p style="position: absolute; bottom: -12px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                         @else
                         <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 10px; margin-top: 60px; z-index: 100; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 1000;"></div>
@@ -319,11 +340,15 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                 <td style="width: 50%; vertical-align: top;">
                     <div style="display: inline-block; position: relative; height: 140px; width: 100%;">
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
+                        <img src="{{ 
+                                $is_pdf
+                                    ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                    : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                                }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);
+                                " />
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
-                        <p style="position: absolute; bottom: -22px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
+                        <p style="position: absolute; bottom: -12px;width: 100%; left: 50%; transform: translateX(-50%); text-align: center;">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                         @else
                         <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 10px; margin-top: 40px; z-index: 100; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 1000;"></div>
