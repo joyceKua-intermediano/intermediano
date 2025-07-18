@@ -869,9 +869,9 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <div style="text-align: center; margin-top: 0px">
                         <img src="{{ 
                             $is_pdf
-                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                ? Storage::disk('private')->path($record->signature)
                                 : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
-                        }}" alt="Employee Signature" style="height: 50px; margin: 10px 0;" />
+                        }}" alt="Signature"  />
                     </div>
                     @else
                     <div style="text-align: center; margin-top: 0px">
@@ -894,9 +894,9 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <div style="text-align: center; margin-top: 0px">
                         <img src="{{ 
                             $is_pdf
-                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                ? Storage::disk('private')->path($record->signature)
                                 : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
-                        }}" alt="Employee Signature" style="height: 50px; margin: 10px 0;" />
+                        }}" alt="Signature"  />
                     </div>
                     @else
                     <div style="text-align: center; margin-top: 0px">
