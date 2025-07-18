@@ -15,7 +15,7 @@ $contractDay = $record->created_at->format('j');
 $contractCreatedyear = $record->created_at->format('Y');
 $translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
 
-$currentDate = now()->format('[d/m/Y]');
+$createdDate = (new DateTime($record->created_at))->format('[d/m/Y]');
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -46,11 +46,10 @@ $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeePersonalId = $record->document->personal_id ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeStartDateFFormated = $record->start_date
 ? \Carbon\Carbon::parse($record->start_date)->translatedFormat('j \\of F \\of Y')
 : 'N/A';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 
 $currencyName = $record->quotation->currency_name;
 $signedDate = $record->signed_contract ? \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y'): null;
@@ -88,7 +87,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">PARTNERSHIP AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $currentDate }} (the “Effective Date”), by and between <b>INTERMEDIANO S.R.L.</b> (the <b>“Provider”</b>), a Costa Rican company with mercantil registry No. 3-102-728410, resident at Avenidas 2 y 4, calle 5, Escazú, San Jose, Costa Rica , duly represented by its legal representative; AND <b>{{ $customerName }}</b> (the <b>“Customer”</b>), with its principal place {{ $customerCity }}, {{ $customerAddress }} duly represented by its authorized representative, (each, a “Party “and together, the “Parties”).</p>
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $createdDate }} (the “Effective Date”), by and between <b>INTERMEDIANO S.R.L.</b> (the <b>“Provider”</b>), a Costa Rican company with mercantil registry No. 3-102-728410, resident at Avenidas 2 y 4, calle 5, Escazú, San Jose, Costa Rica , duly represented by its legal representative; AND <b>{{ $customerName }}</b> (the <b>“Customer”</b>), with its principal place {{ $customerCity }}, {{ $customerAddress }} duly represented by its authorized representative, (each, a “Party “and together, the “Parties”).</p>
                     <p><b>WHEREAS</b> Provider provides certain payroll, tax, and human resource services globally either directly or indirectly through its local partners; </p>
                     <p><b>WHEREAS</b> Customer also provides certain payroll, tax, and human resource services globally for its clients (“Customer’s Clients”); and</p>
                     <p><b>WHEREAS</b> the Parties wish to enter into this Partnership Agreement to enable Provider to provide its services to Customer for the benefit of Customer’s Clients on the terms and conditions set forth herein.</p>
@@ -96,7 +95,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE PARTNERSHIP</h4>
-                    <p>Este Contrato de servicios de nómina y recursos humanos (el "Contrato") se celebra el {{ $currentDate }} (la "Fecha de entrada en vigencia"), por y entre <b>INTERMEDIANO S.R.L.</b> (el <b>“Proveedor”</b>), empresa de Costa Rica con cédula Jurídica <br> No. 3-102-728410, Ubicada en la Avenidas 2 y 4, calle 5, Escazú San Jose, Costa Rica, en adelante denominado simplemente como; Y <b>{{ $customerName }}</b> (el <b>“Cliente”</b>) con sede principal en la Ciudad de {{ $customerCity }}, {{ $customerAddress }} debidamente representados por su representante autorizado, (cada uno, un “Parte” y en conjunto, las “Partes”).</p>
+                    <p>Este Contrato de servicios de nómina y recursos humanos (el "Contrato") se celebra el {{ $createdDate }} (la "Fecha de entrada en vigencia"), por y entre <b>INTERMEDIANO S.R.L.</b> (el <b>“Proveedor”</b>), empresa de Costa Rica con cédula Jurídica <br> No. 3-102-728410, Ubicada en la Avenidas 2 y 4, calle 5, Escazú San Jose, Costa Rica, en adelante denominado simplemente como; Y <b>{{ $customerName }}</b> (el <b>“Cliente”</b>) con sede principal en la Ciudad de {{ $customerCity }}, {{ $customerAddress }} debidamente representados por su representante autorizado, (cada uno, un “Parte” y en conjunto, las “Partes”).</p>
                     <p><b>CONSIDERANDO</b> que el Proveedor brinda ciertos servicios de nómina, impuestos y recursos humanos a nivel mundial, ya sea directa o indirectamente a través de sus socios locales;</p>
                     <p><b>CONSIDERANDO</b> que el Cliente también brinda ciertos servicios de nómina, impuestos y recursos humanos a nivel mundial para sus clientes ("Clientes del Cliente"); y</p>
                     <p><b>CONSIDERANDO</b> que las Partes desean celebrar este Contrato de asociación para permitir que el Proveedor brinde sus servicios al Cliente en beneficio de los Clientes del Cliente en los términos y condiciones establecidos en este documento.</p>
@@ -634,7 +633,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                         @if($signatureExists)
                         <img src="{{ 
                             $is_pdf
-                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                ? Storage::disk('private')->path($record->signature)
                                 : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
                         }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
                         @else
@@ -660,7 +659,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                         @if($signatureExists)
                         <img src="{{ 
                             $is_pdf
-                                ? storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')
+                                ? Storage::disk('private')->path($record->signature)
                                 : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
                         }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 100;" />
                         @else

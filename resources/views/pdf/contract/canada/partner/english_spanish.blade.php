@@ -39,7 +39,7 @@ $employeeMobile = $record->personalInformation->mobile ?? 'N/A';
 $employeeCountry = $record->personalInformation->country ?? 'N/A';
 $employeeEducation = $record->personalInformation->education_attainment ?? 'N/A';
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 $contractType = $record->end_date == null ? 'Undefined Period' : 'Defined Period';
