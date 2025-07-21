@@ -9,13 +9,14 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$day = now()->format('j');
-$year = now()->format('Y');
-$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractCreatedyear = $record->created_at->format('Y');
+$contractDay = $record->created_at->format('j');
 
-$currentDate = now()->format('[d/m/Y]');
+$translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
+$createdDate = (new DateTime($record->created_at))->format('[d/m/Y]');
+
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -39,12 +40,22 @@ $employeeDateBirth = $record->personalInformation->date_of_birth ?? null;
 $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeStartDateFFormated = $record->start_date
 ? \Carbon\Carbon::parse($record->start_date)->translatedFormat('j \\of F \\of Y')
-: 'N/A';$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+: 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 
 $currencyName = $record->quotation->currency_name;
+
+$signedDate = $record->signed_contract ? \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y'): null;
+$signatureExists = Storage::disk('private')->exists($record->signature);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 
 @endphp
 
@@ -71,11 +82,11 @@ $currencyName = $record->quotation->currency_name;
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">SERVICE AGREEMENT</h4>
-                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $currentDate }} (the “Effective Date”), by and between <b>INTERMEDIANO, S.A. DE C.V.</b> (the <b>“Provider”</b>), domiciliated at Calzada Gral. Mariano Escobedo 476-piso 12, Chapultepec Morales, Verónica Anzúres, Miguel Hidalgo, Postal Code 11590, CDMX, México; AND {{ $companyName }} (the <b>“Customer”</b>), a company duly incorporated with {{ $customerTaxId }} under the laws of {{ $customerCountry }} and holding offices at {{ $customerAddress }}.</p>
+                    <p>This Payroll and HR Service Agreement (the “Agreement”) is made on {{ $createdDate }} (the “Effective Date”), by and between <b>INTERMEDIANO, S.A. DE C.V.</b> (the <b>“Provider”</b>), domiciliated at Calzada Gral. Mariano Escobedo 476-piso 12, Chapultepec Morales, Verónica Anzúres, Miguel Hidalgo, Postal Code 11590, CDMX, México; AND {{ $companyName }} (the <b>“Customer”</b>), a company duly incorporated with {{ $customerTaxId }} under the laws of {{ $customerCountry }} and holding offices at {{ $customerAddress }}.</p>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <h4 style="text-align:center !important; text-decoration: underline;">CONTRATO DE SERVICIOS</h4>
-                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $currentDate }} (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO, S.A. DE C.V.</b> (el <b>"Proveedor"</b> ) domiciliado Calzada Gral. Mariano Escobedo 476-piso 12, Chapultepec Morales, Verónica Anzúres, Miguel Hidalgo, Código Postal 11590, CDMX, México, debidamente representado por su representante legal; Y {{ $companyName }} (el <b>"Cliente"</b>), una sociedad debidamente constituida con {{ $customerTaxId }} según las leyes de {{ $customerCountry }} y con domicilio en {{ $customerAddress }}.</p>
+                    <p>Este Contrato de Servicios de Nómina y Recursos Humanos (el "Acuerdo") se realiza el {{ $createdDate }} (la "Fecha de Vigencia"), por y entre <b>INTERMEDIANO, S.A. DE C.V.</b> (el <b>"Proveedor"</b> ) domiciliado Calzada Gral. Mariano Escobedo 476-piso 12, Chapultepec Morales, Verónica Anzúres, Miguel Hidalgo, Código Postal 11590, CDMX, México, debidamente representado por su representante legal; Y {{ $companyName }} (el <b>"Cliente"</b>), una sociedad debidamente constituida con {{ $customerTaxId }} según las leyes de {{ $customerCountry }} y con domicilio en {{ $customerAddress }}.</p>
                 </td>
             </tr>
 
@@ -497,40 +508,57 @@ $currencyName = $record->quotation->currency_name;
     @include('pdf.contract.layout.header')
     <main>
         <div>
-            <p style='text-align: center'>CDMX, {{ $formattedDate }} of {{ $month }} of {{ $year }}.</p>
+            <p style='text-align: center'>{{ $contractCreatedDay }} of {{ $contractCreatedmonth }} of {{ $contractCreatedyear }}.</p>
 
         </div>
         <table>
-
-
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-
-                    <div style="text-align: center; position: relative; height: 120px;">
+                    <div style="margin-top: 20px;">
                         <p style='text-align: center'><b>INTERMEDIANO, S.A. DE C.V. </b></p>
-
-                        <img src="{{ $is_pdf ? public_path('images/fernando_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
-                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">Fernando Gutierrez</p>
-                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%;">CEO</p>
                     </div>
+                    <div style="text-align: center; position: relative; height: 120px;">
 
+
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+
+                        @if (!empty($adminSignedBy))
+                        <p style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);">{{ $adminSignedBy }}</p>
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);">{{ $adminSignedByPosition }}</p>
+                        @endif
+
+                    </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-
+                    <div style="margin-top: 20px;">
+                        <p style='text-align: center'><b>{{ $companyName }}</b></p>
+                    </div>
                     <div style="text-align: center; position: relative; height: 120px;">
-                        <p style='text-align: center'><b>{{ $companyName }} </b></p>
 
-                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/fernando_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        @if($signatureExists)
+                        <img src="{{ 
+                            $is_pdf
+                                ? Storage::disk('private')->path($record->signature)
+                                : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);"/>
 
+                        @endif
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">{{ $contactName }} {{ $contactSurname }}</p>
-                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%;">Legal Representative</p>
+                        <p style='position: absolute; bottom: 14x; left: 50%; transform: translateX(-50%);'>{{ $signedDate }}</p>
+                        <p style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);">{{ $customerName }} {{ $contactSurname }}</p>
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);">{{ $customerPosition }}</p>
+
+
                     </div>
                 </td>
-
             </tr>
             <tr>
                 <td style="width: 50%; vertical-align: top;">

@@ -83,7 +83,13 @@ if (!function_exists('getClientContractFile')) {
                 $pdfPage = 'pdf.contract.ecuador.client';
                 $domain = 'www.intermediano.com';
                 break;
-
+            case 'IntermedianoMexicoSC':
+                $mobile = '+1 514-907-5393';
+                $address = 'Calzada Gral. Mariano Escobedo 476-piso 12, Chapultepec Morales, Verónica Anzúres, Miguel Hidalgo, 11590 CDMX, México';
+                $companyTitle = 'Intermediano SA de CV';
+                $pdfPage = 'pdf.contract.mexico.client';
+                $domain = 'www.intermediano.com';
+                break;
             default:
                 $mobile = '';
                 $address = '';
