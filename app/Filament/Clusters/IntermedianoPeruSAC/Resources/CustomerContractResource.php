@@ -4,22 +4,16 @@ namespace App\Filament\Clusters\IntermedianoPeruSAC\Resources;
 
 use App\Filament\Clusters\IntermedianoPeruSAC;
 use App\Filament\Clusters\IntermedianoPeruSAC\Resources\CustomerContractResource\Pages;
-use App\Filament\Clusters\IntermedianoPeruSAC\Resources\CustomerContractResource\RelationManagers;
 use App\Models\Contract;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\CustomerContract;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
-use Filament\Tables\Filters\Filter;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 class CustomerContractResource extends Resource
 {

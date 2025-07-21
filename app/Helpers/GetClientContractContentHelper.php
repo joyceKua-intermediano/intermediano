@@ -90,6 +90,13 @@ if (!function_exists('getClientContractFile')) {
                 $pdfPage = 'pdf.contract.mexico.client';
                 $domain = 'www.intermediano.com';
                 break;
+            case 'IntermedianoPeruSAC':
+                $mobile = '+1 514-907-5393';
+                $address = 'Avenida Paseo de Republica 3195 Oficina 401, San Isidro, Perú';
+                $companyTitle = 'Intermediano Perú SAC';
+                $pdfPage = 'pdf.contract.peru.client';
+                $domain = 'www.intermediano.com';
+                break;
             default:
                 $mobile = '';
                 $address = '';
