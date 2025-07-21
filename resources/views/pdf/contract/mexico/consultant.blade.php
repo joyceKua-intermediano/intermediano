@@ -14,14 +14,6 @@
 </head>
 
 @php
-$formattedDate = now()->format(format: 'jS');
-$day = now()->format('j');
-
-$month = now()->format('F');
-$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
-
-$year = now()->format('Y');
-$currentDate = now()->format('d/m/Y');
 
 
 $customerTranslatedPosition = $record->translatedPosition;
@@ -58,7 +50,7 @@ $employeeEndDateFormated = $record->end_date
 $employeeEndDateLocal = $record->end_date
 ? \Carbon\Carbon::parse($record->end_date)->translatedFormat('j \\de F \\ Y')
 : 'Período indefinido';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeTaxId = $record->document->tax_id ?? null;
 $employeeSocialSecurityNumber = $record->socialSecurityInfos->social_security_number ?? 'N/A';
 $employeeCurp = $record->socialSecurityInfos->curp ?? 'N/A';
@@ -69,8 +61,15 @@ $formatterLocal = new \NumberFormatter('es_CR', \NumberFormatter::SPELLOUT);
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 
-$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
-$signatureExists = Storage::disk('public')->exists($signaturePath);
+$signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
+$signatureExists = Storage::disk('private')->exists($signaturePath);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 
 $employeeBankName = $record->employee->bankDetail->bank_name ?? 'NA';
 $employeeBankCode = $record->employee->bankDetail->bank_code ?? 'NA';
@@ -818,7 +817,11 @@ $employeeDependents = $record->employee->dependents ?? 'NA';
             <div style="text-align: center; position: relative; margin-top: 10px">
                 <div style="display: inline-block; position: relative;">
                     @if($signatureExists)
-                    <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;">
+                    <img src="{{ 
+                                $is_pdf
+                                    ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                    : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                                }}" alt="Employee Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;" />
                     <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
                     @endif
@@ -882,7 +885,11 @@ $employeeDependents = $record->employee->dependents ?? 'NA';
             <div style="text-align: center; position: relative; margin-top: 0px">
                 <div style="display: inline-block; position: relative;">
                     @if($signatureExists)
-                    <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;">
+                    <img src="{{ 
+                                $is_pdf
+                                    ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                    : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                                }}" alt="Employee Signature" style="height: 50px; margin-bottom: -10px; margin: 0 auto;" />
                     <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
 
                     @endif
