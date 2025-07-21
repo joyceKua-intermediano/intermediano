@@ -59,7 +59,8 @@
             "app/Helpers/GetContractContentHelper.php",
             "app/Helpers/GetClientContractContentHelper.php",
             "app/Helpers/Quotation/FreelanceQuotationHelper.php",
-            "app/Helpers/GetContractTypeOptionHelper.php"
+            "app/Helpers/GetContractTypeOptionHelper.php",
+            "app/Helpers/SpellOutCurrencyHelper.php"
         ]
     },
     "autoload-dev": {
