@@ -9,13 +9,12 @@
 </head>
 
 @php
-$formattedDate = now()->format('jS');
-$month = now()->format('F');
-$day = now()->format('j');
-$year = now()->format('Y');
-$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractCreatedmonth = $record->created_at->format('F');
+$contractDay = $record->created_at->format('j');
+$contractCreatedyear = $record->created_at->format('Y');
+$translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
 
-$currentDate = now()->format('[d/m/Y]');
 $companyName = $record->company->name;
 $contactName = $record->companyContact->contact_name;
 $contactSurname = $record->companyContact->surname;
@@ -46,12 +45,22 @@ $employeeMobile = $record->personalInformation->mobile ?? null;
 $employeePersonalId = $record->document->personal_id ?? null;
 $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
-$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeStartDateFFormated = $record->start_date
 ? \Carbon\Carbon::parse($record->start_date)->translatedFormat('j \\of F \\of Y')
-: 'N/A';$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+: 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 
 $currencyName = $record->quotation->currency_name;
+
+$signedDate = $record->signed_contract ? \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y'): null;
+$signatureExists = Storage::disk('private')->exists($record->signature);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 
 @endphp
 
@@ -519,7 +528,7 @@ $currencyName = $record->quotation->currency_name;
 
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>{{ $employeeCity }}, {{ $formattedDate }} of {{ $month }} of {{ $year }}.</p>
+                    <p>{{ $employeeCity }}, {{ $contractCreatedDay }} of {{ $contractCreatedmonth }} of {{ $contractCreatedyear }}.</p>
 
                     <div style="text-align: center; position: relative; height: 120px;">
                         <p style='text-align: center'><b>Contractor</b></p>
@@ -533,7 +542,7 @@ $currencyName = $record->quotation->currency_name;
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>{{ $employeeCity }}, {{$day}} de {{ $translatedMonth }} de {{ $year }}.</p>
+                    <p>{{ $employeeCity }}, {{$contractDay}} de {{ $translatedMonth }} de {{ $contractCreatedyear }}.</p>
 
                     <div style="text-align: center; position: relative; height: 120px;">
                         <p style='text-align: center'><b>Contratista</b></p>
@@ -552,29 +561,56 @@ $currencyName = $record->quotation->currency_name;
                 <td style="width: 50%; vertical-align: top;">
                     <p style='text-align: center'><b>Customer</b></p>
 
-                    <div style="margin-top: 40px; margin-bottom: 75px">
+                    <div style="margin-top: 20px;">
                         <p style='text-align: center'><b>{{ $companyName }}</b></p>
-
                     </div>
-                    <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    <div style="text-align: center; position: relative; height: 100px;">
 
-                    <div style="text-align: center; margin-top: -20px">
-                        <p style='text-align: center'>{{ $customerName }} {{ $contactSurname }}</p>
-                        <p style="margin-top: -20px; text-align: center;">{{ $customerPosition }}</p>
+                        @if($signatureExists)
+                        <img src="{{ 
+                            $is_pdf
+                                ? Storage::disk('private')->path($record->signature)
+                                : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
+                        }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;" />
+                        @else
+                        <div style="text-align: center; position: relative; height: 100px;">
+                            <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;">
+                        </div>
+                        @endif
+                        <p style='position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);'>{{ $signedDate }}</p>
+                        <p style="position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%);">{{ $customerName }} {{ $contactSurname }}</p>
+                        <p style="position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%);">{{ $customerPosition }}</p>
+
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p style='text-align: center'><b>Cliente</b></p>
-
-                    <div style="margin-top: 40px; margin-bottom: 75px">
+                    <div style="margin-top: 20px;">
                         <p style='text-align: center'><b>{{ $companyName }}</b></p>
                     </div>
-                    <div style="width: 100%%; border-bottom: 1px solid black;"></div>
+                    <div style="text-align: center; position: relative; height: 100px;">
 
-                    <div style="text-align: center; margin-top: -20px">
-                        <p style='text-align: center'>{{ $customerName }} {{ $contactSurname }}</p>
-                        <p style="margin-top: -20px; text-align: center;">{{ $customerTranslatedPosition }}</p>
+                        @if($signatureExists)
+                        <img src="{{ 
+                            $is_pdf
+                                ? Storage::disk('private')->path($record->signature)
+                                : url('/signatures/customer/' . $record->company_id . '/customer') . '?v=' . filemtime(storage_path('app/private/signatures/clients/customer_' . $record->company_id . '.webp')) 
+                        }}" alt="Employee Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;" />
+                        @else
+                        <div style="text-align: center; position: relative; height: 100px;">
+                            <img src="{{ public_path('images/blank_signature.png') }}" alt="Signature" style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;">
+                        </div>
+                        @endif
+                        <p style='position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);'>{{ $signedDate }}</p>
+                        <p style="position: absolute; bottom: 0px; left: 50%; transform: translateX(-50%);">{{ $customerName }} {{ $contactSurname }}</p>
+                        <p style="position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); width: 100%; text-align: center;">{{ $customerTranslatedPosition }}</p>
+
+                        <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
+
                     </div>
+
                 </td>
             </tr>
 
@@ -687,7 +723,7 @@ $currencyName = $record->quotation->currency_name;
                     <p><b>FECHA DE VENCIMIENTO:</b> Cada mes los pagos se acreditarán en la cuenta bancaria del Proveedor hasta el día 20 del mismo mes en que se emitió la factura respectiva. </p>
                     <p><b>PENALIZACIÓN:</b> Pagos acreditados después del día 20, la fecha de vencimiento mencionada anteriormente tendrá un interés del 3%.</p>
                     <p><b>TASA DE CAMBIO:</b> Las facturas se emitirán en EUR en base al tipo de cambio de la fecha de emisión de la factura. La tasa de cambio utilizada en el contrato es de [ ] por EUR y sirve como referencia solamente. La tasa variará mensualmente según la fluctuación cambiaria.</p>
-                    <p style='text-align: left;  white-space: nowrap; margin-bottom: -15px;'><b >GARANTÍA (1 MES DE SALÁRIO/REMUNERACIÓN):</b> </p>
+                    <p style='text-align: left;  white-space: nowrap; margin-bottom: -15px;'><b>GARANTÍA (1 MES DE SALÁRIO/REMUNERACIÓN):</b> </p>
                     <p>
                         El cliente deberá anticipar el costo mensual por cada empleado. Esta cantidad será retenida por el Proveedor hasta el final del Acuerdo y será compensada en el último mes hábil del empleado respectivo.
                     </p>

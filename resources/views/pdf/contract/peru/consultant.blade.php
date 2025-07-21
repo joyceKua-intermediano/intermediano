@@ -14,14 +14,15 @@
 </head>
 
 @php
-$formattedDate = now()->format(format: 'jS');
-$day = now()->format('j');
+$contractCreatedDay = $record->created_at->format('jS');
+$contractDay = $record->created_at->format('j');
 
-$month = now()->format('F');
-$translatedMonth = \Carbon\Carbon::now()->locale('es')->translatedFormat('F');
+$contractCreatedmonth = $record->created_at->format('F');
+$translatedMonth = \Carbon\Carbon::parse($record->created_at)->locale('es')->translatedFormat('F');
 
-$year = now()->format('Y');
-$currentDate = now()->format('d/m/Y');
+$contractCreatedyear = $record->created_at->format('Y');
+$createdDate = (new DateTime($record->created_at))->format('d/m/Y');
+
 
 
 $customerTranslatedPosition = $record->translatedPosition;
@@ -45,7 +46,8 @@ $employeeCountry = $record->personalInformation->country ?? null;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeStartDateFFormated = $record->start_date
 ? \Carbon\Carbon::parse($record->start_date)->translatedFormat('j \\of F \\of Y')
-: 'N/A';$employeeEndDate = $record->start_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
+: 'N/A';
+$employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
 $employeeTaxId = $record->document->tax_id ?? null;
 
 $formatter = new \NumberFormatter('en', \NumberFormatter::SPELLOUT);
@@ -53,8 +55,15 @@ $formatterLocal = new \NumberFormatter('es_PE', \NumberFormatter::SPELLOUT);
 $translatedJobDescription = $record->translated_job_description;
 $jobDescription = $record->job_description;
 
-$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
-$signatureExists = Storage::disk('public')->exists($signaturePath);
+$signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
+$signatureExists = Storage::disk('private')->exists($signaturePath);
+$adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
+$adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
+$adminSignedBy = $record->user->name ?? '';
+$adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
+$user = auth()->user();
+$isAdmin = $user instanceof \App\Models\User;
+$type = $isAdmin ? 'admin' : 'employee';
 
 @endphp
 
@@ -172,7 +181,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                         bank account, on the last day Business of the month.</p>
                     <p><b>• Working hours:</b> from Monday to Friday
                         minimum of 40 hours per week.
-                        This contract is of a fixed duration, beginning on {{ $currentDate }}, subject to its termination to the provisions of the labor legislation and/or subject to termination.</p>
+                        This contract is of a fixed duration, beginning on {{ $createdDate }}, subject to its termination to the provisions of the labor legislation and/or subject to termination.</p>
 
 
                 </td>
@@ -183,7 +192,7 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     <p><b>• Remuneración Ordinaria: </b>S/{{number_format($employeeGrossSalary) }} gross/month ({{ strtoupper($formatterLocal->format($employeeGrossSalary)) }}) el cual será pagado en efectivo o cheque en las instalaciones del empleador o mediante deposito o transferencia electrónica a la cuenta bancaria del Trabajador, el último día hábil del mes.</p>
                     <p><b>• Horario de trabajo:</b> De lunes a viernes
                         cumpliendo 40 horas semanales.
-                        El presente contrato es de duración determinada, iniciándose el {{ $currentDate }}, sujetándose para su extinción a lo dispuesto en la legislación laboral y/o sujeto a terminación.</p>
+                        El presente contrato es de duración determinada, iniciándose el {{ $createdDate }}, sujetándose para su extinción a lo dispuesto en la legislación laboral y/o sujeto a terminación.</p>
 
                 </td>
             </tr>
@@ -365,11 +374,15 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
 
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Lima, {{ $formattedDate }} of {{ $month }} of {{ $year }}.</p>
+                    <p>Lima, {{ $contractCreatedDay }} of {{ $contractCreatedmonth }} of {{ $contractCreatedyear }}.</p>
                     <div style="display: inline-block; position: relative; height: 140px; width: 100%;">
                         <p style='text-align: center'><b>WORKER</b></p>
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        <img src="{{ 
+                                $is_pdf
+                                    ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                    : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                                }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
 
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
@@ -385,11 +398,15 @@ $signatureExists = Storage::disk('public')->exists($signaturePath);
                     </div>
                 </td>
                 <td style="width: 50%; vertical-align: top;">
-                    <p>Lima, {{$day}} de {{ $translatedMonth }} de {{ $year }}.</p>
+                    <p>Lima, {{$contractDay}} de {{ $translatedMonth }} de {{ $contractCreatedyear }}.</p>
                     <div style="display: inline-block; position: relative; height: 140px; width: 100%;">
                         <p style='text-align: center'><b>TRABAJADOR</b></p>
                         @if($signatureExists)
-                        <img src="{{ $is_pdf ? storage_path('app/public/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        <img src="{{ 
+                                $is_pdf
+                                    ? storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')
+                                    : url('/signatures/'. $type. '/' . $record->employee_id . '/employee') . '?v=' . filemtime(storage_path('app/private/signatures/employee/employee_' . $record->employee_id . '.webp')) 
+                                }}" alt="Employee Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
 
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
 
