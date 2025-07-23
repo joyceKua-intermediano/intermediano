@@ -58,4 +58,9 @@ class Quotation extends Model
     {
         return $this->hasOne(PayrollCost::class);
     }
+
+    public function paymentProvisions()
+    {
+        return $this->hasMany(PaymentProvision::class);
+    }
 }

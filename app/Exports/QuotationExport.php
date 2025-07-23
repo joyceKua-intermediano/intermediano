@@ -15,10 +15,10 @@ class QuotationExport implements FromView, WithEvents
 {
     protected $record;
 
-    public function __construct($record, $previousMonthRecord, $isQuotation = false)
+    public function __construct($record, $previousRecords, $isQuotation = false)
     {
         $this->record = $record;
-        $this->previousMonthRecord = $previousMonthRecord;
+        $this->previousRecords = $previousRecords;
         $this->isQuotation = $isQuotation;
     }
 
@@ -95,7 +95,7 @@ class QuotationExport implements FromView, WithEvents
         }
         return view($exportFile, [
             'record' => $this->record,
-            'previousMonthRecord' => $this->previousMonthRecord,
+            'previousRecords' => $this->previousRecords,
             'isQuotation' => $this->isQuotation
         ]);
     }
@@ -104,7 +104,7 @@ class QuotationExport implements FromView, WithEvents
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $cellRange = 'B1:D45';
+                $cellRange = 'B1:D61';
 
                 $event->sheet->getDelegate()->getStyle($cellRange)->getBorders()->getAllBorders()
                     ->setBorderStyle(Border::BORDER_THIN)
