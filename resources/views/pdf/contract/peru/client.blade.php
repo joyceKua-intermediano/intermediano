@@ -529,30 +529,45 @@ $type = $isAdmin ? 'admin' : 'employee';
             <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <p>{{ $employeeCity }}, {{ $contractCreatedDay }} of {{ $contractCreatedmonth }} of {{ $contractCreatedyear }}.</p>
-
+                    <p style='text-align: center; margin:0'><b>Contractor</b></p>
+                    <p style="text-align: center;margin:0">INTERMEDIANO PERÚ SAC</p>
+                    <p style="text-align: center; font-size: 12px; margin:0">RUC: 20606232960</p>
                     <div style="text-align: center; position: relative; height: 120px;">
-                        <p style='text-align: center'><b>Contractor</b></p>
-
-                        <img src="{{ $is_pdf ? public_path('images/fabian_signature.png') : asset('images/fabian_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">INTERMEDIANO PERÚ SAC</p>
-                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%;">RUC: 20606232960</p>
+                        @if (!empty($adminSignedBy))
+                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">{{ $adminSignedBy }}</p>
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%;">{{ $adminSignedByPosition }}</p>
+                        @endif
+
                     </div>
 
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <p>{{ $employeeCity }}, {{$contractDay}} de {{ $translatedMonth }} de {{ $contractCreatedyear }}.</p>
-
+                    <p style='text-align: center; margin:0'><b>Contratista</b></p>
+                    <p style="text-align: center; margin:0">INTERMEDIANO PERÚ SAC</p>
+                    <p style="text-align: center; font-size: 12px; margin:0">RUC: 20606232960</p>
                     <div style="text-align: center; position: relative; height: 120px;">
-                        <p style='text-align: center'><b>Contratista</b></p>
 
-                        <img src="{{ $is_pdf ? public_path('images/fabian_signature.png') : asset('images/fabian_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
-
+                        @if($adminSignatureExists)
+                        <img src="{{ 
+                            $is_pdf 
+                                ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
+                                : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
+                        }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @endif
                         <div style="width: 70%; border-bottom: 1px solid black; position: absolute; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 100;"></div>
-
-                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">INTERMEDIANO PERÚ SAC</p>
-                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%;">RUC: 20606232960</p>
+                        @if (!empty($adminSignedBy))
+                        <p style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); margin-bottom: 20px; text-align: center !important; width: 100%;">{{ $adminSignedBy }}</p>
+                        <p style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); text-align: center !important; width: 100%;">{{ $adminSignedByPosition }}</p>
+                        @endif
                     </div>
                 </td>
 
