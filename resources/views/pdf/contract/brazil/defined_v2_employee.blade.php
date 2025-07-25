@@ -42,7 +42,7 @@ $formatterLocal = new \NumberFormatter('pt_BR', \NumberFormatter::SPELLOUT);
 $personalId = $record->document->personal_id ?? 'N/A';
 $personalTaxId = $record->document->tax_id ?? 'N/A';
 $countryWork = $record->country_work ?? 'N/A';
-$signaturePath = 'signatures/employee_' . $record->employee_id . '.webp';
+$signaturePath = 'signatures/employee/employee_' . $record->employee_id . '.webp';
 $signatureExists = Storage::disk('private')->exists($signaturePath);
 $signedDate = $record->signed_contract ? new DateTime($record->signed_contract) : null;
 $cutoffDate = new DateTime('2025-07-11');
@@ -550,7 +550,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <div style="text-align: center; position: relative; margin-top: 40px">
                         <div style="display: inline-block; position: relative;">
                             @if($signatureExists && $signedDate)
-                            <img src="{{ $is_pdf ? storage_path('app/private/signatures/employee_' . $record->employee_id . '.webp') : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;margin: 0 auto;">
+                            <img src="{{ $is_pdf ? Storage::disk('private')->path($record->signature) : asset('storage/signatures/employee_' . $record->employee_id . '.webp') }}" alt="Signature" style="height: 50px; margin-bottom: -10px;margin: 0 auto;">
                             <p style="text-align: left">{{ $employeeCity }}, {{ \Carbon\Carbon::parse($record->signed_contract)->format('d/m/Y h:i A') }}</p>
                             @endif
                         </div>
