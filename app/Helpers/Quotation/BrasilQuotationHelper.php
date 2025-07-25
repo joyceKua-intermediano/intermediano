@@ -111,7 +111,6 @@ if (!function_exists('calculateBrasilQuotation')) {
         // accumulated
         $accumulatedSalary13th = (($previousSalary13th) + $salary13th) - $previousPaid13th;
         $accumulatedVacation = ($previousVacation + $vacation) - $previousPaidVacation;
-        // dd($previousVacationBonus, $vacationBonus, $previousPaidVacationBonus);
         $accumulatedVacationBonus = ($previousVacationBonus + $vacationBonus) - $previousPaidVacationBonus;
         $accumulatedTermination = ($previousTermination + $termination) - $previousPaidTermination;
 
@@ -147,7 +146,7 @@ if (!function_exists('calculateBrasilQuotation')) {
             'vacationBonus' => $vacationBonus,
             'termination' => $termination,
             'provisionsTotal' => $provisionsTotal,
-            'hasPreviousRecords' => $previousRecords->isNotEmpty(),
+            'hasPreviousRecords' => !empty($previousRecords),
             'accumulatedSalary13th' => $accumulatedSalary13th,
             'accumulatedVacation' => $accumulatedVacation,
             'accumulatedVacationBonus' => $accumulatedVacationBonus,
