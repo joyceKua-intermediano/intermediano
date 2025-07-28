@@ -197,10 +197,20 @@ class PayrollResource extends Resource
                             ->label('Provision Type')
                             ->required()
                             ->options(function (callable $get, callable $set) {
-                                $allOptions = \App\Models\ProvisionType::pluck('name', 'id');
+
+                                $allowedNames = [
+                                    '13th Salary',
+                                    'Vacation',
+                                    'Termination',
+                                    '1/3 Vacation Bonus',
+                                ];
+
+                                // Get only the allowed provision types
+                                $allOptions = \App\Models\ProvisionType::whereIn('name', $allowedNames)
+                                    ->pluck('name', 'id');
 
                                 $current = $get('provision_type_id');
-                    
+
                                 $allSelected = collect($get('../../payment_provisions'))
                                     ->pluck('provision_type_id')
                                     ->filter()
