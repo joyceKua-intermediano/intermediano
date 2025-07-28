@@ -109,7 +109,7 @@ if (!function_exists('calculateBrasilQuotation')) {
         $totalPaidTermination = $previousPaidTermination + $currentPaidTermination;
 
         // accumulated
-        $accumulatedSalary13th = (($previousSalary13th) + $salary13th) - $previousPaid13th;
+        $accumulatedSalary13th = ($previousSalary13th + $salary13th) - $previousPaid13th;
         $accumulatedVacation = ($previousVacation + $vacation) - $previousPaidVacation;
         $accumulatedVacationBonus = ($previousVacationBonus + $vacationBonus) - $previousPaidVacationBonus;
         $accumulatedTermination = ($previousTermination + $termination) - $previousPaidTermination;
@@ -117,10 +117,10 @@ if (!function_exists('calculateBrasilQuotation')) {
         $accumulatedProvisionsTotal = $accumulatedSalary13th + $accumulatedVacation + $accumulatedVacationBonus + $accumulatedTermination;
 
         // Balances
-        $balance13th = $currentPaid13th == 0 ? $accumulatedSalary13th : ($accumulatedSalary13th - $totalPaid13th);
-        $balanceVacation = $currentPaidVacation == 0 ? $accumulatedVacation : ($accumulatedVacation - $totalPaidVacation);
-        $balanceVacationBonus = $currentPaidVacationBonus == 0 ? $accumulatedVacationBonus : ($accumulatedVacationBonus - $totalPaidVacationBonus);
-        $balanceTermination = $currentPaidTermination == 0 ? $accumulatedTermination : ($accumulatedTermination - $totalPaidTermination);
+        $balance13th = $accumulatedSalary13th - $currentPaid13th;
+        $balanceVacation = $accumulatedVacation - $currentPaidVacation;
+        $balanceVacationBonus = $accumulatedVacationBonus - $currentPaidVacationBonus;
+        $balanceTermination = $accumulatedTermination - $currentPaidTermination;
 
         $balanceProvisionsTotal = $balance13th + $balanceVacation + $balanceVacationBonus + $balanceTermination;
         return [
