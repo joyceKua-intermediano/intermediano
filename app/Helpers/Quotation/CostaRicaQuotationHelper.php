@@ -104,10 +104,10 @@ if (!function_exists('calculateCostaRicaQuotation')) {
         $accumulatedProvisionsTotal = $accumulatedUnEmployment + $accumulatedForewarning + $accumulatedBonus + $accumulatedVacation;
 
         // Balances
-        $balanceUnEmployment = $currentPaidUnEmployment == 0 ? $accumulatedUnEmployment : ($accumulatedUnEmployment - $totalPaidUnEmployment);
-        $balanceForewarning = $currentPaidForewarning == 0 ? $accumulatedForewarning : ($accumulatedForewarning - $totalPaidForewarning);
-        $balanceBonus = $currentPaidBonus == 0 ? $accumulatedBonus : ($accumulatedBonus - $totalPaidBonus);
-        $balanceVacation = $currentPaidVacation == 0 ? $accumulatedVacation : ($accumulatedVacation - $totalPaidVacation);
+        $balanceUnEmployment = $accumulatedUnEmployment - $currentPaidUnEmployment;
+        $balanceForewarning = $accumulatedForewarning - $currentPaidForewarning;
+        $balanceBonus = $accumulatedBonus - $currentPaidBonus;
+        $balanceVacation = $accumulatedVacation - $currentPaidVacation;
 
         $balanceProvisionsTotal = $balanceUnEmployment + $balanceVacation + $balanceForewarning + $balanceBonus;
         return [
