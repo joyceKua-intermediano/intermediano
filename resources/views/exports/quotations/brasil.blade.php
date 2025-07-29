@@ -180,15 +180,10 @@
                 {{ number_format($quotationDetails['subTotal'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
-        <tr class="highlight">
-            <td></td>
-            <th>Municipal tax - ICA 1%</th>
-            <td align="right">{{ number_format($quotationDetails['municipalTax'], 2) }}</td>
-            <td align="right">{{ number_format($quotationDetails['municipalTax'] / $record->exchange_rate, 2) }}</td>
-        </tr>
+
         <tr>
             <td></td>
-            <th>Service taxes - VAT 13%</th>
+            <th>Services taxes</th>
             <td align="right">{{ number_format($quotationDetails['servicesTaxes'], 2) }}</td>
             <td align="right">{{ number_format($quotationDetails['servicesTaxes'] / $record->exchange_rate, 2) }}</td>
 
