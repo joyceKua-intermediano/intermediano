@@ -18,7 +18,8 @@ class PayrollCost extends Model
         'uf_month',
         'eps',
         'notice',
-        'unemployment'
+        'unemployment',
+        'operational_costs'
     ];
 
     public function quotation(): BelongsTo 

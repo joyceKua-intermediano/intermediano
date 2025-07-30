@@ -18,6 +18,7 @@ class BrazilPayrollCostsFormHelper
                 TextInput::make('medical_insurance')->label('Medical Plan & Life Insurance'),
                 TextInput::make('meal')->label('Meal tickets'),
                 TextInput::make('transportation')->label('Transportation Tickets'),
+                TextInput::make('operational_costs')->label('Operational Costs'),
             ]);
     }
 }

@@ -269,6 +269,15 @@
             <td align="right">{{ number_format($quotationDetails['transportationTicket'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
+        @if($record->cluster_name === 'PartnerCanada' || $record->cluster_name === 'IntermedianoCanada')
+        <tr>
+            <td></td>
+            <th>Operational Costs</th>
+            <td align="right"> {{ number_format($quotationDetails['operationalCosts'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['operationalCosts'] / $record->exchange_rate, 2) }}</td>
+        </tr>
+        @endif
+
         <td></td>
         <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
             <td></td>
