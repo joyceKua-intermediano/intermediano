@@ -60,7 +60,8 @@
             "app/Helpers/GetClientContractContentHelper.php",
             "app/Helpers/Quotation/FreelanceQuotationHelper.php",
             "app/Helpers/GetContractTypeOptionHelper.php",
-            "app/Helpers/SpellOutCurrencyHelper.php"
+            "app/Helpers/SpellOutCurrencyHelper.php",
+            "app/Helpers/PayrollCostsFields/BrazilPayrollCostsFormHelper.php"
         ]
     },
     "autoload-dev": {
