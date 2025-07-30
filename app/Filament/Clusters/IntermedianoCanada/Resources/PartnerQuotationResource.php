@@ -56,8 +56,9 @@ class PartnerQuotationResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'Brazil']);
                     })
+                    ->reactive()
                     ->required(),
 
                 Forms\Components\TextInput::make('currency_name')
@@ -175,6 +176,7 @@ class PartnerQuotationResource extends Resource
                     ])
                     ->required()
                     ->reactive(),
+                \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
 
                 Forms\Components\Hidden::make(name: 'cluster_name')
                     ->default('PartnerCanada')

@@ -186,6 +186,8 @@ class PayrollResource extends Resource
                         '0' => 'No',
                     ])
                     ->required(),
+                \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
+
                 Repeater::make('payment_provisions')
                     ->label('Payment Provisions')
                     ->relationship('paymentProvisions')
@@ -231,6 +233,7 @@ class PayrollResource extends Resource
                     ->columnSpanFull()
                     ->columns(2)
                     ->grid(2)
+                    ->defaultItems(0)
                     ->createItemButtonLabel('Add Provision Payment'),
                 Forms\Components\Hidden::make('cluster_name')
                     ->default(self::getClusterName()),
