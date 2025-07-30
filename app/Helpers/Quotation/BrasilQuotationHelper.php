@@ -31,6 +31,7 @@ if (!function_exists('calculateBrasilQuotation')) {
         $medicalInsurance = $record->payrollCosts->medical_insurance;
         $mealTicket = $record->payrollCosts->meal;
         $transportationTicket = $record->payrollCosts->transportation;
+        $operationalCosts = $record->payrollCosts->operational_costs;
 
         $payrollCostsTotal =
             $inss +
@@ -39,7 +40,8 @@ if (!function_exists('calculateBrasilQuotation')) {
             $fgtsInss +
             $medicalInsurance +
             $mealTicket +
-            $transportationTicket;
+            $transportationTicket +
+            $operationalCosts;
 
         $salary13th = 0.0833333 * $totalGrossIncome;
         $vacation = 0.0833333 * $totalGrossIncome;
@@ -140,6 +142,7 @@ if (!function_exists('calculateBrasilQuotation')) {
             'medicalInsurance' => $medicalInsurance,
             'mealTicket' => $mealTicket,
             'transportationTicket' => $transportationTicket,
+            'operationalCosts'  => $operationalCosts,
             'payrollCostsTotal' => $payrollCostsTotal,
             'salary13th' => $salary13th,
             'vacation' => $vacation,
