@@ -40,7 +40,7 @@ if (!function_exists('calculateIntegralQuotation')) {
         $vacation = 0.0417 * ($record->gross_salary + $record->bonus);
         $indemnization = 0.056 * ($record->gross_salary + $record->bonus);
         $provisionsTotal = $vacation + $indemnization;
-        // accumulated provision
+        // previous provision
         if ($previousRecords && $previousRecords->count()) {
             foreach ($previousRecords as $item) {
                 $gross = $item->gross_salary +
@@ -93,14 +93,14 @@ if (!function_exists('calculateIntegralQuotation')) {
 
         // accumulated
         $accumulatedVacation = ($previousVacation + $vacation) - $previousPaidVacation;
-        $accumulatedUnIndemnization = ($previousIndemnization + $indemnization) - $previousPaidIndemnization;
+        $accumulatedIndemnization = ($previousIndemnization + $indemnization) - $previousPaidIndemnization;
 
 
-        $accumulatedProvisionsTotal = $accumulatedUnIndemnization + $accumulatedVacation;
+        $accumulatedProvisionsTotal = $accumulatedIndemnization + $accumulatedVacation;
 
         // Balances
-        $balanceVacation = $currentPaidVacation == 0 ? $accumulatedVacation : ($accumulatedVacation - $totalPaidVacation);
-        $balanceIndemnization = $currentPaidIndemnization == 0 ? $accumulatedIndemnization : ($accumulatedIndemnization - $totalPaidIndemnization);
+        $balanceVacation = $accumulatedVacation - $currentPaidVacation;
+        $balanceIndemnization = $accumulatedIndemnization - $currentPaidIndemnization;
 
         $balanceProvisionsTotal = $balanceVacation + $balanceIndemnization;
 
