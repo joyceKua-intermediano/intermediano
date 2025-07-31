@@ -210,13 +210,21 @@ class PayrollResource extends Resource
                             ->label('Provision Type')
                             ->required()
                             ->options(function (callable $get, callable $set) {
+                                $isIntegral = $get('../../is_integral');
+                                $allowedNames = match ($isIntegral) {
+                                    '1' => [
+                                        'Indemnization',
+                                        'Vacation',
+                                    ],
+                                    default => [
+                                        'Cesantias',
+                                        'Intereses de Cesantias',
+                                        'Prima',
+                                        'Indemnization',
+                                        'Vacation',
+                                    ],
+                                };
 
-                                $allowedNames = [
-                                    'Indemnization',
-                                    'Vacation',
-                                ];
-
-                                // Get only the allowed provision types
                                 $allOptions = \App\Models\ProvisionType::whereIn('name', $allowedNames)
                                     ->pluck('name', 'id');
 
@@ -232,6 +240,7 @@ class PayrollResource extends Resource
                                     return in_array($id, $allSelected);
                                 });
                             })
+                            ->reactive()
                             ->searchable(),
                         Forms\Components\TextInput::make('amount')
                             ->label('Amount (Local Currency)')
