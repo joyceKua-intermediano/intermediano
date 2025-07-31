@@ -47,29 +47,26 @@
             margin-top: 30px;
             color: #555;
         }
+
     </style>
 </head>
 
 <body>
     @php
-        $quotationDetails = calculateQuotation($record, $previousMonthRecord);
+    $quotationDetails = calculateQuotation($record, $previousRecords);
     @endphp
 
     <table style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: red">
         <tr>
             <td></td>
-            <th rowspan="2" style="background-color: #7d2a1d; padding: 20px; text-align:center" align="center"
-                width="70">
-                <img src="{{ public_path('images/logo.jpg') }}" height="80" style="padding: 40px; text-align:center"
-                    alt="Company Logo">
+            <th rowspan="2" style="background-color: #7d2a1d; padding: 20px; text-align:center" align="center" width="70">
+                <img src="{{ public_path('images/logo.jpg') }}" height="80" style="padding: 40px; text-align:center" alt="Company Logo">
             </th>
-            <td colspan="2" valign="middle" align="center" width="40"
-                style="background-color: #7d2a1d; color:white; font-weight:bold">{{ $record->country->name }}</td>
+            <td colspan="2" valign="middle" align="center" width="40" style="background-color: #7d2a1d; color:white; font-weight:bold">{{ $record->country->name }}</td>
         </tr>
         <tr>
             <td></td>
-            <td colspan="2" valign="middle" align="center" width="40"
-                style="background-color: #7d2a1d; color:white; font-weight:bold">{{ $record->title }}</td>
+            <td colspan="2" valign="middle" align="center" width="40" style="background-color: #7d2a1d; color:white; font-weight:bold">{{ $record->title }}</td>
         </tr>
 
         <tr>
@@ -355,142 +352,261 @@
             <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
 
         </tr>
-        @if ($quotationDetails['previousMonthGrossIncome'] && $previousMonthRecord->currency_name !== $record->currency_name)
-            <tr class="highlight">
-                <td></td>
-                <th style="background-color: #a8a8a8; font-weight:bold" align="center">Accumulated Provisions</th>
-                <td style="background-color: #f29191; font-weight: bold; text-align: center;">
-                    Cannot generate accumulated provision because the currency has changed. Previous:
-                    "{{ $previousMonthRecord->currency_name }}", Current: "{{ $record->currency_name }}".
-                </td>
+        @if ($quotationDetails['hasPreviousRecords'] && $record->hasDifferentCurrency)
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center">Accumulated Provisions</th>
+            <td style="background-color: #f29191; font-weight: bold; text-align: center;">
+                Cannot generate accumulated provision because the currency has changed. Previous:
+                "{{ $previousMonthRecord->currency_name }}", Current: "{{ $record->currency_name }}".
+            </td>
 
-                <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
-            </tr>
-        @elseif ($quotationDetails['previousMonthGrossIncome'])
-            <!-- Accumulated Provisions -->
-            <tr class="highlight">
-                <td></td>
-                <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
-                <td style="background-color: #a8a8a8; font-weight:bold" align="center">
-                    {{ $record->currency_name }}
-                </td>
-                <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
-            </tr>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
+        </tr>
+        @elseif ($quotationDetails['hasPreviousRecords'])
+        <!-- Accumulated Provisions -->
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
+        </tr>
 
-            <tr>
-                <td></td>
-                <th>Cesantias</th>
-                <td align="right">{{ number_format($quotationDetails['accumulatedCesantias'], 2) }}</td>
-                <td align="right">
-                    {{ number_format($quotationDetails['accumulatedCesantias'] / $record->exchange_rate, 2) }}</td>
+        <tr>
+            <td></td>
+            <th>Cesantias</th>
+            <td align="right">{{ number_format($quotationDetails['accumulatedCesantias'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['accumulatedCesantias'] / $record->exchange_rate, 2) }}</td>
 
-            </tr>
-            <tr>
-                <td></td>
-                <th>Intereses de Cesantias</th>
-                <td align="right">{{ number_format($quotationDetails['accumulatedInterestDeCesantias'], 2) }}</td>
-                <td align="right">
-                    {{ number_format($quotationDetails['accumulatedInterestDeCesantias'] / $record->exchange_rate, 2) }}
-                </td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Intereses de Cesantias</th>
+            <td align="right">{{ number_format($quotationDetails['accumulatedInterestDeCesantias'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['accumulatedInterestDeCesantias'] / $record->exchange_rate, 2) }}
+            </td>
 
-            </tr>
-            <tr>
-                <td></td>
-                <th>Prima</th>
-                <td align="right"> {{ number_format($quotationDetails['accumulatedPrima'], 2) }}</td>
-                <td align="right">
-                    {{ number_format($quotationDetails['accumulatedPrima'] / $record->exchange_rate, 2) }}
-                </td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Prima</th>
+            <td align="right"> {{ number_format($quotationDetails['accumulatedPrima'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['accumulatedPrima'] / $record->exchange_rate, 2) }}
+            </td>
 
-            </tr>
-            <tr>
-                <td></td>
-                <th>Vacation</th>
-                <td align="right">{{ number_format($quotationDetails['accumulatedVacation'], 2) }}</td>
-                <td align="right">
-                    {{ number_format($quotationDetails['accumulatedVacation'] / $record->exchange_rate, 2) }}
-                </td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Vacation</th>
+            <td align="right">{{ number_format($quotationDetails['accumulatedVacation'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['accumulatedVacation'] / $record->exchange_rate, 2) }}
+            </td>
 
-            </tr>
-            <tr>
-                <td></td>
-                <th>Indemnization</th>
-                <td align="right"> {{ number_format($quotationDetails['accumulatedIndemnization'], 2) }}</td>
-                <td align="right">
-                    {{ number_format($quotationDetails['accumulatedIndemnization'] / $record->exchange_rate, 2) }}
-                </td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Indemnization</th>
+            <td align="right"> {{ number_format($quotationDetails['accumulatedIndemnization'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['accumulatedIndemnization'] / $record->exchange_rate, 2) }}
+            </td>
 
-            </tr>
+        </tr>
 
-            <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                <td></td>
-                <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
-                <td align="right"
-                    style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                    {{ number_format($quotationDetails['accumulatedProvisionsTotal'], 2) }}</td>
-                <td align="right"
-                    style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                    {{ number_format($quotationDetails['accumulatedProvisionsTotal'] / $record->exchange_rate, 2) }}
-                </td>
+        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                {{ number_format($quotationDetails['accumulatedProvisionsTotal'], 2) }}</td>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                {{ number_format($quotationDetails['accumulatedProvisionsTotal'] / $record->exchange_rate, 2) }}
+            </td>
 
-            </tr>
+        </tr>
         @elseif(!$isQuotation)
-            <tr class="highlight">
-                <td></td>
-                <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
-                <td style="background-color: #a8a8a8; font-weight:bold" align="center">
-                    {{ $record->currency_name }}
-                </td>
-                <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
-            </tr>
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
+        </tr>
 
-            <tr>
-                <td></td>
-                <th>Cesantias</th>
-                <td align="right">0</td>
-                <td align="right">0</td>
+        <tr>
+            <td></td>
+            <th>Cesantias</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
 
-            </tr>
-            <tr>
-                <td></td>
-                <th>Intereses de Cesantias</th>
-                <td align="right">0</td>
-                <td align="right">0</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Prima</th>
-                <td align="right">0</td>
-                <td align="right">0</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Vacation</th>
-                <td align="right">0</td>
-                <td align="right">0</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Indemnization</th>
-                <td align="right">0</td>
-                <td align="right">0</td>
-            </tr>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Intereses de Cesantias</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Prima</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Vacation</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Indemnization</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
+        </tr>
 
-            <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                <td></td>
-                <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
-                <td align="right"
-                    style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                    0</td>
-                <td align="right"
-                    style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                    0
-                </td>
+        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                0</td>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                0
+            </td>
 
-            </tr>
+        </tr>
         @endif
+        <tr>
+            <td></td>
+            <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
+        </tr>
+        <tr>
+            <td></td>
+            <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
+
+        </tr>
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Payment Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
+        </tr>
+        @php
+        $customOrder = [
+        'Cesantias',
+        'Intereses de Cesantias',
+        'Prima',
+        'Vacation',
+        'Indemnization',
+        ];
+        $provisionsByName = $record->paymentProvisions->mapWithKeys(function ($item) {
+        return [trim($item->provisionType->name) => $item->amount];
+        });
+        @endphp
+
+        @foreach ($customOrder as $provisionName)
+        @php
+        $amount = $provisionsByName[$provisionName] ?? 0;
+        @endphp
+        <tr>
+            <td></td>
+            <th>{{ $provisionName }}</th>
+            <td align="right">{{ number_format($amount, 2) }}</td>
+            <td align="right">
+                {{ number_format($amount / $record->exchange_rate, 2) }}
+            </td>
+        </tr>
+        @endforeach
+        @php
+        $totalAmount = $record->paymentProvisions->sum('amount');
+        $totalConverted = $totalAmount / $record->exchange_rate;
+        @endphp
+        {{-- <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th>Total</th>
+            <td align="right">{{ number_format($totalAmount, 2) }}</td>
+        <td align="right">{{ number_format($totalConverted, 2) }}</td>
+        </tr> --}}
 
 
+        <tr>
+            <td></td>
+            <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
+        </tr>
+        <tr>
+            <td></td>
+            <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
+
+        </tr>
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center">Balance Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <th>Cesantias</th>
+            <td align="right">{{ number_format($quotationDetails['balanceCesantias'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['balanceCesantias'] / $record->exchange_rate, 2) }}
+            </td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <th>Intereses de Cesantias</th>
+            <td align="right">{{ number_format($quotationDetails['balanceInterestDeCesantias'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['balanceInterestDeCesantias'] / $record->exchange_rate, 2) }}
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Prima</th>
+            <td align="right">{{ number_format($quotationDetails['balancePrima'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['balancePrima'] / $record->exchange_rate, 2) }}
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Vacation</th>
+            <td align="right">{{ number_format($quotationDetails['balanceVacation'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['balanceVacation'] / $record->exchange_rate, 2) }}
+            </td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <th>Indemnization</th>
+            <td align="right">{{ number_format($quotationDetails['balanceIndemnization'], 2) }}</td>
+            <td align="right">
+                {{ number_format($quotationDetails['balanceIndemnization'] / $record->exchange_rate, 2) }}
+            </td>
+        </tr>
+
+        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                {{ number_format($quotationDetails['balanceProvisionsTotal'], 2) }}</td>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                {{ number_format($quotationDetails['balanceProvisionsTotal'] / $record->exchange_rate, 2) }}</td>
+
+        </tr>
     </table>
 
 </body>
