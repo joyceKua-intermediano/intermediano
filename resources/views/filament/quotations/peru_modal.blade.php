@@ -102,7 +102,7 @@
         </div>
 
         <div class="flex justify-between p-2">
-            <span class="font-medium text-gray-600 w-2/5">VAT 18%</span>
+            <span class="font-medium text-gray-600 w-2/5">Service taxes - VAT 19%</span>
             <div class="flex justify-between w-40">
                 <span class="mr-4">
                     {{ $record->currency_name }}
