@@ -272,7 +272,7 @@
             </td>
         </tr>
         <tr>
-            <th class="p-4">Service taxes - VAT 13%</th>
+            <th class="p-4">Service taxes - VAT 19%</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
                 <span class="recordAlignment">

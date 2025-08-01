@@ -26,7 +26,8 @@ use Illuminate\Support\Str;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Carbon\Carbon;
-
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 class PayrollResource extends Resource
 {
     protected static ?string $model = Quotation::class;
@@ -161,6 +162,12 @@ class PayrollResource extends Resource
                     })
                     ->default(0)
                     ->required(),
+                Forms\Components\Select::make('dependent')
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ])
+                    ->required(),
                 Fieldset::make('PayrollCosts')
                     ->relationship('payrollCosts')
                     ->label('Payroll Costs')
@@ -176,13 +183,57 @@ class PayrollResource extends Resource
                     ->default(0)
                     ->hidden(true)
                     ->label('Capped (LIMIT) Social Security'),
-                Forms\Components\Select::make('dependent')
-                    ->options([
-                        '1' => 'Yes',
-                        '0' => 'No',
-                    ])
-                    ->required(),
 
+                Repeater::make('payment_provisions')
+                    ->label('Payment Provisions')
+                    ->relationship('paymentProvisions')
+                    ->schema([
+                        Select::make('provision_type_id')
+                            ->label('Provision Type')
+                            ->required()
+                            ->options(function (callable $get, callable $set) {
+
+                                $allowedNames = [
+                                    'Gratification',
+                                    'Extraordinary Gratification',
+                                    'Vacation',
+                                    'CTS',
+                                    'Termination - Indemnification',
+                                ];
+
+                                // Get only the allowed provision types
+                                $allOptions = \App\Models\ProvisionType::whereIn('name', $allowedNames)
+                                    ->pluck('name', 'id');
+
+                                $current = $get('provision_type_id');
+
+                                $allSelected = collect($get('../../payment_provisions'))
+                                    ->pluck('provision_type_id')
+                                    ->filter()
+                                    ->reject(fn($id) => $id === $current)
+                                    ->toArray();
+
+                                return $allOptions->reject(function ($name, $id) use ($allSelected) {
+                                    return in_array($id, $allSelected);
+                                });
+                            })
+                            ->searchable(),
+                        Forms\Components\TextInput::make('amount')
+                            ->label('Amount (Local Currency)')
+                            ->numeric()
+                            ->required(),
+                        Forms\Components\Hidden::make('country_id')
+                            ->default(function () {
+                                return \App\Models\Country::where('name', 'Brazil')->value('id');
+                            }),
+                        Forms\Components\Hidden::make('cluster_name')
+                            ->default(self::getClusterName()),
+                    ])
+                    ->columnSpanFull()
+                    ->columns(2)
+                    ->grid(2)
+                    ->defaultItems(0)
+                    ->createItemButtonLabel('Add Provision Payment'),
                 Forms\Components\Hidden::make('cluster_name')
                     ->default(self::getClusterName()),
                 Forms\Components\Hidden::make('is_payroll')
@@ -264,29 +315,31 @@ class PayrollResource extends Resource
                         $currentDate = Carbon::parse($record->title);
                         $previousMonthDate = $currentDate->subMonth();
 
-                        $previousMonthRecord = Quotation::where('consultant_id', $record->consultant_id)
+                        $previousRecords = Quotation::where('consultant_id', $record->consultant_id)
                             ->whereNull('deleted_at')
-                            ->whereMonth('title', $previousMonthDate->month)
-                            ->whereYear('title', $previousMonthDate->year)
-                            ->first();
+                            ->where('title', '<', $record->title)
+                            ->where('cluster_name', 'IntermedianoPeruSAC')
+                            ->get();
+                        $record->uniqueCurrencies = $previousRecords->pluck('currency_name')->unique();
 
-                        $export = new QuotationExport($record, $previousMonthRecord);
+                        $record->hasDifferentCurrency = $record->uniqueCurrencies->count() > 1;
+                        $export = new QuotationExport($record, $previousRecords);
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
-                        return Excel::download($export,  $transformTitle .  '_Payroll for ' . self::getClusterName() . ' ' . $record->consultant->name . '.xlsx');
+                        return Excel::download($export, $transformTitle . '_Payroll for ' . self::getClusterName() . ' ' . $record->consultant->name . '.xlsx');
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        $pdfPage =  'pdf.peru_quotation';
+                        $pdfPage = 'pdf.peru_quotation';
                         $companyName = $record->company->name;
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);
                         return response()->streamDownload(
-                            fn() => print($pdf->output()),
+                            fn() => print ($pdf->output()),
                             Str::slug($transformTitle, '.') . '_Payroll for ' . $companyName . ' ' . self::getClusterName() . '.pdf'
                         );
                     }),
