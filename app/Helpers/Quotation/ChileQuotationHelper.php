@@ -1,8 +1,17 @@
 <?php
 
 if (!function_exists('calculateChileQuotation')) {
-    function calculateChileQuotation($record, $previousMonthRecord)
+    function calculateChileQuotation($record, $previousRecords)
     {
+
+
+        $previousVacation = 0;
+        $previousCompensation = 0;
+        $previousNoticePeriod = 0;
+
+        $previousPaidVacation = 0;
+        $previousPaidCompensation = 0;
+        $previousPaidNoticePeriod = 0;
 
         $grossSalary = $record->gross_salary;
 
@@ -35,33 +44,76 @@ if (!function_exists('calculateChileQuotation')) {
         $noticePeriod = 0.0833 * $totalGrossIncome;
         $provisionsTotal = $vacation + $compensation + $noticePeriod;
 
-        // accumulated provision
-        if ($previousMonthRecord) {
-            $previousMonthGrossIncome = $previousMonthRecord->gross_salary +
-                $previousMonthRecord->bonus +
-                $previousMonthRecord->home_allowance +
-                $previousMonthRecord->transport_allowance +
-                $previousMonthRecord->medical_allowance +
-                $previousMonthRecord->legal_grafication +
-                $previousMonthRecord->internet_allowance;
-        } else {
-            $previousMonthGrossIncome = 0;
-        };
-        $accumulatedVacation = (0.058333 * $previousMonthGrossIncome) + $vacation;
-        $accumulatedCompensation = (0.0833 * $previousMonthGrossIncome) + $compensation;
-        $accumulatedNoticePeriod = (0.0833 * $previousMonthGrossIncome) + $noticePeriod;
+        if ($previousRecords && $previousRecords->count()) {
+            foreach ($previousRecords as $item) {
+                $gross = $item->gross_salary +
+                    $item->bonus +
+                    $item->home_allowance +
+                    $record->legal_grafication +
+                    $item->transport_allowance +
+                    $item->medical_allowance +
+                    $item->internet_allowance;
 
-        $accumulatedProvisionsTotal = $accumulatedVacation + $accumulatedCompensation + $accumulatedNoticePeriod;
+
+                $previousVacation += 0.058333 * $gross;
+                $previousCompensation += 0.0833 * $gross;
+                $previousNoticePeriod += 0.0833 * $gross;
+
+
+                // Payments
+                $previousPaidVacation += $item->paymentProvisions->where('provisionType.name', 'Vacation')->sum('amount');
+                $previousPaidCompensation += $item->paymentProvisions->where('provisionType.name', 'Compensation for years of service')->sum('amount');
+                $previousPaidNoticePeriod += $item->paymentProvisions->where('provisionType.name', 'Termination - Notice period')->sum('amount');
+
+            }
+        }
 
         // end of accumulated provision
 
         $subTotalGrossPayroll = $totalGrossIncome + $provisionsTotal + $payrollCostsTotal;
-        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : $subTotalGrossPayroll * ($record->fee / 100);
+        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : $totalGrossIncome * ($record->fee / 100);
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
         $municipalTax = 0 * $subTotal;
         $servicesTaxes = $subTotal * 0.19;
         $totalInvoice = $subTotal + $municipalTax + $servicesTaxes;
+
+        // current payment
+
+        $currentPaidVacation = $record->paymentProvisions
+            ->where('provisionType.name', 'Vacation')
+            ->sum('amount');
+
+        $currentPaidCompensation = $record->paymentProvisions
+            ->where('provisionType.name', 'Compensation for years of service')
+            ->sum('amount');
+
+        $currentPaidNoticePeriod = $record->paymentProvisions
+            ->where('provisionType.name', 'Notice period')
+            ->sum('amount');
+
+        // All-time payments
+
+        $totalPaidVacation = $previousPaidVacation + $currentPaidVacation;
+        $totalPaidCompensation = $previousPaidCompensation + $currentPaidCompensation;
+        $totalPaidNoticePeriod = $previousPaidNoticePeriod + $currentPaidNoticePeriod;
+
+        // accumulated
+
+        $accumulatedVacation = ($previousVacation + $vacation) - $previousPaidVacation;
+        $accumulatedCompensation = ($previousCompensation + $compensation) - $previousPaidCompensation;
+        $accumulatedNoticePeriod = ($previousNoticePeriod + $noticePeriod) - $previousPaidNoticePeriod;
+
+
+        $accumulatedProvisionsTotal = $accumulatedNoticePeriod + $accumulatedVacation + $accumulatedCompensation;
+
+        // Balances
+
+        $balanceVacation = $accumulatedVacation - $currentPaidVacation;
+        $balanceCompensation = $accumulatedCompensation - $currentPaidCompensation;
+        $balanceNoticePeriod = $accumulatedNoticePeriod - $currentPaidNoticePeriod;
+
+        $balanceProvisionsTotal = $balanceVacation + $balanceCompensation + $balanceNoticePeriod;
 
         return [
             'grossSalary' => $grossSalary,
@@ -83,11 +135,17 @@ if (!function_exists('calculateChileQuotation')) {
             'vacation' => $vacation,
             'compensation' => $compensation,
             'noticePeriod' => $noticePeriod,
-            'previousMonthGrossIncome' => $previousMonthGrossIncome,
+            'hasPreviousRecords' => !empty($previousRecords),
             'accumulatedVacation' => $accumulatedVacation,
             'accumulatedCompensation' => $accumulatedCompensation,
             'accumulatedNoticePeriod' => $accumulatedNoticePeriod,
             'accumulatedProvisionsTotal' => $accumulatedProvisionsTotal,
+
+            'paymentProvisions' => $record->paymentProvisions,
+            'balanceVacation' => $balanceVacation,
+            'balanceCompensation' => $balanceCompensation,
+            'balanceNoticePeriod' => $balanceNoticePeriod,
+            'balanceProvisionsTotal' => $balanceProvisionsTotal,
         ];
     }
 }
