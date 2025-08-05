@@ -797,7 +797,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                 </td>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Se para o Cliente:</b>
-                    <p>A/C: {{ $companyName }} {{ $contactSurname }}</p>
+                    <p>A/C: {{ $contactName }} {{ $contactSurname }}</p>
                     <p>Endereço: {{ $customerAddress }} </p>
                     <p>Telefone/Fax: {{ $customerPhone }}</p>
                     <p>E-mail: <a href="#">{{ $customerEmail }}</a> </p>

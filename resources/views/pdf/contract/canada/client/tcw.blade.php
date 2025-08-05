@@ -26,7 +26,7 @@ $employeeCountryWork = $record->country_work ?? 'N/A';
 $employeeGrossSalary = $record->gross_salary;
 $employeeStartDate = $record->start_date ? \Carbon\Carbon::parse($record->start_date)->format('d/m/Y'): 'N/A';
 $employeeEndDate = $record->end_date ? \Carbon\Carbon::parse($record->end_date)->format('d/m/Y'): 'N/A';
-$quotationDate = $record->quotation->title;
+$contractCreatedDate = $record->created_date;
 $signatureExists = Storage::disk('private')->exists($record->signature);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
@@ -65,7 +65,7 @@ $type = $isAdmin ? 'admin' : 'employee';
         <h4 style='text-align:center;  margin: 20px 0px'> ADDENDUM 2025.01</h4>
         <h4 style='text-align:center; t'> TO THE PARTNERSHIP AGREEMENT </h4>
         <p>This Addendum to the Service Agreement ("Agreement") signed on March 23rdof 2022 and following the
-            Amendment #1 signed on January 14th of 2025, is entered into on <b>{{ $quotationDate }}</b>, by
+            Amendment #1 signed on January 14th of 2025, is entered into on <b>{{ $contractCreatedDate }}</b>, by
             and between:</p>
 
         <p><b>GATE INTERMEDIANO INC.</b>, initially referred as INTERMEDIANO INC. (the “Provider”) a Canadian company
@@ -81,7 +81,7 @@ $type = $isAdmin ? 'admin' : 'employee';
         <p><b>JOB TITLE:</b> {{ $employeeJobTitle }}</p>
         <p><b>START DATE:</b> {{ $employeeStartDate }}</p>
         <p><b>END DATE:</b> {{ $employeeEndDate }}</p>
-        <p><b>GROSS WAGES:</b> {{ $employeeGrossSalary }}</p>
+        <p><b>GROSS WAGES:</b> {{ $employeeGrossSalary }} {{ $record->quotation->currency_name }}</p>
         <br>
         <p><b>DATE OF PAYMENT (every month):</b> Local legislation requires payment by the last day of the worked month.
             For efficiency, Provider will issue payment on the last day of every month. </p>
