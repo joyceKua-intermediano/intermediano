@@ -88,7 +88,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <h4 style="text-align:center !important; text-decoration: underline;">ENTENTE DE SERVICES</h4>
 
                     <p>Cette Entente de Services ("Entente") est signée
-                        et entrée en vigueur le {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, par et entre : </p>
+                        et entrée en vigueur le {{ $contractCreatedDay }} of {{ $contractCreatedmonth }}, {{ $contractCreatedyear }}, par et entre: </p>
 
                     <p><b>GATE INTERMEDIANO INC.</b>, désignée
                         INTERMEDIANO INC. (le <b>"Fournisseur"</b>), une
@@ -365,7 +365,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <p style="margin: 5; padding: 0; line-height: 1.5;"><b>INTITULÉ DU POSTE:</b> {{ $employeeJobTitle }}</p>
                     <p style="margin: 5; padding: 0; line-height: 1.5;"><b>DATE DE DÉBUT:</b> {{ $employeeStartDate }}</p>
                     <p style="margin: 5; padding: 0; line-height: 1.5;"><b>DATE DE FIN:</b> {{ $employeeEndDate }}</p>
-                    <p style="margin: 5; padding: 0; line-height: 1.5;"><b>SALAIRE BRUT :</b> CAD {{ number_format($employeeGrossSalary, 2) }} comme Salaire Mensuel Brut.</p>
+                    <p style="margin: 5; padding: 0; line-height: 1.5;"><b>SALAIRE BRUT:</b> CAD {{ number_format($employeeGrossSalary, 2) }} comme Salaire Mensuel Brut.</p>
                 </td>
             </tr>
 
@@ -527,8 +527,10 @@ $type = $isAdmin ? 'admin' : 'employee';
                         @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
+                    @if (!empty($adminSignedBy))
                     <p style="text-align: center; margin-top: -20px">{{ $adminSignedBy }}</p>
                     <p style="text-align: center;margin-top: -20px">{{ $adminSignedByPosition }}</p>
+                    @endif
                     <p style="text-align: left;margin-top: 10px">Phone: +1 514 907 5393</p>
                     <p style="text-align: left;margin-top: -10px">Email: <a href="">sac@intermediano.com</a></p>
 
