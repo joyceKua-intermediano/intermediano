@@ -49,7 +49,7 @@ if (!function_exists('calculateChileQuotation')) {
                 $gross = $item->gross_salary +
                     $item->bonus +
                     $item->home_allowance +
-                    $record->legal_grafication +
+                    $item->legal_grafication +
                     $item->transport_allowance +
                     $item->medical_allowance +
                     $item->internet_allowance;

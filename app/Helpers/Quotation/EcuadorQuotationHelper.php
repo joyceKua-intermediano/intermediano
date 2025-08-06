@@ -1,8 +1,22 @@
 <?php
 
 if (!function_exists('calculateEcuadorQuotation')) {
-    function calculateEcuadorQuotation($record, $previousMonthRecord)
+    function calculateEcuadorQuotation($record, $previousRecords)
     {
+
+        $previousVacation = 0;
+        $previousCompensation = 0;
+        $previousReserveFund = 0;
+        $previousBonus13th = 0;
+        $previousBonus14th = 0;
+        $previousBonification = 0;
+
+        $previousPaidVacation = 0;
+        $previousPaidCompensation = 0;
+        $previousPaidReserveFund = 0;
+        $previousPaidBonus13th = 0;
+        $previousPaidBonus14th = 0;
+        $previousPaidBonification = 0;
 
         $grossSalary = $record->gross_salary;
 
@@ -31,25 +45,33 @@ if (!function_exists('calculateEcuadorQuotation')) {
         $compensation = 0.25 * $totalGrossIncome;
         $provisionsTotal = $vacation + $reserveFund + $bonus13th + $bonus14th + $bonification + $compensation;
 
-        // accumulated provision
-        if($previousMonthRecord) {
-            $previousMonthGrossIncome = $previousMonthRecord->gross_salary +
-            $previousMonthRecord->bonus +
-            $previousMonthRecord->home_allowance +
-            $previousMonthRecord->transport_allowance +
-            $previousMonthRecord->medical_allowance +
-            $previousMonthRecord->internet_allowance;
-        }else {
-            $previousMonthGrossIncome = 0;
-        };
+        if ($previousRecords && $previousRecords->count()) {
+            foreach ($previousRecords as $item) {
+                $gross = $item->gross_salary +
+                    $item->bonus +
+                    $item->home_allowance +
+                    $item->transport_allowance +
+                    $item->medical_allowance +
+                    $item->internet_allowance;
 
-        $accumulatedVacation = (0.0417 * $previousMonthGrossIncome) + $vacation;
-        $accumulatedReserveFund = ((0.08333 * $previousMonthGrossIncome)) + $reserveFund;
-        $accumulatedBonus13th = (0.08333 * $previousMonthGrossIncome) + $bonus13th;
-        $accumulatedBonus14th = (0.08333 * 470) + $bonus14th;
-        $accumulatedBonification = (0.0208 * $previousMonthGrossIncome) + $bonification;
-        $accumulatedCompensation = (0.25 * $previousMonthGrossIncome) + $compensation;
-        $accumulatedProvisionsTotal = $accumulatedVacation + $accumulatedReserveFund + $accumulatedBonus13th + $accumulatedBonus14th + $accumulatedBonification + $accumulatedCompensation;
+                $previousVacation += 0.0417 * $gross;
+                $previousCompensation += 0.25 * $gross;
+                $previousReserveFund += 0.08333 * $gross;
+                $previousBonus13th += 0.08333 * $gross;
+                $previousBonus14th += 0.08333 * 470;
+                $previousBonification += 0.0208 * $gross;
+
+
+                // Payments
+                $previousPaidVacation += $item->paymentProvisions->where('provisionType.name', 'Vacation')->sum('amount');
+                $previousPaidCompensation += $item->paymentProvisions->where('provisionType.name', 'Compensation')->sum('amount');
+                $previousPaidReserveFund += $item->paymentProvisions->where('provisionType.name', 'Reserve Fund')->sum('amount');
+                $previousPaidBonus13th += $item->paymentProvisions->where('provisionType.name', 'Bonus 13th')->sum('amount');
+                $previousPaidBonus14th += $item->paymentProvisions->where('provisionType.name', 'Bonus 14th')->sum('amount');
+                $previousPaidBonification += $item->paymentProvisions->where('provisionType.name', '25% Bonification')->sum('amount');
+
+            }
+        }
 
         // end of accumulated provision
 
@@ -60,6 +82,63 @@ if (!function_exists('calculateEcuadorQuotation')) {
         $municipalTax = 0 * $subTotal;
         $servicesTaxes = ($municipalTax + $subTotal) * 0;
         $totalInvoice = $subTotal + $municipalTax + $servicesTaxes;
+
+        // current payment
+
+        $currentPaidVacation = $record->paymentProvisions
+            ->where('provisionType.name', 'Vacation')
+            ->sum('amount');
+
+        $currentPaidCompensation = $record->paymentProvisions
+            ->where('provisionType.name', 'Compensation')
+            ->sum('amount');
+
+        $currentPaidReserveFund = $record->paymentProvisions
+            ->where('provisionType.name', 'Reserve Fund')
+            ->sum('amount');
+
+        $currentPaidBonus13th = $record->paymentProvisions
+            ->where('provisionType.name', 'Bonus 13th')
+            ->sum('amount');
+
+        $currentPaidBonus14th = $record->paymentProvisions
+            ->where('provisionType.name', 'Bonus 14th')
+            ->sum('amount');
+
+        $currentPaidBonification = $record->paymentProvisions
+            ->where('provisionType.name', '25% Bonification')
+            ->sum('amount');
+
+        // All-time payments
+
+        $totalPaidVacation = $previousPaidVacation + $currentPaidVacation;
+        $totalPaidCompensation = $previousPaidCompensation + $currentPaidCompensation;
+        $totalPaidReserveFund = $previousPaidReserveFund + $currentPaidReserveFund;
+        $totalPaidBonus13th = $previousPaidBonus13th + $currentPaidBonus13th;
+        $totalPaidBonus14th = $previousPaidBonus14th + $currentPaidBonus14th;
+        $totalPaidBonification = $previousPaidBonification + $currentPaidBonification;
+
+        // accumulated
+
+        $accumulatedVacation = ($previousVacation + $vacation) - $previousPaidVacation;
+        $accumulatedCompensation = ($previousCompensation + $compensation) - $previousPaidCompensation;
+        $accumulatedReserveFund = ($previousReserveFund + $reserveFund) - $previousPaidReserveFund;
+        $accumulatedBonus13th = ($previousBonus13th + $bonus13th) - $previousPaidBonus13th;
+        $accumulatedBonus14th = ($previousBonus14th + $bonus14th) - $previousPaidBonus14th;
+        $accumulatedBonification = ($previousBonification + $bonification) - $previousPaidBonification;
+
+        $accumulatedProvisionsTotal = $accumulatedReserveFund + $accumulatedVacation + $accumulatedCompensation + $accumulatedBonus13th + $accumulatedBonus14th + $accumulatedBonification;
+
+        // Balances
+
+        $balanceVacation = $accumulatedVacation - $currentPaidVacation;
+        $balanceCompensation = $accumulatedCompensation - $currentPaidCompensation;
+        $balanceReserveFund = $accumulatedReserveFund - $currentPaidReserveFund;
+        $balanceBonus13th = $accumulatedBonus13th - $currentPaidBonus13th;
+        $balanceBonus14th = $accumulatedBonus14th - $currentPaidBonus14th;
+        $balanceBonification = $accumulatedBonification - $currentPaidBonification;
+
+        $balanceProvisionsTotal = $balanceVacation + $balanceCompensation + $balanceReserveFund + $balanceBonus13th + $balanceBonus14th + $balanceBonification;
 
         return [
             'grossSalary' => $grossSalary,
@@ -76,15 +155,13 @@ if (!function_exists('calculateEcuadorQuotation')) {
             'iess' => $iess,
             'secap' => $secap,
             'iece' => $iece,
-            'payrollCostsTotal' => $payrollCostsTotal,
             'vacation' => $vacation,
             'reserveFund' => $reserveFund,
             'bonus13th' => $bonus13th,
             'bonus14th' => $bonus14th,
             'bonification' => $bonification,
             'compensation' => $compensation,
-            'provisionsTotal' => $provisionsTotal,
-            'previousMonthGrossIncome' => $previousMonthGrossIncome,
+            'hasPreviousRecords' => !empty($previousRecords),
             'accumulatedVacation' => $accumulatedVacation,
             'accumulatedReserveFund' => $accumulatedReserveFund,
             'accumulatedBonus13th' => $accumulatedBonus13th,
@@ -92,6 +169,15 @@ if (!function_exists('calculateEcuadorQuotation')) {
             'accumulatedBonification' => $accumulatedBonification,
             'accumulatedCompensation' => $accumulatedCompensation,
             'accumulatedProvisionsTotal' => $accumulatedProvisionsTotal,
+
+            'paymentProvisions' => $record->paymentProvisions,
+            'balanceVacation' => $balanceVacation,
+            'balanceCompensation' => $balanceCompensation,
+            'balanceReserveFund' => $balanceReserveFund,
+            'balanceBonus13th' => $balanceBonus13th,
+            'balanceBonus14th' => $balanceBonus14th,
+            'balanceBonification' => $balanceBonification,
+            'balanceProvisionsTotal' => $balanceProvisionsTotal,
         ];
     }
 }

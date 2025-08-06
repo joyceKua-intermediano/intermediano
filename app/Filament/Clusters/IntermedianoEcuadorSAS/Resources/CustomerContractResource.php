@@ -27,8 +27,6 @@ class CustomerContractResource extends Resource
 {
     protected static ?string $model = Contract::class;
     protected static ?string $label = 'Customer Contract';
-    protected static ?int $navigationSort = 9;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $cluster = IntermedianoEcuadorSAS::class;
