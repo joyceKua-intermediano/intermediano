@@ -47,29 +47,26 @@
             margin-top: 30px;
             color: #555;
         }
+
     </style>
 </head>
 
 <body>
     @php
-        $quotationDetails = calculateEcuadorQuotation($record, $previousMonthRecord);
+    $quotationDetails = calculateEcuadorQuotation($record, $previousRecords);
     @endphp
 
     <table style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: red">
         <tr>
             <td></td>
-            <th rowspan="2" style="background-color: #7d2a1d; padding: 20px; text-align:center" align="center"
-                width="70">
-                <img src="{{ public_path('images/logo.jpg') }}" height="80" style="padding: 40px; text-align:center"
-                    alt="Company Logo">
+            <th rowspan="2" style="background-color: #7d2a1d; padding: 20px; text-align:center" align="center" width="70">
+                <img src="{{ public_path('images/logo.jpg') }}" height="80" style="padding: 40px; text-align:center" alt="Company Logo">
             </th>
-            <td colspan="1" valign="middle" align="center" width="40"
-                style="background-color: #7d2a1d; color:white; font-weight:bold">{{ $record->country->name }}</td>
+            <td colspan="1" valign="middle" align="center" width="40" style="background-color: #7d2a1d; color:white; font-weight:bold">{{ $record->country->name }}</td>
         </tr>
         <tr>
             <td></td>
-            <td colspan="1" valign="middle" align="center" width="40"
-                style="background-color: #7d2a1d; color:white; font-weight:bold">{{ $record->title }}</td>
+            <td colspan="1" valign="middle" align="center" width="40" style="background-color: #7d2a1d; color:white; font-weight:bold">{{ $record->title }}</td>
         </tr>
 
         <tr>
@@ -157,11 +154,6 @@
             <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Subtotal</th>
             <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
                 {{ number_format($quotationDetails['subTotal'], 2) }}</td>
-        </tr>
-        <tr class="highlight">
-            <td></td>
-            <th>Municipal tax - ICA 1%</th>
-            <td align="right">{{ number_format($quotationDetails['municipalTax'], 2) }}</td>
         </tr>
         <tr>
             <td></td>
@@ -278,113 +270,223 @@
             <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
 
         </tr>
-        @if ($quotationDetails['previousMonthGrossIncome'] && $previousMonthRecord->currency_name !== $record->currency_name)
-            <tr class="highlight">
-                <td></td>
-                <th style="background-color: #a8a8a8; font-weight:bold" align="center">Accumulated Provisions</th>
-                <td style="background-color: #f29191; font-weight: bold; text-align: center;">
-                    Cannot generate accumulated provision because the currency has changed. Previous:
-                    "{{ $previousMonthRecord->currency_name }}", Current: "{{ $record->currency_name }}".
-                </td>
-            </tr>
-        @elseif ($quotationDetails['previousMonthGrossIncome'])
-            <!-- Accumulated Provisions -->
-            <tr class="highlight">
-                <td></td>
-                <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
-                <td style="background-color: #a8a8a8; font-weight:bold" align="center">
-                    {{ $record->currency_name }}
-                </td>
-            </tr>
+        @if ($quotationDetails['hasPreviousRecords'] && $record->hasDifferentCurrency) <tr class="highlight">
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center">Accumulated Provisions</th>
+            <td style="background-color: #f29191; font-weight: bold; text-align: center;">
+                Cannot generate accumulated provision because the currency has changed. Previous:
+                "{{ $previousMonthRecord->currency_name }}", Current: "{{ $record->currency_name }}".
+            </td>
+        </tr>
+        @elseif ($quotationDetails['hasPreviousRecords'])
+        <!-- Accumulated Provisions -->
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+        </tr>
 
-            <tr>
-                <td></td>
-                <th>Vacation</th>
-                <td align="right">{{ number_format($quotationDetails['accumulatedVacation'], 2) }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Reserve Fund</th>
-                <td align="right">{{ number_format($quotationDetails['accumulatedReserveFund'], 2) }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Bonus 13th </th>
-                <td align="right"> {{ number_format($quotationDetails['accumulatedBonus13th'], 2) }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Bonus 14th </th>
-                <td align="right"> {{ number_format($quotationDetails['accumulatedBonus14th'], 2) }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>25% Bonification</th>
-                <td align="right">{{ number_format($quotationDetails['accumulatedBonification'], 2) }}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Compensation</th>
-                <td align="right"> {{ number_format($quotationDetails['accumulatedCompensation'], 2) }}</td>
-            </tr>
+        <tr>
+            <td></td>
+            <th>Vacation</th>
+            <td align="right">{{ number_format($quotationDetails['accumulatedVacation'], 2) }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Reserve Fund</th>
+            <td align="right">{{ number_format($quotationDetails['accumulatedReserveFund'], 2) }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Bonus 13th </th>
+            <td align="right"> {{ number_format($quotationDetails['accumulatedBonus13th'], 2) }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Bonus 14th </th>
+            <td align="right"> {{ number_format($quotationDetails['accumulatedBonus14th'], 2) }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>25% Bonification</th>
+            <td align="right">{{ number_format($quotationDetails['accumulatedBonification'], 2) }}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Compensation</th>
+            <td align="right"> {{ number_format($quotationDetails['accumulatedCompensation'], 2) }}</td>
+        </tr>
 
-            <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                <td></td>
-                <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
-                <td align="right"
-                    style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                    {{ number_format($quotationDetails['accumulatedProvisionsTotal'], 2) }}</td>
+        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                {{ number_format($quotationDetails['accumulatedProvisionsTotal'], 2) }}</td>
 
-            </tr>
+        </tr>
         @elseif(!$isQuotation)
-            <tr class="highlight">
-                <td></td>
-                <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
-                <td style="background-color: #a8a8a8; font-weight:bold" align="center">
-                    {{ $record->currency_name }}
-                </td>
-            </tr>
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+        </tr>
 
-            <tr>
-                <td></td>
-                <th>Vacation</th>
-                <td align="right">0</td>
+        <tr>
+            <td></td>
+            <th>Vacation</th>
+            <td align="right">0</td>
 
-            </tr>
-            <tr>
-                <td></td>
-                <th>Reserve Fund </th>
-                <td align="right">0</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Bonus 13th</th>
-                <td align="right">0</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Bonus 14th</th>
-                <td align="right">0</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>25% Bonification</th>
-                <td align="right">0</td>
-            </tr>
-            <tr>
-                <td></td>
-                <th>Compensation</th>
-                <td align="right">0</td>
-            </tr>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Reserve Fund </th>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Bonus 13th</th>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Bonus 14th</th>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>25% Bonification</th>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Compensation</th>
+            <td align="right">0</td>
+        </tr>
 
-            <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                <td></td>
-                <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
-                <td align="right"
-                    style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                    0</td>
-            </tr>
+        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                0</td>
+        </tr>
         @endif
+        <tr>
+            <td></td>
+            <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
+        </tr>
+        <tr>
+            <td></td>
+            <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
+
+        </tr>
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Payment Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+        </tr>
+        @php
+        $customOrder = [
+        'Vacation',
+        'Reserve Fund',
+        'Bonus 13th',
+        'Bonus 14th',
+        '25% Bonification',
+        'Compensation',
+        ];
+        $provisionsByName = $record->paymentProvisions->mapWithKeys(function ($item) {
+        return [trim($item->provisionType->name) => $item->amount];
+        });
+        @endphp
+
+        @foreach ($customOrder as $provisionName)
+        @php
+        $amount = $provisionsByName[$provisionName] ?? 0;
+        @endphp
+        <tr>
+            <td></td>
+            <th>{{ $provisionName }}</th>
+            <td align="right">{{ number_format($amount, 2) }}</td>
+
+        </tr>
+        @endforeach
+        @php
+        $totalAmount = $record->paymentProvisions->sum('amount');
+        $totalConverted = $totalAmount / $record->exchange_rate;
+        @endphp
+        {{-- <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th>Total</th>
+            <td align="right">{{ number_format($totalAmount, 2) }}</td>
+        <td align="right">{{ number_format($totalConverted, 2) }}</td>
+        </tr> --}}
+        <tr>
+            <td></td>
+            <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
+        </tr>
+        <tr>
+            <td></td>
+            <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
+
+        </tr>
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center">Balance Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+        </tr>
+
+
+
+        <tr>
+            <td></td>
+            <th>Vacation</th>
+            <td align="right">{{ number_format($quotationDetails['balanceVacation'], 2) }}</td>
+
+        </tr>
+        <tr>
+            <td></td>
+            <th>Reserve Fund</th>
+            <td align="right">{{ number_format($quotationDetails['balanceReserveFund'], 2) }}</td>
+
+        </tr>
+        <tr>
+            <td></td>
+            <th>Bonus 13th</th>
+            <td align="right">{{ number_format($quotationDetails['balanceBonus13th'], 2) }}</td>
+
+        </tr>
+        <tr>
+            <td></td>
+            <th>Bonus 14th</th>
+            <td align="right">{{ number_format($quotationDetails['balanceBonus14th'], 2) }}</td>
+
+        </tr>
+        <tr>
+            <td></td>
+            <th>25% Bonification</th>
+            <td align="right">{{ number_format($quotationDetails['balanceBonification'], 2) }}</td>
+
+        </tr>
+        <tr>
+            <td></td>
+            <th>Compensation</th>
+            <td align="right">{{ number_format($quotationDetails['balanceCompensation'], 2) }}</td>
+        </tr>
+
+        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                {{ number_format($quotationDetails['balanceProvisionsTotal'], 2) }}</td>
+        </tr>
     </table>
 </body>
 </html>
