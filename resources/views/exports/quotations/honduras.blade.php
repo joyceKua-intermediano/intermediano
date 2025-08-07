@@ -53,7 +53,7 @@
 
 <body>
     @php
-    $quotationDetails = calculateHondurasQuotation($record, $previousMonthRecord);
+    $quotationDetails = calculateHondurasQuotation($record, $previousRecords);
     @endphp
 
     <table style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: red">
