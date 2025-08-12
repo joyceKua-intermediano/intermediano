@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Hash;
 class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $cluster = IntermedianoMexicoSC::class;

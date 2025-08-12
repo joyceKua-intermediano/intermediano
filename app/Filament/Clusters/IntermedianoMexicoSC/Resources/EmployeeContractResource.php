@@ -26,7 +26,6 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
 class EmployeeContractResource extends Resource
 {
     protected static ?string $model = Contract::class;
-    protected static ?int $navigationSort = 2;
     protected static ?string $label = 'Employee Contract';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
