@@ -50,8 +50,9 @@ class PartnerQuotationResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'USVI', 'Saint Marteen', 'Argentina']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'USVI', 'Saint Marteen', 'Argentina', 'Brazil']);
                     })
+                    ->reactive()
                     ->required(),
 
                 Forms\Components\TextInput::make('currency_name')
@@ -175,8 +176,8 @@ class PartnerQuotationResource extends Resource
                         '1' => 'Yes',
                         '0' => 'No',
                     ])
-                    ->required()
-                    ->reactive(),
+                    ->required(),
+                \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
 
                 Forms\Components\Hidden::make('cluster_name')
                     ->default('PartnerUruguay')
@@ -255,6 +256,7 @@ class PartnerQuotationResource extends Resource
                                 'Honduras' => 'filament.quotations.honduras_modal',
                                 'Guatemala' => 'filament.quotations.guatemala_modal',
                                 'Argentina' => 'filament.quotations.argentina_modal',
+                                'Brazil' => 'filament.quotations.brasil_modal',
                             ];
                             $viewModal = $viewModal[$record->country->name] ?? null;
 

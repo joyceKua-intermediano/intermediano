@@ -389,7 +389,7 @@
                 <span class="recordAlignment">{{ number_format($quotationDetails['transportationTicket'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
-        @if($record->cluster_name === 'PartnerCanada' || $record->cluster_name === 'IntermedianoCanada')
+        @if($quotationDetails['operationalCosts'] != 0)
         <tr class="">
             <th class="p-4 text-left">Operational Costs</th>
             <td class="p-4 space-between">
