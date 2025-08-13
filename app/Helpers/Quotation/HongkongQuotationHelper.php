@@ -1,10 +1,13 @@
 <?php
 
 if (!function_exists('calculateHongkongQuotation')) {
-    function calculateHongkongQuotation($record, $previousMonthRecord)
+    function calculateHongkongQuotation($record, $previousRecords)
     {
-        $mfpMinimumEarning = 30000;
+        $previousLeave = 0;
 
+        $previousPaidLeave = 0;
+
+        $mfpMinimumEarning = 30000;
         $grossSalary = $record->gross_salary;
 
         // Ordinary
@@ -27,24 +30,18 @@ if (!function_exists('calculateHongkongQuotation')) {
         $provisionsTotal = $leave;
 
         // accumulated provision
-        if ($previousMonthRecord) {
-            $previousMonthGrossIncome = $previousMonthRecord->gross_salary +
-                $previousMonthRecord->bonus +
-                $previousMonthRecord->home_allowance +
-                $previousMonthRecord->transport_allowance +
-                $previousMonthRecord->medical_allowance +
-                $previousMonthRecord->internet_allowance;
-        } else {
-            $previousMonthGrossIncome = 0;
+        if ($previousRecords && $previousRecords->count()) {
+            foreach ($previousRecords as $item) {
+                $gross = $item->gross_salary +
+                    $item->bonus +
+                    $item->transport_allowance +
+                    $item->food_allowance;
+
+                $previousLeave += $gross / 160;
+                // Payments
+                $previousPaidLeave += $item->paymentProvisions->where('provisionType.name', 'Leave')->sum('amount');
+            }
         }
-        ;
-
-        $accumulatedLeave = (0.0417 * $previousMonthGrossIncome) + $leave;
-
-        $accumulatedProvisionsTotal = $accumulatedLeave;
-
-        // end of accumulated provision
-
         $bankFee = $record->bank_fee * $record->exchange_rate;
 
         $subTotalGrossPayroll = $totalGrossIncome + $payrollCostsTotal + $bankFee + $employerCompensationInsurance;
@@ -61,6 +58,27 @@ if (!function_exists('calculateHongkongQuotation')) {
         $subTotal = $subTotalGrossPayroll + $fee;
         $totalInvoice = $subTotal;
 
+        // current payment
+
+        $currentPaidLeave = $record->paymentProvisions
+            ->where('provisionType.name', 'Leave')
+            ->sum('amount');
+
+        // All-time payments
+
+        $totalPaidLeave = $previousPaidLeave + $currentPaidLeave;
+        // accumulated
+
+        $accumulatedLeave = ($previousLeave + $leave) - $previousPaidLeave;
+
+
+        $accumulatedProvisionsTotal = $accumulatedLeave;
+
+        // Balances
+
+        $balanceLeave = $accumulatedLeave - $currentPaidLeave;
+
+        $balanceProvisionsTotal = $balanceLeave;
         return [
             'grossSalary' => $grossSalary,
             'totalGrossIncome' => $totalGrossIncome,
@@ -74,9 +92,12 @@ if (!function_exists('calculateHongkongQuotation')) {
             'payrollCostsTotal' => $payrollCostsTotal,
             'leave' => $leave,
             'provisionsTotal' => $provisionsTotal,
-            'previousMonthGrossIncome' => $previousMonthGrossIncome,
+            'hasPreviousRecords' => !empty($previousRecords),
             'accumulatedLeave' => $accumulatedLeave,
             'accumulatedProvisionsTotal' => $accumulatedProvisionsTotal,
+            'paymentProvisions' => $record->paymentProvisions,
+            'balanceLeave' => $balanceLeave,
+            'balanceProvisionsTotal' => $balanceProvisionsTotal,
         ];
     }
 }
