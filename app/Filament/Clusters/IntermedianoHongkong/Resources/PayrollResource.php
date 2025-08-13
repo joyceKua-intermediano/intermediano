@@ -26,7 +26,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
-
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 class PayrollResource extends Resource
 {
     protected static ?string $model = Quotation::class;
@@ -173,7 +174,52 @@ class PayrollResource extends Resource
                         '0' => 'No',
                     ])
                     ->required(),
+                Repeater::make('payment_provisions')
+                    ->label('Payment Provisions')
+                    ->relationship('paymentProvisions')
+                    ->schema([
+                        Select::make('provision_type_id')
+                            ->label('Provision Type')
+                            ->required()
+                            ->options(function (callable $get, callable $set) {
 
+                                $allowedNames = [
+                                    'Leave',
+                                ];
+
+                                // Get only the allowed provision types
+                                $allOptions = \App\Models\ProvisionType::whereIn('name', $allowedNames)
+                                    ->pluck('name', 'id');
+
+                                $current = $get('provision_type_id');
+
+                                $allSelected = collect($get('../../payment_provisions'))
+                                    ->pluck('provision_type_id')
+                                    ->filter()
+                                    ->reject(fn($id) => $id === $current)
+                                    ->toArray();
+
+                                return $allOptions->reject(function ($name, $id) use ($allSelected) {
+                                    return in_array($id, $allSelected);
+                                });
+                            })
+                            ->searchable(),
+                        Forms\Components\TextInput::make('amount')
+                            ->label('Amount (Local Currency)')
+                            ->numeric()
+                            ->required(),
+                        Forms\Components\Hidden::make('country_id')
+                            ->default(function () {
+                                return \App\Models\Country::where('name', 'Brazil')->value('id');
+                            }),
+                        Forms\Components\Hidden::make('cluster_name')
+                            ->default(self::getClusterName()),
+                    ])
+                    ->columnSpanFull()
+                    ->columns(2)
+                    ->grid(2)
+                    ->defaultItems(0)
+                    ->createItemButtonLabel('Add Provision Payment'),
                 Forms\Components\Hidden::make('cluster_name')
                     ->default(self::getClusterName()),
                 Forms\Components\Hidden::make('is_payroll')
@@ -255,13 +301,14 @@ class PayrollResource extends Resource
                         $currentDate = Carbon::parse($record->title);
                         $previousMonthDate = $currentDate->subMonth();
 
-                        $previousMonthRecord = Quotation::where('consultant_id', $record->consultant_id)
+                        $previousRecords = Quotation::where('consultant_id', $record->consultant_id)
                             ->whereNull('deleted_at')
-                            ->whereMonth('title', $previousMonthDate->month)
-                            ->whereYear('title', $previousMonthDate->year)
-                            ->first();
+                            ->where('title', '<', $record->title)
+                            ->where('cluster_name', 'IntermedianoHongkong')
+                            ->get();
 
-                        $export = new QuotationExport($record, $previousMonthRecord);
+                        $record->uniqueCurrencies = $previousRecords->pluck('currency_name')->unique();
+                        $export = new QuotationExport($record, $previousRecords);
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
