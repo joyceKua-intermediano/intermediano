@@ -425,52 +425,6 @@
             </td>
 
         </tr>
-        @elseif(!$isQuotation)
-        <tr class="highlight">
-            <td></td>
-            <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
-            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
-                {{ $record->currency_name }}
-            </td>
-            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
-        </tr>
-
-        <tr>
-            <td></td>
-            <th>13th Salary</th>
-            <td align="right">0</td>
-            <td align="right">0</td>
-
-        </tr>
-        <tr>
-            <td></td>
-            <th>Vacation</th>
-            <td align="right">0</td>
-            <td align="right">0</td>
-        </tr>
-        <tr>
-            <td></td>
-            <th>1/3 Vacation Bonus</th>
-            <td align="right">0</td>
-            <td align="right">0</td>
-        </tr>
-        <tr>
-            <td></td>
-            <th>Termination</th>
-            <td align="right">0</td>
-            <td align="right">0</td>
-        </tr>
-        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-            <td></td>
-            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
-            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                0</td>
-            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                0
-            </td>
-
-        </tr>
-        @endif
         <tr>
             <td></td>
             <th colspan="3" style="border: 2px solid rgb(255, 255, 255);"></th>
@@ -587,6 +541,53 @@
                 {{ number_format($quotationDetails['balanceProvisionsTotal'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
+        @elseif(!$isQuotation)
+        <tr class="highlight">
+            <td></td>
+            <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">
+                {{ $record->currency_name }}
+            </td>
+            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <th>13th Salary</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
+
+        </tr>
+        <tr>
+            <td></td>
+            <th>Vacation</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>1/3 Vacation Bonus</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
+        </tr>
+        <tr>
+            <td></td>
+            <th>Termination</th>
+            <td align="right">0</td>
+            <td align="right">0</td>
+        </tr>
+        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+            <td></td>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                0</td>
+            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+                0
+            </td>
+
+        </tr>
+        @endif
+
     </table>
 
 </body>

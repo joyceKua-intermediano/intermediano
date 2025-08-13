@@ -54,7 +54,6 @@ class PartnerQuotationResource extends Resource
                     })
                     ->reactive()
                     ->required(),
-
                 Forms\Components\TextInput::make('currency_name')
                     ->label('Currency Name')
                     ->placeholder('Enter currency code (e.g., USD, EUR, BRL)')
@@ -292,6 +291,7 @@ class PartnerQuotationResource extends Resource
                                 'Guatemala' => 'pdf.guatemala_quotation',
                                 'Jamaica' => 'pdf.jamaica_quotation',
                                 'Argentina' => 'pdf.argentina_quotation',
+                                'Brazil' => 'pdf.brasil_quotation',
                             ];
                             $pdfPage = $pdfPages[$record->country->name] ?? null;
 
