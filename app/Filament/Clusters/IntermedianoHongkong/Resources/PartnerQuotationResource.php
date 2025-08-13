@@ -4,60 +4,55 @@ namespace App\Filament\Clusters\IntermedianoHongkong\Resources;
 
 use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoHongkong;
-use App\Filament\Clusters\IntermedianoHongkong\Resources\PayrollResource\Pages;
-use App\Filament\Clusters\IntermedianoHongkong\Resources\PayrollResource\RelationManagers;
+use App\Filament\Clusters\IntermedianoHongkong\Resources\PartnerQuotationResource\Pages;
+use App\Filament\Clusters\IntermedianoHongkong\Resources\PartnerQuotationResource\RelationManagers;
 use App\Models\Quotation;
-use App\Models\Consultant;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Str;
 use Filament\Forms\Components\DatePicker;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
-use Filament\Forms\Components\Fieldset;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Str;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
-class PayrollResource extends Resource
+
+
+class PartnerQuotationResource extends Resource
 {
     protected static ?string $model = Quotation::class;
+    protected static ?string $label = 'Partner Quotation';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 5;
+
     protected static ?string $cluster = IntermedianoHongkong::class;
-    protected static ?string $label = 'Payroll';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 DatePicker::make('title')
-                    ->label('Title')
+                    ->label('Date')
                     ->displayFormat('Y-m-d')
                     ->placeholder('yy-mm-dd')
                     ->native(false)
                     ->required(),
                 Forms\Components\Select::make('company_id')
                     ->label('Customer')
-                    ->relationship('company', 'name', fn(Builder $query) => $query->where('is_customer', true))
+                    ->relationship('company', 'name')
                     ->required(),
-                Forms\Components\Hidden::make('country_id')
-                    ->default(function () {
-                        return \App\Models\Country::where('name', 'Hong Kong')->value('id');
+                Forms\Components\Select::make('country_id')
+                    ->label('Country')
+                    ->relationship('country', 'name', function ($query) {
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'USVI', 'Saint Marteen', 'Argentina', 'Brazil', 'Curaçao', 'Turks and Caicos Islands']);
                     })
-                    ->reactive(),
-                Forms\Components\Select::make('consultant_id')
-                    ->label('Consultant')
-                    ->relationship('consultant', 'name')
+                    ->reactive()
                     ->required(),
                 Forms\Components\TextInput::make('currency_name')
                     ->label('Currency Name')
@@ -104,7 +99,6 @@ class PayrollResource extends Resource
                         $component->state($cleanedState);
                     })
                     ->required(),
-
                 Forms\Components\TextInput::make('bonus')
                     ->mask(RawJs::make(<<<'JS'
                     $money($input, '.', ',', 2);
@@ -137,7 +131,8 @@ class PayrollResource extends Resource
                     })
                     ->default(0)
                     ->required(),
-                Forms\Components\TextInput::make('transport_allowance')
+                Forms\Components\TextInput::make('legal_grafication')
+                    ->label('Legal Gratification')
                     ->mask(RawJs::make(<<<'JS'
                     $money($input, '.', ',', 2)
                     JS))
@@ -146,7 +141,6 @@ class PayrollResource extends Resource
 
                         $component->state($cleanedState);
                     })
-                    // ->visible(fn(Get $get): bool => !$get('is_integral'))
                     ->default(0)
                     ->required(),
                 Forms\Components\TextInput::make('internet_allowance')
@@ -160,7 +154,6 @@ class PayrollResource extends Resource
                     })
                     ->default(0)
                     ->required(),
-
                 Forms\Components\TextInput::make('uvt_amount')
                     ->default(0)
                     ->hidden(true)
@@ -169,6 +162,14 @@ class PayrollResource extends Resource
                     ->default(0)
                     ->hidden(true)
                     ->label('Capped (LIMIT) Social Security'),
+                Forms\Components\Select::make('is_freelance')
+                    ->options([
+                        '1' => 'Yes',
+                        '0' => 'No',
+                    ])
+                    ->required()
+                    ->reactive(),
+
                 Forms\Components\Select::make('dependent')
                     ->options([
                         '1' => 'Yes',
@@ -176,56 +177,10 @@ class PayrollResource extends Resource
                     ])
                     ->required(),
                 \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
-                Repeater::make('payment_provisions')
-                    ->label('Payment Provisions')
-                    ->relationship('paymentProvisions')
-                    ->schema([
-                        Select::make('provision_type_id')
-                            ->label('Provision Type')
-                            ->required()
-                            ->options(function (callable $get, callable $set) {
 
-                                $allowedNames = [
-                                    'Leave',
-                                ];
-
-                                // Get only the allowed provision types
-                                $allOptions = \App\Models\ProvisionType::whereIn('name', $allowedNames)
-                                    ->pluck('name', 'id');
-
-                                $current = $get('provision_type_id');
-
-                                $allSelected = collect($get('../../payment_provisions'))
-                                    ->pluck('provision_type_id')
-                                    ->filter()
-                                    ->reject(fn($id) => $id === $current)
-                                    ->toArray();
-
-                                return $allOptions->reject(function ($name, $id) use ($allSelected) {
-                                    return in_array($id, $allSelected);
-                                });
-                            })
-                            ->searchable(),
-                        Forms\Components\TextInput::make('amount')
-                            ->label('Amount (Local Currency)')
-                            ->numeric()
-                            ->required(),
-                        Forms\Components\Hidden::make('country_id')
-                            ->default(function () {
-                                return \App\Models\Country::where('name', 'Brazil')->value('id');
-                            }),
-                        Forms\Components\Hidden::make('cluster_name')
-                            ->default(self::getClusterName()),
-                    ])
-                    ->columnSpanFull()
-                    ->columns(2)
-                    ->grid(2)
-                    ->defaultItems(0)
-                    ->createItemButtonLabel('Add Provision Payment'),
                 Forms\Components\Hidden::make('cluster_name')
-                    ->default(self::getClusterName()),
-                Forms\Components\Hidden::make('is_payroll')
-                    ->default(1),
+                    ->default('PartnerHongkong')
+                    ->label('PartnerHongkong'),
             ]);
     }
 
@@ -242,10 +197,6 @@ class PayrollResource extends Resource
                     ->dateTime('y-m-d')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('consultant.name')
-                    ->label('Consultant Name')
-                    ->sortable()
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('country.name')
                     ->label('Country')
                     ->sortable()
@@ -257,18 +208,19 @@ class PayrollResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
-
                 Filter::make('cluster_match')
                     ->label('Company Name')
-                    ->query(fn(Builder $query): Builder => $query->where('cluster_name', self::getClusterName()))
+                    ->query(fn(Builder $query): Builder => $query->where('cluster_name', 'PartnerHongkong'))
                     ->default(),
                 Filter::make('is_payroll')
-                    ->query(fn(Builder $query): Builder => $query->where('is_payroll', true))
+                    ->label('Is Quotation')
+                    ->query(fn(Builder $query): Builder => $query->where('is_payroll', false))
                     ->default(),
-
-                SelectFilter::make('consultant_id')
-                    ->label('Consultant')
-                    ->options(Consultant::all()->pluck('name', 'id')),
+                Tables\Filters\SelectFilter::make('country')
+                    ->relationship('country', 'name')
+                    ->preload()
+                    ->searchable()
+                    ->multiple(),
                 Filter::make('Month')
                     ->form([
                         DatePicker::make('month')
@@ -287,11 +239,27 @@ class PayrollResource extends Resource
 
             ->actions([
                 Tables\Actions\Action::make('view_quotation')
-                    ->label('View Payroll')
+                    ->label('View Quotation')
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
-                        $viewModal = 'filament.quotations.hongkong_modal';
+                        if ($record->is_freelance) {
+                            $viewModal = 'filament.quotations.freelance_modal';
+                        } else {
+                            $viewModal = [
+                                'Panama' => 'filament.quotations.panama_modal',
+                                'Nicaragua' => 'filament.quotations.nicaragua_modal',
+                                'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
+                                'El Salvador' => 'filament.quotations.el_salvador_modal',
+                                'Jamaica' => 'filament.quotations.jamaica_modal',
+                                'Honduras' => 'filament.quotations.honduras_modal',
+                                'Guatemala' => 'filament.quotations.guatemala_modal',
+                                'Argentina' => 'filament.quotations.argentina_modal',
+                                'Brazil' => 'filament.quotations.brasil_modal',
+                            ];
+                            $viewModal = $viewModal[$record->country->name] ?? null;
+
+                        }
                         return view($viewModal, [
                             'record' => $record,
                         ]);
@@ -299,35 +267,41 @@ class PayrollResource extends Resource
                 ExportAction::make('export')
                     ->label('Export Details')
                     ->action(function ($record) {
-
-                        $currentDate = Carbon::parse($record->title);
-                        $previousMonthDate = $currentDate->subMonth();
-
-                        $previousRecords = Quotation::where('consultant_id', $record->consultant_id)
-                            ->whereNull('deleted_at')
-                            ->where('title', '<', $record->title)
-                            ->where('cluster_name', 'IntermedianoHongkong')
-                            ->get();
-
-                        $record->uniqueCurrencies = $previousRecords->pluck('currency_name')->unique();
-                        $export = new QuotationExport($record, $previousRecords);
+                        $isQuotation = true;
+                        $export = new QuotationExport($record, [], $isQuotation);
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
-                        return Excel::download($export, $transformTitle . '_Payroll for ' . self::getClusterName() . ' ' . $record->consultant->name . '.xlsx');
+                        return Excel::download($export, $transformTitle . '_Quotation for ' . $companyName . '.xlsx');
                     }),
                 Tables\Actions\Action::make('pdf')
                     ->label('PDF')
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
-                        $pdfPage = 'pdf.hong_kong_quotation';
+                        if ($record->is_freelance) {
+                            $pdfPage = 'pdf.freelance_quotation';
+                        } else {
+                            $pdfPages = [
+                                'Panama' => 'pdf.panama_quotation',
+                                'Nicaragua' => 'pdf.nicaragua_quotation',
+                                'Dominican Republic' => 'pdf.dominican_republic_quotation',
+                                'El Salvador' => 'pdf.el_salvador_quotation',
+                                'Honduras' => 'pdf.honduras_quotation',
+                                'Guatemala' => 'pdf.guatemala_quotation',
+                                'Jamaica' => 'pdf.jamaica_quotation',
+                                'Argentina' => 'pdf.argentina_quotation',
+                                'Brazil' => 'pdf.brasil_quotation',
+                            ];
+                            $pdfPage = $pdfPages[$record->country->name] ?? null;
+
+                        }
                         $companyName = $record->company->name;
                         $transformTitle = str_replace(['/', '\\'], '.', $record->title);
                         $pdf = Pdf::loadView($pdfPage, ['record' => $record]);
                         return response()->streamDownload(
                             fn() => print ($pdf->output()),
-                            Str::slug($transformTitle, '.') . '_Payroll for ' . $companyName . ' ' . self::getClusterName() . '.pdf'
+                            Str::slug($transformTitle, '.') . '_Quotation for ' . $companyName . '.pdf'
                         );
                     }),
                 Tables\Actions\ForceDeleteAction::make(),
@@ -354,21 +328,9 @@ class PayrollResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPayrolls::route('/'),
-            'create' => Pages\CreatePayroll::route('/create'),
-            'edit' => Pages\EditPayroll::route('/{record}/edit'),
+            'index' => Pages\ListPartnerQuotations::route('/'),
+            'create' => Pages\CreatePartnerQuotation::route('/create'),
+            'edit' => Pages\EditPartnerQuotation::route('/{record}/edit'),
         ];
-    }
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
-    }
-
-    protected static function getClusterName(): string
-    {
-        return class_basename(self::$cluster);
     }
 }
