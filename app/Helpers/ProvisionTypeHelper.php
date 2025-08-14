@@ -22,6 +22,13 @@ if (!function_exists('getProvisionType')) {
                 'Vacation',
                 'Compensation',
             ],
+            'Dominican Republic' => [
+                '13th Salary',
+                'Annual Bonus',
+                'Notice period',
+                'Unemployment',
+                'Vacation',
+            ],
         ];
 
         return $countryAllowedMap[$country] ?? [];
