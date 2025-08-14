@@ -36,6 +36,7 @@ class Dashboard extends Page
             ['name' => 'Cesare Pluchino', 'date' => '14-Jan', 'position' => 'Funcionário'],
             ['name' => 'Kendrick Liwanag', 'date' => '31-Oct', 'position' => 'Funcionário'],
             ['name' => 'Joyce Kua', 'date' => '28-Nov', 'position' => 'Funcionário'],
+            ['name' => 'Bianca Isabela Novaes Ben', 'date' => '1-Sept', 'position' => 'Funcionário'],
             ['name' => 'Mônica Anjos', 'date' => '20-Dec', 'position' => 'Prestador'],
             ['name' => 'Paulo Magalhães', 'date' => '21-Aug', 'position' => 'Prestador'],
             ['name' => 'Thiago Oliveira', 'date' => '22-Oct', 'position' => 'Prestador'],
