@@ -260,6 +260,12 @@ class PartnerPayrollResource extends Resource
                             'Panama' => 'filament.quotations.panama_modal',
                             'Nicaragua' => 'filament.quotations.nicaragua_modal',
                             'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
+                            'El Salvador' => 'filament.quotations.el_salvador_modal',
+                            'Jamaica' => 'filament.quotations.jamaica_modal',
+                            'Honduras' => 'filament.quotations.honduras_modal',
+                            'Guatemala' => 'filament.quotations.guatemala_modal',
+                            'Argentina' => 'filament.quotations.argentina_modal',
+                            'Brazil' => 'filament.quotations.brasil_modal',
                         ];
                         $viewModal = $viewModal[$record->country->name] ?? null;
 
@@ -273,14 +279,14 @@ class PartnerPayrollResource extends Resource
                         $currentDate = Carbon::parse($record->title);
                         $previousMonthDate = $currentDate->subMonth();
 
-                        $previousMonthRecord = Quotation::where('consultant_id', $record->consultant_id)
+                        $previousRecords  = Quotation::where('consultant_id', $record->consultant_id)
                             ->where('country_id', $record->country->id)
                             ->whereNull('deleted_at')
-                            ->whereMonth('title', $previousMonthDate->month)
-                            ->whereYear('title', $previousMonthDate->year)
-                            ->first();
-
-                        $export = new QuotationExport($record, $previousMonthRecord);
+                            ->where('title', '<', $record->title)
+                            ->where('cluster_name', 'PartnerUruguay')
+                            ->get();
+                        
+                        $export = new QuotationExport($record, $previousRecords );
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
@@ -295,6 +301,12 @@ class PartnerPayrollResource extends Resource
                             'Panama' => 'pdf.panama_quotation',
                             'Nicaragua' => 'pdf.nicaragua_quotation',
                             'Dominican Republic' => 'pdf.dominican_republic_quotation',
+                            'El Salvador' => 'pdf.el_salvador_quotation',
+                            'Honduras' => 'pdf.honduras_quotation',
+                            'Guatemala' => 'pdf.guatemala_quotation',
+                            'Jamaica' => 'pdf.jamaica_quotation',
+                            'Argentina' => 'pdf.argentina_quotation',
+                            'Brazil' => 'pdf.brasil_quotation',
                         ];
                         $pdfPage = $pdfPages[$record->country->name] ?? null;
 

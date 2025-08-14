@@ -71,18 +71,18 @@
             position: absolute;
             right: 0;
         }
+
     </style>
 </head>
 
 <body>
     @php
-        $quotationDetails = calculatePanamaQuotation($record, []);
+    $quotationDetails = calculatePanamaQuotation($record, []);
     @endphp
 
     <table class="table">
         <tr class="headerTable">
-            <th rowspan="2"> <img src="{{ public_path('images/logo.jpg') }}" alt="logo"
-                    style="width: 100px; height: auto;">
+            <th rowspan="2"> <img src="{{ public_path('images/logo.jpg') }}" alt="logo" style="width: 100px; height: auto;">
             </th>
 
             <td class="p-4 textWhite textWeightBold" colspan="1">{{ $record->country->name }}</td>
@@ -181,15 +181,6 @@
                 </span>
             </td>
         </tr>
-        <tr>
-            <th class="p-4 ">Bank Fee</th>
-            <td class="p-4 space-between">
-                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
-                <span class="recordAlignment">
-                    {{ number_format($quotationDetails['bankFee'], 2) }}
-                </span>
-            </td>
-        </tr>
         <tr class="">
             <th class="p-4 text-left">Subtotal</th>
             <td class="p-4 space-between">
@@ -199,7 +190,33 @@
                 </span>
             </td>
         </tr>
-
+        <tr>
+            <th class="p-4 ">Bank Fee</th>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
+                <span class="recordAlignment">
+                    {{ number_format($quotationDetails['bankFee'], 2) }}
+                </span>
+            </td>
+        </tr>
+        <tr class="highlight">
+            <th class="p-4 textWeightBold">Total Partial</th>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
+                <span class="recordAlignment">
+                    {{ number_format($quotationDetails['totalPartial'], 2) }}
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <th class="p-4 ">ITBMS 7%</th>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
+                <span class="recordAlignment">
+                    {{ number_format($quotationDetails['servicesTaxes'], 2) }}
+                </span>
+            </td>
+        </tr>
         <tr class="highlight">
             <th class="p-4 text-left textWeightBold">Total Invoice</th>
             <td class="p-4 space-between">
