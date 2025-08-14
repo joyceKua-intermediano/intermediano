@@ -221,8 +221,8 @@ class PartnerPayrollResource extends Resource
                     ->relationship('payrollCosts')
                     ->label('Payroll Costs')
                     ->schema([
-                        TextInput::make('notice')->label('Notice'),
-                        TextInput::make('unemployment')->label('Unemployment'),
+                        TextInput::make('notice')->label('Notice (%)'),
+                        TextInput::make('unemployment')->label('Unemployment (%)'),
                     ]),
                 Forms\Components\Hidden::make('cluster_name')
                     ->default('PartnerUruguay')
@@ -319,11 +319,11 @@ class PartnerPayrollResource extends Resource
 
                         $previousRecords = Quotation::where('consultant_id', $record->consultant_id)
                             ->where('country_id', $record->country->id)
+                            ->where('company_id', $record->company->id)
                             ->whereNull('deleted_at')
                             ->where('title', '<', $record->title)
                             ->where('cluster_name', 'PartnerUruguay')
                             ->get();
-
                         $export = new QuotationExport($record, $previousRecords);
                         $companyName = $record->company->name;
 
