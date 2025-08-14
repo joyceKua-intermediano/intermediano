@@ -2,11 +2,9 @@
 
 namespace App\Filament\Clusters\IntermedianoUruguay\Resources;
 
-use App\Exports\PartnerPayrollExport;
 use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoUruguay;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerPayrollResource\Pages;
-use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerPayrollResource\RelationManagers;
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -18,17 +16,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-use Filament\Forms\Set;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\TextInput;
 use Filament\Support\RawJs;
-use Filament\Forms\Components\Hidden;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Filament\Forms\Get;
-
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 
 class PartnerPayrollResource extends Resource
 {
@@ -57,7 +53,7 @@ class PartnerPayrollResource extends Resource
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
                     ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic']);
+                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'Brazil']);
                     })
                     ->required(),
                 Forms\Components\Select::make('consultant_id')
@@ -179,6 +175,48 @@ class PartnerPayrollResource extends Resource
                     ])
                     ->required()
                     ->reactive(),
+
+                Repeater::make('payment_provisions')
+                    ->label('Payment Provisions')
+                    ->relationship('paymentProvisions')
+                    ->schema([
+                        Select::make('provision_type_id')
+                            ->label('Provision Type')
+                            ->required()
+                            ->options(function (callable $get, callable $set) {
+                                $countryId = $get('../../country_id');
+                                $countryName = \App\Models\Country::find($countryId)?->name;
+                                $allowedNames = getProvisionType($countryName);
+                                $allOptions = \App\Models\ProvisionType::whereIn('name', $allowedNames)
+                                    ->pluck('name', 'id');
+                                $current = $get('provision_type_id');
+                                $allSelected = collect($get('../../payment_provisions'))
+                                    ->pluck('provision_type_id')
+                                    ->filter()
+                                    ->reject(fn($id) => $id === $current)
+                                    ->toArray();
+
+                                return $allOptions->reject(function ($name, $id) use ($allSelected) {
+                                    return in_array($id, $allSelected);
+                                });
+                            })
+                            ->searchable(),
+                        Forms\Components\TextInput::make('amount')
+                            ->label('Amount (Local Currency)')
+                            ->numeric()
+                            ->required(),
+                        Forms\Components\Hidden::make('country_id')
+                            ->default(function () {
+                                return \App\Models\Country::where('name', 'Brazil')->value('id');
+                            }),
+                        Forms\Components\Hidden::make('cluster_name')
+                            ->default('PartnerUruguay'),
+                    ])
+                    ->columnSpanFull()
+                    ->defaultItems(0)
+                    ->columns(2)
+                    ->grid(2)
+                    ->createItemButtonLabel('Add Provision Payment'),
                 Fieldset::make('PayrollCosts')
                     ->relationship('payrollCosts')
                     ->label('Payroll Costs')
@@ -279,14 +317,14 @@ class PartnerPayrollResource extends Resource
                         $currentDate = Carbon::parse($record->title);
                         $previousMonthDate = $currentDate->subMonth();
 
-                        $previousRecords  = Quotation::where('consultant_id', $record->consultant_id)
+                        $previousRecords = Quotation::where('consultant_id', $record->consultant_id)
                             ->where('country_id', $record->country->id)
                             ->whereNull('deleted_at')
                             ->where('title', '<', $record->title)
                             ->where('cluster_name', 'PartnerUruguay')
                             ->get();
-                        
-                        $export = new QuotationExport($record, $previousRecords );
+
+                        $export = new QuotationExport($record, $previousRecords);
                         $companyName = $record->company->name;
 
                         $transformTitle = str_replace('/', '.', $record->title);
