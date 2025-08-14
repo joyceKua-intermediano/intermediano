@@ -338,12 +338,11 @@
             <td style="background-color: #a8a8a8; font-weight:bold" align="center">
                 {{ $record->currency_name }}
             </td>
-            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
         </tr>
         @php
         $customOrder = [
         'Christmas bonus',
-        'Vacations',
+        'Vacation',
         'Forewarning',
         'Severance',
         'Seniority'
@@ -361,9 +360,6 @@
             <td></td>
             <th>{{ $provisionName }}</th>
             <td align="right">{{ number_format($amount, 2) }}</td>
-            <td align="right">
-                {{ number_format($amount / $record->exchange_rate, 2) }}
-            </td>
         </tr>
         @endforeach
         @php
@@ -391,56 +387,43 @@
             <td style="background-color: #a8a8a8; font-weight:bold" align="center">
                 {{ $record->currency_name }}
             </td>
-            <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
         </tr>
 
         <tr>
             <td></td>
             <th>Christmas bonus</th>
             <td align="right">{{ number_format($quotationDetails['balanceChristmasBonus'], 2) }}</td>
-            <td align="right">
-                {{ number_format($quotationDetails['balanceChristmasBonus'] / $record->exchange_rate, 2) }}
-            </td>
+
         </tr>
         <tr>
             <td></td>
             <th>Vacations</th>
             <td align="right">{{ number_format($quotationDetails['balanceVacations'], 2) }}</td>
-            <td align="right">
-                {{ number_format($quotationDetails['balanceVacations'] / $record->exchange_rate, 2) }}
-            </td>
+
         </tr>
         <tr>
             <td></td>
             <th>Forewarning</th>
             <td align="right">{{ number_format($quotationDetails['balanceForewarning'], 2) }}</td>
-            <td align="right">
-                {{ number_format($quotationDetails['balanceForewarning'] / $record->exchange_rate, 2) }}
-            </td>
+
         </tr>
         <tr>
             <td></td>
             <th>Severance</th>
             <td align="right">{{ number_format($quotationDetails['balanceSeverance'], 2) }}</td>
-            <td align="right">
-                {{ number_format($quotationDetails['balanceSeverance'] / $record->exchange_rate, 2) }}
-            </td>
+
         </tr>
         <tr>
             <td></td>
             <th>Seniority</th>
             <td align="right">{{ number_format($quotationDetails['balanceSeniority'], 2) }}</td>
-            <td align="right">
-                {{ number_format($quotationDetails['balanceSeniority'] / $record->exchange_rate, 2) }}
-            </td>
+
         </tr>
         <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
             <td></td>
             <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total</th>
             <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
                 {{ number_format($quotationDetails['balanceProvisionsTotal'], 2) }}</td>
-            <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
-                {{ number_format($quotationDetails['balanceProvisionsTotal'] / $record->exchange_rate, 2) }}</td>
         </tr>
         @elseif(!$isQuotation)
         <tr class="highlight">
