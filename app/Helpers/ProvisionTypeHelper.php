@@ -17,6 +17,11 @@ if (!function_exists('getProvisionType')) {
                 'Severance',
                 'Seniority',
             ],
+            'Nicaragua' => [
+                'Christmas bonus',
+                'Vacation',
+                'Compensation',
+            ],
         ];
 
         return $countryAllowedMap[$country] ?? [];
