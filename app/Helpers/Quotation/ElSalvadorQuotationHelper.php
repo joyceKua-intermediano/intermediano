@@ -1,8 +1,16 @@
 <?php
 
 if (!function_exists('calculateElSalvadorQuotation')) {
-    function calculateElSalvadorQuotation($record, $previousMonthRecord)
+    function calculateElSalvadorQuotation($record, $previousRecords)
     {
+        $previousVacations = 0;
+        $previousCompensation = 0;
+        $previousChristmasBonus = 0;
+
+        $previousPaidVacations = 0;
+        $previousPaidCompensation = 0;
+        $previousPaidChristmasBonus = 0;
+
         $grossSalary = $record->gross_salary;
         // Ordinary
         $totalGrossIncome =
@@ -26,23 +34,24 @@ if (!function_exists('calculateElSalvadorQuotation')) {
         $provisionsTotal = $compensation + $vacations + $christmasBonus;
 
         // accumulated provision
-        if ($previousMonthRecord) {
-            $previousMonthGrossIncome = $previousMonthRecord->gross_salary +
-                $previousMonthRecord->bonus +
-                $previousMonthRecord->home_allowance +
-                $previousMonthRecord->transport_allowance +
-                $previousMonthRecord->medical_allowance +
-                $previousMonthRecord->legal_grafication +
-                $previousMonthRecord->internet_allowance;
-        } else {
-            $previousMonthGrossIncome = 0;
-        };
+        if ($previousRecords && $previousRecords->count()) {
+            foreach ($previousRecords as $item) {
+                $gross = $item->gross_salary +
+                    $item->bonus +
+                    $item->transport_allowance +
+                    $item->food_allowance;
 
-        $accumulatedCompensation = (0.0417 * $previousMonthGrossIncome) + $compensation;
-        $accumulatedChristmasBonus = (0.0833 * $previousMonthGrossIncome) + $christmasBonus;
-        $accumulatedVacations = (0.0417 * $previousMonthGrossIncome) + $vacations;
+                $previousChristmasBonus += 0.0833 * $gross;
+                $previousVacations += 0.0417 * $gross;
+                $previousCompensation += 0.0417 * $gross;
 
-        $accumulatedProvisionsTotal = $accumulatedCompensation + $accumulatedChristmasBonus + $accumulatedVacations;
+                // Payments
+                $previousPaidChristmasBonus += $item->paymentProvisions->where('provisionType.name', 'Christmas bonus')->sum('amount');
+                $previousPaidVacations += $item->paymentProvisions->where('provisionType.name', 'Vacation')->sum('amount');
+                $previousPaidCompensation += $item->paymentProvisions->where('provisionType.name', 'Compensation')->sum('amount');
+            }
+        }
+
         // end of accumulated provision
 
         $subTotalGrossPayroll = $totalGrossIncome + $provisionsTotal + $payrollCostsTotal;
@@ -51,6 +60,38 @@ if (!function_exists('calculateElSalvadorQuotation')) {
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
         $servicesTaxes = $subTotal * 0.13;
         $totalInvoice = $subTotal + $servicesTaxes;
+
+        $currentPaidChristmasBonus = $record->paymentProvisions
+            ->where('provisionType.name', 'Christmas bonus')
+            ->sum('amount');
+        $currentPaidVacations = $record->paymentProvisions
+            ->where('provisionType.name', 'Vacation')
+            ->sum('amount');
+        $currentPaidCompensation = $record->paymentProvisions
+            ->where('provisionType.name', 'Compensation')
+            ->sum('amount');
+        // All-time payments
+
+        $totalPaidChristmasBonus = $previousPaidChristmasBonus + $currentPaidChristmasBonus;
+        $totalPaidVacations = $previousPaidVacations + $currentPaidVacations;
+        $totalPaidCompensation = $previousPaidCompensation + $currentPaidCompensation;
+
+        // accumulated
+
+        $accumulatedChristmasBonus = ($previousChristmasBonus + $christmasBonus) - $previousPaidChristmasBonus;
+        $accumulatedVacations = ($previousVacations + $vacations) - $previousPaidVacations;
+        $accumulatedCompensation = ($previousCompensation + $compensation) - $previousPaidCompensation;
+
+
+        $accumulatedProvisionsTotal = $accumulatedChristmasBonus + $accumulatedVacations + $accumulatedCompensation;
+
+        // Balances
+
+        $balanceChristmasBonus = $accumulatedChristmasBonus - $currentPaidChristmasBonus;
+        $balanceVacations = $accumulatedVacations - $currentPaidVacations;
+        $balanceCompensation = $accumulatedCompensation - $currentPaidCompensation;
+
+        $balanceProvisionsTotal = $balanceChristmasBonus + $balanceVacations + $balanceCompensation;
 
         return [
             'grossSalary' => $grossSalary,
@@ -69,11 +110,17 @@ if (!function_exists('calculateElSalvadorQuotation')) {
             'compensation' => $compensation,
             'christmasBonus' => $christmasBonus,
             'vacations' => $vacations,
-            'previousMonthGrossIncome' => $previousMonthGrossIncome,
+            'hasPreviousRecords' => !empty($previousRecords),
+
             'accumulatedCompensation' => $accumulatedCompensation,
             'accumulatedChristmasBonus' => $accumulatedChristmasBonus,
             'accumulatedVacations' => $accumulatedVacations,
             'accumulatedProvisionsTotal' => $accumulatedProvisionsTotal,
+            'paymentProvisions' => $record->paymentProvisions,
+            'balanceChristmasBonus' => $balanceChristmasBonus,
+            'balanceVacations' => $balanceVacations,
+            'balanceCompensation' => $balanceCompensation,
+            'balanceProvisionsTotal' => $balanceProvisionsTotal,
         ];
     }
 }
