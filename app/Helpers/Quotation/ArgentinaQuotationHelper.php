@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('calculateArgentinaQuotation')) {
-    function calculateArgentinaQuotation($record, $previousMonthRecord)
+    function calculateArgentinaQuotation($record, $previousRecords)
     {
         $grossSalary = $record->gross_salary;
         $nationalHolidayplus = (($grossSalary / 25) - ($grossSalary / 30)) * 2;
@@ -42,14 +42,14 @@ if (!function_exists('calculateArgentinaQuotation')) {
         $provisionsTotal = $christmasBonus + $vacations + $vacationsPlus + $christmasBonusOverVacation + $forewarningSAC + $christmasBonusOverForewarning + $compensationForYearsOfService;
 
         // accumulated provision
-        if ($previousMonthRecord) {
-            $previousMonthGrossIncome = $previousMonthRecord->gross_salary +
-                $previousMonthRecord->bonus +
-                $previousMonthRecord->home_allowance +
-                $previousMonthRecord->transport_allowance +
-                $previousMonthRecord->medical_allowance +
-                $previousMonthRecord->legal_grafication +
-                $previousMonthRecord->internet_allowance;
+        if ($previousRecords && $previousRecords->count()) {
+            $previousMonthGrossIncome = $previousRecords->gross_salary +
+                $previousRecords->bonus +
+                $previousRecords->home_allowance +
+                $previousRecords->transport_allowance +
+                $previousRecords->medical_allowance +
+                $previousRecords->legal_grafication +
+                $previousRecords->internet_allowance;
         } else {
             $previousMonthGrossIncome = 0;
         }

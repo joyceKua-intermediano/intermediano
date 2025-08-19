@@ -53,7 +53,9 @@
 
 <body>
     @php
+    use Illuminate\Support\Str;
     $quotationDetails = calculateBrasilQuotation($record, $previousRecords);
+    $isPartner = Str::contains($record->cluster_name, 'Partner');
     @endphp
 
     <table style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: red">
@@ -367,7 +369,7 @@
             </td>
             <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
         </tr>
-        @elseif ($quotationDetails['hasPreviousRecords'])
+        @elseif ($quotationDetails['hasPreviousRecords']  && !$isPartner)
         <!-- Accumulated Provisions -->
         <tr class="highlight">
             <td></td>
@@ -541,7 +543,7 @@
                 {{ number_format($quotationDetails['balanceProvisionsTotal'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
-        @elseif(!$isQuotation)
+        @elseif(!$isQuotation && !$isPartner)
         <tr class="highlight">
             <td></td>
             <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
