@@ -53,6 +53,8 @@
 
 <body>
     @php
+    use Illuminate\Support\Str;
+    $isPartner = Str::contains($record->cluster_name, 'Partner');
     $quotationDetails = calculatePanamaQuotation($record, $previousRecords);
     @endphp
 
@@ -279,7 +281,7 @@
                 "{{ $previousMonthRecord->currency_name }}", Current: "{{ $record->currency_name }}".
             </td>
         </tr>
-        @elseif ($quotationDetails['hasPreviousRecords'])
+        @elseif ($quotationDetails['hasPreviousRecords'] && !$isPartner)
         <!-- Accumulated Provisions -->
         <tr class="highlight">
             <td></td>
@@ -425,7 +427,7 @@
             <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
                 {{ number_format($quotationDetails['balanceProvisionsTotal'], 2) }}</td>
         </tr>
-        @elseif(!$isQuotation)
+        @elseif(!$isQuotation && !$isPartner)
         <tr class="highlight">
             <td></td>
             <th style="background-color: #a8a8a8; font-weight:bold" align="center"> Accumulated Provisions</th>
