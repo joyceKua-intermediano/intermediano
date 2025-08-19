@@ -1,7 +1,7 @@
 <?php
 
 if (!function_exists('calculateJamaicaQuotation')) {
-    function calculateJamaicaQuotation($record, $previousMonthRecord)
+    function calculateJamaicaQuotation($record, $previousRecords)
     {
         $grossSalary = $record->gross_salary;
         // Ordinary
@@ -28,14 +28,14 @@ if (!function_exists('calculateJamaicaQuotation')) {
         $provisionsTotal = $redundancy + $vacations + $notice;
 
         // accumulated provision
-        if ($previousMonthRecord) {
-            $previousMonthGrossIncome = $previousMonthRecord->gross_salary +
-                $previousMonthRecord->bonus +
-                $previousMonthRecord->home_allowance +
-                $previousMonthRecord->transport_allowance +
-                $previousMonthRecord->medical_allowance +
-                $previousMonthRecord->legal_grafication +
-                $previousMonthRecord->internet_allowance;
+        if ($previousRecords && $previousRecords->count()) {
+            $previousMonthGrossIncome = $previousRecords->gross_salary +
+                $previousRecords->bonus +
+                $previousRecords->home_allowance +
+                $previousRecords->transport_allowance +
+                $previousRecords->medical_allowance +
+                $previousRecords->legal_grafication +
+                $previousRecords->internet_allowance;
         } else {
             $previousMonthGrossIncome = 0;
         };
