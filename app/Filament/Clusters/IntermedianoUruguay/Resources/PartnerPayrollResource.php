@@ -168,6 +168,8 @@ class PartnerPayrollResource extends Resource
                     ->default(0)
                     ->hidden(true)
                     ->label('Capped (LIMIT) Social Security'),
+                \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
+
                 Forms\Components\Select::make('dependent')
                     ->options([
                         '1' => 'Yes',
