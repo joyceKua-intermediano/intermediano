@@ -21,22 +21,22 @@ if (!function_exists('calculateCanadaQuotation')) {
             $record->legal_grafication +
             $record->internet_allowance;
 
-        $canadanPension = $totalGrossIncome * .0595;
-        $employmentInsurance = $totalGrossIncome * .0232;
+        $canadanPension = .0595 * (71300-3500) / 12;
+        $canadanPensionPlan2 = .04 * (81200-71300) / 12;
+        $employmentInsurance = $totalGrossIncome * .0230;
         $employerHealthTax = $totalGrossIncome * 0.0195;
-        $workerCompensation = $totalGrossIncome * .01;
+        $workerCompensation = $totalGrossIncome * .0155;
         $glInsurance = $totalGrossIncome * .01;
 
 
         $payrollCostsTotal =
             $canadanPension +
             $employmentInsurance +
-            $employerHealthTax +
-            $workerCompensation +
-            $glInsurance;
+            $canadanPensionPlan2 +
+            $workerCompensation;
 
         $vacation = 0.0416 * $totalGrossIncome;
-        $indemnification = 0.0833 * $totalGrossIncome;
+        $indemnification = 0.0208 * $totalGrossIncome;
         $provisionsTotal = $vacation + $indemnification;
 
         // accumulated provision
@@ -63,7 +63,7 @@ if (!function_exists('calculateCanadaQuotation')) {
         // end of accumulated provision
 
         $subTotalGrossPayroll = $totalGrossIncome + $provisionsTotal + $payrollCostsTotal;
-        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : $totalGrossIncome * ($record->fee / 100);
+        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : $subTotalGrossPayroll * ($record->fee / 100);
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee;
         $municipalTax = 0 * $subTotal;
@@ -113,6 +113,7 @@ if (!function_exists('calculateCanadaQuotation')) {
             'employmentInsurance' => $employmentInsurance,
             'employerHealthTax' => $employerHealthTax,
             'workerCompensation' => $workerCompensation,
+            'canadanPensionPlan2' => $canadanPensionPlan2,
             'glInsurance' => $glInsurance,
             'vacation' => $vacation,
             'indemnification' => $indemnification,
