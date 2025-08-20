@@ -190,7 +190,7 @@
         </tr> --}}
         <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
             <td></td>
-            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Gross Payroll, PR Costs, Fees  and Taxes (____)</th>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Gross Payroll, PR Costs, Fees and Taxes (____)</th>
             <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
                 {{ number_format($quotationDetails['totalInvoice'], 2) }}</td>
             <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
@@ -222,18 +222,19 @@
         </tr>
         <tr>
             <td></td>
+            <th>Canada Pension Plan 2</th>
+            <td align="right"> {{ number_format($quotationDetails['canadanPensionPlan2'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['canadanPensionPlan2'] / $record->exchange_rate, 2) }}</td>
+
+        </tr>
+        <tr>
+            <td></td>
             <th>Employment Insurance</th>
             <td align="right"> {{ number_format($quotationDetails['employmentInsurance'], 2) }}</td>
             <td align="right">{{ number_format($quotationDetails['employmentInsurance'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
-        <tr>
-            <td></td>
-            <th>Employer Health Tax or EHT</th>
-            <td align="right">{{ number_format($quotationDetails['employerHealthTax'], 2) }}</td>
-            <td align="right">{{ number_format($quotationDetails['employerHealthTax'] / $record->exchange_rate, 2) }}
-            </td>
-        </tr>
+
         <tr>
             <td></td>
             <th>Workers Compensation</th>
@@ -241,13 +242,7 @@
             <td align="right">{{ number_format($quotationDetails['workerCompensation'] / $record->exchange_rate, 2) }}
             </td>
         </tr>
-        <tr>
-            <td></td>
-            <th>GL Insurance</th>
-            <td align="right">{{ number_format($quotationDetails['glInsurance'], 2) }}</td>
-            <td align="right">{{ number_format($quotationDetails['glInsurance'] / $record->exchange_rate, 2) }}
-            </td>
-        </tr>
+
         <td></td>
         <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
             <td></td>
