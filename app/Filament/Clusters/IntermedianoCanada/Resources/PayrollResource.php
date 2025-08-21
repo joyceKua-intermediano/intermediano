@@ -6,7 +6,6 @@ use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoCanada;
 use App\Filament\Clusters\IntermedianoCanada\Resources\PayrollResource\Pages;
 use App\Filament\Clusters\IntermedianoCanada\Resources\PayrollResource\RelationManagers;
-use App\Helpers\PayrollCostsFormHelper;
 use App\Models\Quotation;
 use App\Models\Consultant;
 use Filament\Forms;
@@ -187,12 +186,8 @@ class PayrollResource extends Resource
                         '0' => 'No',
                     ])
                     ->required(),
-                PayrollCostsFormHelper::getPayrollCostsFieldset('Brazil', [
-                    TextInput::make('medical_insurance')->label('Medical Plan & Life Insurance'),
-                    TextInput::make('meal')->label('Meal Tickets'),
-                    TextInput::make('transportation')->label('Transportation Tickets'),
-                    TextInput::make('operational_costs')->label('Operational Costs'),
-                ]),
+                \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
+
                 Repeater::make('payment_provisions')
                     ->label('Payment Provisions')
                     ->relationship('paymentProvisions')

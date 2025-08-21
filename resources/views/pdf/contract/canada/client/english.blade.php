@@ -176,7 +176,7 @@ $type = $isAdmin ? 'admin' : 'employee';
             monthly basis, based on the calculation
             below:</p>
         <div style="margin-top: -20px !important">
-            @include('pdf.canada_quotation', ['record' => $record->quotation, 'hideHeader' => true])
+            @include('pdf.uruguay_quotation', ['record' => $record->quotation, 'hideHeader' => true])
         </div>
         @include('pdf.contract.layout.footer')
     </main>

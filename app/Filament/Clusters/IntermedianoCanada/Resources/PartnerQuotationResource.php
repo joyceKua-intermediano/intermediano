@@ -6,7 +6,6 @@ use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoCanada;
 use App\Filament\Clusters\IntermedianoCanada\Resources\PartnerQuotationResource\Pages;
 use App\Filament\Clusters\IntermedianoCanada\Resources\PartnerQuotationResource\RelationManagers;
-use App\Helpers\PayrollCostsFormHelper;
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -177,12 +176,8 @@ class PartnerQuotationResource extends Resource
                     ])
                     ->required()
                     ->reactive(),
-                PayrollCostsFormHelper::getPayrollCostsFieldset('Brazil', [
-                    TextInput::make('medical_insurance')->label('Medical Plan & Life Insurance'),
-                    TextInput::make('meal')->label('Meal Tickets'),
-                    TextInput::make('transportation')->label('Transportation Tickets'),
-                    TextInput::make('operational_costs')->label('Operational Costs'),
-                ]),
+                \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
+
                 Forms\Components\Hidden::make(name: 'cluster_name')
                     ->default('PartnerCanada')
                     ->label('PartnerCanada'),

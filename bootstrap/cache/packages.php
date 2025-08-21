@@ -88,17 +88,6 @@
       0 => 'Filament\\Widgets\\WidgetsServiceProvider',
     ),
   ),
-  'intervention/image' => 
-  array (
-    'aliases' => 
-    array (
-      'Image' => 'Intervention\\Image\\Facades\\Image',
-    ),
-    'providers' => 
-    array (
-      0 => 'Intervention\\Image\\ImageServiceProvider',
-    ),
-  ),
   'jenssegers/agent' => 
   array (
     'providers' => 
@@ -112,24 +101,13 @@
   ),
   'joaopaulolndev/filament-edit-profile' => 
   array (
-    'aliases' => 
-    array (
-      'FilamentEditProfile' => 'Joaopaulolndev\\FilamentEditProfile\\Facades\\FilamentEditProfile',
-    ),
     'providers' => 
     array (
       0 => 'Joaopaulolndev\\FilamentEditProfile\\FilamentEditProfileServiceProvider',
     ),
-  ),
-  'joshembling/image-optimizer' => 
-  array (
     'aliases' => 
     array (
-      'ImageOptimizer' => 'Joshembling\\ImageOptimizer\\Facades\\ImageOptimizer',
-    ),
-    'providers' => 
-    array (
-      0 => 'Joshembling\\ImageOptimizer\\ImageOptimizerServiceProvider',
+      'FilamentEditProfile' => 'Joaopaulolndev\\FilamentEditProfile\\Facades\\FilamentEditProfile',
     ),
   ),
   'kirschbaum-development/eloquent-power-joins' => 
@@ -162,35 +140,35 @@
   ),
   'livewire/livewire' => 
   array (
-    'aliases' => 
-    array (
-      'Livewire' => 'Livewire\\Livewire',
-    ),
     'providers' => 
     array (
       0 => 'Livewire\\LivewireServiceProvider',
     ),
+    'aliases' => 
+    array (
+      'Livewire' => 'Livewire\\Livewire',
+    ),
   ),
   'maatwebsite/excel' => 
   array (
-    'aliases' => 
-    array (
-      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
-    ),
     'providers' => 
     array (
       0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
+    'aliases' => 
+    array (
+      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
+    ),
   ),
   'mokhosh/filament-kanban' => 
   array (
-    'aliases' => 
-    array (
-      'FilamentKanban' => 'Mokhosh\\FilamentKanban\\Facades\\FilamentKanban',
-    ),
     'providers' => 
     array (
       0 => 'Mokhosh\\FilamentKanban\\FilamentKanbanServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'FilamentKanban' => 'Mokhosh\\FilamentKanban\\Facades\\FilamentKanban',
     ),
   ),
   'nesbot/carbon' => 
@@ -223,24 +201,13 @@
   ),
   'ryangjchandler/blade-capture-directive' => 
   array (
-    'aliases' => 
-    array (
-      'BladeCaptureDirective' => 'RyanChandler\\BladeCaptureDirective\\Facades\\BladeCaptureDirective',
-    ),
     'providers' => 
     array (
       0 => 'RyanChandler\\BladeCaptureDirective\\BladeCaptureDirectiveServiceProvider',
     ),
-  ),
-  'saade/filament-autograph' => 
-  array (
     'aliases' => 
     array (
-      'FilamentAutograph' => 'Saade\\FilamentAutograph\\Facades\\FilamentAutograph',
-    ),
-    'providers' => 
-    array (
-      0 => 'Saade\\FilamentAutograph\\FilamentAutographServiceProvider',
+      'BladeCaptureDirective' => 'RyanChandler\\BladeCaptureDirective\\Facades\\BladeCaptureDirective',
     ),
   ),
   'spatie/laravel-permission' => 

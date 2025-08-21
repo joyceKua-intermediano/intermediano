@@ -17,13 +17,12 @@ use Filament\Panel;
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, ReceivesWelcomeNotification;
+    use HasFactory, Notifiable, HasRoles,ReceivesWelcomeNotification;
 
     protected static function booted(): void
     {
         static::creating(function (User $user) {
-            if (!$user->password)
-                $user->password = 'password';
+            if (!$user->password) $user->password = uniqid();
         });
 
         static::created(function (User $user) {
@@ -83,9 +82,5 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function canAccessPanel(Panel $panel): bool
     {
         return auth()->check();
-    }
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
     }
 }

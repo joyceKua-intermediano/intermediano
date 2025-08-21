@@ -10,7 +10,6 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Illuminate\Support\Str;
 
 class QuotationExport implements FromView, WithEvents
 {
@@ -27,7 +26,6 @@ class QuotationExport implements FromView, WithEvents
     public function view(): View
     {
         $isIntegral = $this->record->is_integral;
-        $isPartner = Str::contains($this->record->cluster_name, 'Partner');
         switch (true) {
             case $this->record->is_freelance === 1:
                 $exportFile = 'exports.quotations.freelance';
@@ -41,6 +39,7 @@ class QuotationExport implements FromView, WithEvents
             case $this->record->cluster_name === 'IntermedianoCostaRica':
                 $exportFile = 'exports.quotations.costa_rica';
                 break;
+
             case $this->record->cluster_name === 'IntermedianoDoBrasilLtda':
                 $exportFile = 'exports.quotations.brasil';
                 break;
@@ -56,72 +55,50 @@ class QuotationExport implements FromView, WithEvents
             case $this->record->cluster_name === 'IntermedianoCanada' && $this->record->country->name === 'Brazil':
                 $exportFile = 'exports.quotations.brasil';
                 break;
-
+            case $this->record->cluster_name === 'PartnerHongkong' && $this->record->country->name === 'Brazil':
+                $exportFile = 'exports.quotations.brasil';
+                break;
             case $this->record->cluster_name === 'IntermedianoCanada':
                 $exportFile = 'exports.quotations.canada';
                 break;
-
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Brazil':
+                $exportFile = 'exports.quotations.brasil';
+                break;
+            case $this->record->cluster_name === 'PartnerCanada' && $this->record->country->name === 'Brazil':
+                $exportFile = 'exports.quotations.brasil';
+                break;
             case $this->record->cluster_name === 'IntermedianoUruguay':
                 $exportFile = 'exports.quotations.uruguay';
                 break;
             case $this->record->cluster_name === 'IntermedianoHongkong':
                 $exportFile = 'exports.quotations.hongkong';
                 break;
-
-            // Partner Sections
-            case $isPartner && $this->record->country->name === 'Brazil':
-                $exportFile = 'exports.quotations.brasil';
-                break;
-            case $isPartner && $this->record->country->name === 'Panama':
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Panama':
                 $exportFile = 'exports.quotations.panama';
                 break;
-            case $isPartner && $this->record->country->name === 'Nicaragua':
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Nicaragua':
                 $exportFile = 'exports.quotations.nicaragua';
                 break;
-            case $isPartner && $this->record->country->name === 'Dominican Republic':
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Dominican Republic':
                 $exportFile = 'exports.quotations.dominican_republic';
                 break;
-            case $isPartner && $this->record->country->name === 'El Salvador':
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'El Salvador':
                 $exportFile = 'exports.quotations.el_salvador';
                 break;
-            case $isPartner && $this->record->country->name === 'Honduras':
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Honduras':
                 $exportFile = 'exports.quotations.honduras';
                 break;
-            case $isPartner && $this->record->country->name === 'Guatemala':
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Guatemala':
                 $exportFile = 'exports.quotations.guatemala';
                 break;
-            case $isPartner && $this->record->country->name === 'Jamaica':
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Jamaica':
                 $exportFile = 'exports.quotations.jamaica';
                 break;
-            case $isPartner && $this->record->country->name === 'Argentina':
+            case $this->record->cluster_name === 'PartnerUruguay' && $this->record->country->name === 'Argentina':
                 $exportFile = 'exports.quotations.argentina';
                 break;
-            case $isPartner && $this->record->country->name === 'Canada':
-                $exportFile = 'exports.quotations.canada';
-                break;
-            case $isPartner && $this->record->country->name === 'Chile':
-                $exportFile = 'exports.quotations.chile';
-                break;
-            case $isPartner && $this->record->country->name === 'Colombia':
-                $exportFile = $isIntegral ? 'exports.integral_quotation' : 'exports.quotation';
-                break;
-            case $isPartner && $this->record->country->name === 'Ecuador':
-                $exportFile = 'exports.quotations.ecuador';
-                break;
-            case $isPartner && $this->record->country->name === 'Hong Kong':
-                $exportFile = 'exports.quotations.hongkong';
-                break;
-            case $isPartner && $this->record->country->name === 'Mexico':
-                $exportFile = 'exports.quotations.mexico';
-                break;
-            case $isPartner && $this->record->country->name === 'Peru':
-                $exportFile = 'exports.quotations.peru';
-                break;
-            case $isPartner && $this->record->country->name === 'Costa Rica':
-                $exportFile = 'exports.quotations.costa_rica';
-                break;
-            case $isPartner && $this->record->country->name === 'Uruguay':
-                $exportFile = 'exports.quotations.uruguay';
+            case $this->record->cluster_name === 'PartnerCostaRica' && $this->record->country->name === 'Panama':
+                $exportFile = 'exports.quotations.panama';
                 break;
 
             default:
