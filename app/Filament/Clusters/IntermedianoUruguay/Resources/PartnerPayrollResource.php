@@ -5,6 +5,7 @@ namespace App\Filament\Clusters\IntermedianoUruguay\Resources;
 use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoUruguay;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerPayrollResource\Pages;
+use App\Helpers\PayrollCostsFormHelper;
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -168,8 +169,12 @@ class PartnerPayrollResource extends Resource
                     ->default(0)
                     ->hidden(true)
                     ->label('Capped (LIMIT) Social Security'),
-                \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
-
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Brazil', [
+                    TextInput::make('medical_insurance')->label('Medical Plan & Life Insurance'),
+                    TextInput::make('meal')->label('Meal Tickets'),
+                    TextInput::make('transportation')->label('Transportation Tickets'),
+                    TextInput::make('operational_costs')->label('Operational Costs'),
+                ]),
                 Forms\Components\Select::make('dependent')
                     ->options([
                         '1' => 'Yes',

@@ -34,9 +34,7 @@ class EmployeeResource extends Resource
             ->schema([
                 Forms\Components\Select::make('name')
                     ->label('Consultant Name')
-                    ->options(Consultant::whereHas('country', function ($query) {
-                         $query->where('name', 'Canada');
-                    })->pluck('name', 'name'))
+                    ->options(Consultant::all()->pluck('name', 'name'))
                     ->required()
                     ->searchable(),
                 Forms\Components\TextInput::make('email')

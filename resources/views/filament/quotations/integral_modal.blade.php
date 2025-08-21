@@ -84,9 +84,9 @@
                 <span class="mr-4">
                     {{ $record->currency_name }}
                 </span>
-                <span class="text-gray-800">{{ number_format($quotationDetails['bankFee'], 2) }}</span>
+                <span class="text-gray-800">{{ number_format($quotationDetails['bankFee'] , 2) }}</span>
             </div>
-            <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['bankFee'], 2) }}</span>
+            <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['bankFee'] / $record->exchange_rate, 2) }}</span>
         </div>
 
         <div class="flex justify-between p-2">

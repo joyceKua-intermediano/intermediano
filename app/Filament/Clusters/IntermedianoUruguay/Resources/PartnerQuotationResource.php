@@ -5,6 +5,7 @@ namespace App\Filament\Clusters\IntermedianoUruguay\Resources;
 use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoUruguay;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerQuotationResource\Pages;
+use App\Helpers\PayrollCostsFormHelper;
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -176,7 +177,12 @@ class PartnerQuotationResource extends Resource
                         '0' => 'No',
                     ])
                     ->required(),
-                \App\Helpers\BrazilPayrollCostsFormHelper::getPayrollCostsFieldset(),
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Brazil', [
+                    TextInput::make('medical_insurance')->label('Medical Plan & Life Insurance'),
+                    TextInput::make('meal')->label('Meal Tickets'),
+                    TextInput::make('transportation')->label('Transportation Tickets'),
+                    TextInput::make('operational_costs')->label('Operational Costs'),
+                ]),
 
                 Forms\Components\Hidden::make('cluster_name')
                     ->default('PartnerUruguay')
