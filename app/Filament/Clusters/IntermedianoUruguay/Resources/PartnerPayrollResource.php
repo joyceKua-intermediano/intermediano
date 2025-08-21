@@ -6,6 +6,7 @@ use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoUruguay;
 use App\Filament\Clusters\IntermedianoUruguay\Resources\PartnerPayrollResource\Pages;
 use App\Helpers\PayrollCostsFormHelper;
+use App\Forms\Components\GrossIncomeBenefitsFieldHelper;
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -26,7 +27,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-
 class PartnerPayrollResource extends Resource
 {
     protected static ?string $model = Quotation::class;
@@ -53,10 +53,21 @@ class PartnerPayrollResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
-                    ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'Brazil']);
-                    })
+                    ->reactive()
+                    ->relationship('country', 'name')
                     ->required(),
+                Select::make('is_integral')
+                    ->live()
+                    ->required()
+                    ->label('Type of Payroll')
+                    ->visible(
+                        fn(callable $get) =>
+                        \App\Models\Country::find($get('country_id'))?->name === 'Colombia'
+                    )
+                    ->options([
+                        '0' => 'Ordinary',
+                        '1' => 'Integral',
+                    ]),
                 Forms\Components\Select::make('consultant_id')
                     ->label('Consultant')
                     ->relationship('consultant', 'name')
@@ -116,51 +127,16 @@ class PartnerPayrollResource extends Resource
                         $component->state($cleanedState);
                     })
                     ->required(),
-
-                Forms\Components\TextInput::make('home_allowance')
-                    ->mask(RawJs::make(<<<'JS'
-                    $money($input, '.', ',', 2)
-                    JS))
-                    ->afterStateUpdated(function ($component, $state) {
-                        $cleanedState = preg_replace('/[^0-9\.]+/', '', $state);
-
-                        $component->state($cleanedState);
-                    })
-                    ->required(),
-                Forms\Components\TextInput::make('medical_allowance')
-                    ->mask(RawJs::make(<<<'JS'
-                    $money($input, '.', ',', 2)
-                    JS))
-                    ->afterStateUpdated(function ($component, $state) {
-                        $cleanedState = preg_replace('/[^0-9\.]+/', '', $state);
-
-                        $component->state($cleanedState);
-                    })
-                    ->default(0)
-                    ->required(),
-                Forms\Components\TextInput::make('legal_grafication')
-                    ->label('Legal Gratification')
-                    ->mask(RawJs::make(<<<'JS'
-                    $money($input, '.', ',', 2)
-                    JS))
-                    ->afterStateUpdated(function ($component, $state) {
-                        $cleanedState = preg_replace('/[^0-9\.]+/', '', $state);
-
-                        $component->state($cleanedState);
-                    })
-                    ->default(0)
-                    ->required(),
-                Forms\Components\TextInput::make('internet_allowance')
-                    ->mask(RawJs::make(<<<'JS'
-                    $money($input, '.', ',', 2)
-                    JS))
-                    ->afterStateUpdated(function ($component, $state) {
-                        $cleanedState = preg_replace('/[^0-9\.]+/', '', $state);
-
-                        $component->state($cleanedState);
-                    })
-                    ->default(0)
-                    ->required(),
+                GrossIncomeBenefitsFieldHelper::make('home_allowance'),
+                GrossIncomeBenefitsFieldHelper::make('family_allowance'),
+                GrossIncomeBenefitsFieldHelper::make('medical_allowance'),
+                GrossIncomeBenefitsFieldHelper::make('legal_grafication')
+                    ->label('Legal Gratification'),
+                GrossIncomeBenefitsFieldHelper::make('internet_allowance'),
+                GrossIncomeBenefitsFieldHelper::make('transport_allowance')
+                    ->label('Car Allowance'),
+                GrossIncomeBenefitsFieldHelper::make('food_allowance')
+                    ->label('Food Allowance'),
                 Forms\Components\TextInput::make('uvt_amount')
                     ->default(0)
                     ->hidden(true)
@@ -169,12 +145,6 @@ class PartnerPayrollResource extends Resource
                     ->default(0)
                     ->hidden(true)
                     ->label('Capped (LIMIT) Social Security'),
-                PayrollCostsFormHelper::getPayrollCostsFieldset('Brazil', [
-                    TextInput::make('medical_insurance')->label('Medical Plan & Life Insurance'),
-                    TextInput::make('meal')->label('Meal Tickets'),
-                    TextInput::make('transportation')->label('Transportation Tickets'),
-                    TextInput::make('operational_costs')->label('Operational Costs'),
-                ]),
                 Forms\Components\Select::make('dependent')
                     ->options([
                         '1' => 'Yes',
@@ -182,55 +152,33 @@ class PartnerPayrollResource extends Resource
                     ])
                     ->required()
                     ->reactive(),
+                // Brazil
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Brazil', [
+                    TextInput::make('medical_insurance')->label('Medical Plan & Life Insurance'),
+                    TextInput::make('meal')->label('Meal Tickets'),
+                    TextInput::make('transportation')->label('Transportation Tickets'),
+                    TextInput::make('operational_costs')->label('Operational Costs'),
+                ]),
 
-                Repeater::make('payment_provisions')
-                    ->label('Payment Provisions')
-                    ->relationship('paymentProvisions')
-                    ->schema([
-                        Select::make('provision_type_id')
-                            ->label('Provision Type')
-                            ->required()
-                            ->options(function (callable $get, callable $set) {
-                                $countryId = $get('../../country_id');
-                                $countryName = \App\Models\Country::find($countryId)?->name;
-                                $allowedNames = getProvisionType($countryName);
-                                $allOptions = \App\Models\ProvisionType::whereIn('name', $allowedNames)
-                                    ->pluck('name', 'id');
-                                $current = $get('provision_type_id');
-                                $allSelected = collect($get('../../payment_provisions'))
-                                    ->pluck('provision_type_id')
-                                    ->filter()
-                                    ->reject(fn($id) => $id === $current)
-                                    ->toArray();
+                // Dominican Republic
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Dominican Republic', [
+                    TextInput::make('notice')->label('Notice (%)'),
+                    TextInput::make('unemployment')->label('Unemployment (%)'),
+                ]),
+                // Chile
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Chile', [
+                    TextInput::make('uf_month')->label('UF of the Month')->numeric()->required(),
+                ]),
+                // Peru
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Peru', [
+                    TextInput::make('eps')->label('EPS')->required(),
+                ]),
 
-                                return $allOptions->reject(function ($name, $id) use ($allSelected) {
-                                    return in_array($id, $allSelected);
-                                });
-                            })
-                            ->searchable(),
-                        Forms\Components\TextInput::make('amount')
-                            ->label('Amount (Local Currency)')
-                            ->numeric()
-                            ->required(),
-                        Forms\Components\Hidden::make('country_id')
-                            ->default(function () {
-                                return \App\Models\Country::where('name', 'Brazil')->value('id');
-                            }),
-                        Forms\Components\Hidden::make('cluster_name')
-                            ->default('PartnerUruguay'),
-                    ])
-                    ->columnSpanFull()
-                    ->defaultItems(0)
-                    ->columns(2)
-                    ->grid(2)
-                    ->createItemButtonLabel('Add Provision Payment'),
-                Fieldset::make('PayrollCosts')
-                    ->relationship('payrollCosts')
-                    ->label('Payroll Costs')
-                    ->schema([
-                        TextInput::make('notice')->label('Notice (%)'),
-                        TextInput::make('unemployment')->label('Unemployment (%)'),
-                    ]),
+                // Costa Rica
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Costa Rica', [
+                    TextInput::make('medical_insurance')->label('Medical Insurance (%)'),
+
+                ]),
                 Forms\Components\Hidden::make('cluster_name')
                     ->default('PartnerUruguay')
                     ->label('PartnerUruguay'),
@@ -301,6 +249,7 @@ class PartnerPayrollResource extends Resource
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
+                        $isIntegral = $record->is_integral;
                         $viewModal = [
                             'Panama' => 'filament.quotations.panama_modal',
                             'Nicaragua' => 'filament.quotations.nicaragua_modal',
@@ -311,6 +260,15 @@ class PartnerPayrollResource extends Resource
                             'Guatemala' => 'filament.quotations.guatemala_modal',
                             'Argentina' => 'filament.quotations.argentina_modal',
                             'Brazil' => 'filament.quotations.brasil_modal',
+                            'Canada' => 'filament.quotations.canada_modal',
+                            'Chile' => 'filament.quotations.chile_modal',
+                            'Colombia' => $isIntegral ? 'filament.quotations.integral_modal' : 'filament.quotations.ordinary_modal',
+                            'Ecuador' => 'filament.quotations.ecuador_modal',
+                            'Hong Kong' => 'filament.quotations.hongkong_modal',
+                            'Mexico' => 'filament.quotations.mexico_modal',
+                            'Peru' => 'filament.quotations.peru_modal',
+                            'Uruguay' => 'filament.quotations.uruguay_modal',
+                            'Costa Rica' => 'filament.quotations.costa_rica_modal',
                         ];
                         $viewModal = $viewModal[$record->country->name] ?? null;
 
@@ -342,6 +300,7 @@ class PartnerPayrollResource extends Resource
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
+                        $isIntegral = $record->is_integral;
                         $pdfPages = [
                             'Panama' => 'pdf.panama_quotation',
                             'Nicaragua' => 'pdf.nicaragua_quotation',
@@ -352,6 +311,15 @@ class PartnerPayrollResource extends Resource
                             'Jamaica' => 'pdf.jamaica_quotation',
                             'Argentina' => 'pdf.argentina_quotation',
                             'Brazil' => 'pdf.brasil_quotation',
+                            'Canada' => 'pdf.canada_quotation',
+                            'Chile' => 'pdf.chile_quotation',
+                            'Colombia' => $isIntegral ? 'pdf.integral_quotation' : 'pdf.ordinary_quotation',
+                            'Ecuador' => 'pdf.ecuador_quotation',
+                            'Hong Kong' => 'pdf.hong_kong_quotation',
+                            'Mexico' => 'pdf.mexico_quotation',
+                            'Peru' => 'pdf.peru_quotation',
+                            'Uruguay' => 'pdf.uruguay_quotation',
+                            'Costa Rica' => 'pdf.costa_rica_quotation',
                         ];
                         $pdfPage = $pdfPages[$record->country->name] ?? null;
 
