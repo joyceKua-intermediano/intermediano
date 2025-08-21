@@ -209,14 +209,14 @@ $intermedianoCompany =preg_replace('/(?<!^)([A-Z]) /', ' $1' , $record->cluster_
             </div>
             @if($quotationDetails['operationalCosts'] != 0)
             <div class="flex justify-between p-2">
-                <span class="font-medium text-gray-600 w-2/5">Transportation Tickets</span>
+                <span class="font-medium text-gray-600 w-2/5">Operational Costs</span>
                 <div class="flex justify-between w-40">
                     <span class="mr-4">
                         {{ $record->currency_name }}
                     </span>
-                    <span class="text-gray-800">{{ number_format($quotationDetails['transportationTicket'], 2) }}</span>
+                    <span class="text-gray-800">{{ number_format($quotationDetails['operationalCosts'], 2) }}</span>
                 </div>
-                <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['transportationTicket']  / $record->exchange_rate, 2) }}</span>
+                <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['operationalCosts']  / $record->exchange_rate, 2) }}</span>
             </div>
             @endif
 
