@@ -62,7 +62,6 @@
             "app/Helpers/GetContractTypeOptionHelper.php",
             "app/Helpers/SpellOutCurrencyHelper.php",
             "app/Helpers/PayrollCostsFields/PayrollCostsFormHelper.php",
-            "app/Helpers/ProvisionsFields/BrazilProvisionFormHelper.php",
             "app/Helpers/ProvisionTypeHelper.php",
             "app/Helpers/GrossIncomeBenefitsFieldHelper.php"
 
