@@ -36,7 +36,7 @@ if (!function_exists('calculateCanadaQuotation')) {
             $workerCompensation;
 
         $vacation = 0.0416 * $totalGrossIncome;
-        $indemnification = 0.0208 * $totalGrossIncome;
+        $indemnification = 0.0625 * $totalGrossIncome;
         $provisionsTotal = $vacation + $indemnification;
 
         // accumulated provision
