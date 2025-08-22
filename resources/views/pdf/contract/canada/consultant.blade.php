@@ -269,6 +269,9 @@ $type = $isAdmin ? 'admin' : 'employee';
                     <p style="margin: 8px 0; text-align: center;">{{ $adminSignedBy }}</p>
                     <p style="margin: 3px 0; text-align: center;">{{ $adminSignedByPosition }}</p>
                     <p style="margin: 0px 0; text-align: center;">{{ $createdDate }}</p>
+                    @else
+                    <p style="margin: 8px 0; text-align: center;">Fernando Guiterrez</p>
+                    <p style="margin: 3px 0; text-align: center;">CEO</p>
                     @endif
                 </td>
 
