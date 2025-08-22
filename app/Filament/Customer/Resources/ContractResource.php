@@ -223,8 +223,8 @@ class ContractResource extends Resource
                                 'english_french' => 'pdf.contract.canada.partner.english_french',
                             ],
                             'ClientContractCanada' => [
-                                // 'tcw' => 'pdf.contract.canada.client.tcw',
-                                // 'english_french' => 'pdf.contract.canada.client.english_french',
+                                'tcw' => 'pdf.contract.canada.client.tcw',
+                                'english_french' => 'pdf.contract.canada.client.english_french',
                                 'english' => 'pdf.contract.canada.client.english',
 
                             ],
