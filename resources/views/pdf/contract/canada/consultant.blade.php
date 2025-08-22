@@ -94,7 +94,7 @@ $type = $isAdmin ? 'admin' : 'employee';
 
     @include('pdf.contract.layout.header')
     <main class="main-container">
-        <h3>EMPLOYMENT CONTRACT</h3>
+        <h3 style='margin-top: -10px'>EMPLOYMENT CONTRACT</h3>
         <b>{{ $employeeName }}</b> <br>
         <b style='margin-top: -10px'>{{ $createdDate }}</b>
 
@@ -164,7 +164,7 @@ $type = $isAdmin ? 'admin' : 'employee';
         <h4>6. Working Hours</h4>
         <p>The Employee’s position with the Employer is intended to be full-time. It is understood that as a managerial and supervisory position, the hours of work involved will vary and may be irregular. The Employee acknowledges that this clause constitutes agreement to work such hours. The Employee shall devote their full working time and attention on an exclusive basis to the business and affairs of the Employer, acting in the best interests of the Employer at all times.</p>
         <p>The Employee shall not to engage himself in any other business for the duration of this Agreement without the prior written consent of the Employer.</p>
-        <p>The Employee’s home base is {{$employeeCity }} {{ $employeeCountry }}.</p>
+        <p>The Employee’s home base is {{$employeeCity }} {{ $employeeState }}.</p>
 
 
         <h4>7. Salary and Social Insurances</h4>
@@ -185,15 +185,14 @@ $type = $isAdmin ? 'admin' : 'employee';
         <p>The Employee must pay any social security contributions / unemployment contributions, statutory pension or other required to be paid by the Employee according to the rules and regulations of the social security scheme in force in the province where the employee is working. Employer will handle all at-source deductions.</p>
         <p>The Employer will pay the Employer’s statutory social security, unemployment, statutory pension and similar statutory contributions.</p>
         <p>If required for the nature of the Employee’s Duties as determined by the Employer, the Employee will be enrolled in and covered by the Employer’s insurance programs related to risk in the workplace (worker’s compensation).</p>
-        <p>The Employee is not entitled to any other payment, benefit, perquisite, allowance or entitlement other than as specifically set out in this Agreement.</p>
-
+        <p style='font-weight: bold'>The Employee is not entitled to any other payment, benefit, perquisite, allowance or entitlement other than as specifically set out in this Agreement.</p>
         <h4>8. Holidays and Vacation</h4>
         <h4>8.1 Vacation</h4>
         <p>The vacation entitlement shall be accrued starting at the beginning of activities. The Employee is entitled to two weeks of paid vacation per year (i.e. every week worked earns 10/52 days of vacation).</p>
         <p>The Employee shall be entitled to vacation in accordance with the policies of the Employer, to be taken at such periods and during such intervals as shall be upon by the Employer and the Employee. </p>
         <p>Accumulated vacation time or pay may not be carried forward except in accordance with the Employer’s policies or with the Employer’s prior written approval.</p>
         <h4>8.2 Holidays</h4>
-        <p>All local public holidays shall be free days.</p>
+        <p>All local statutory holidays in Alberta shall be free days.</p>
         <h4>9. Expenses Reimbursement</h4>
         <p>In case the Employee is requested by Employer or Client to incur additional costs, such expenses shall be reimbursed only if:</p>
         <p>1. The costs are reasonable and properly documented in accordance with the Employer’s Expense Policy; and</p>
@@ -204,9 +203,8 @@ $type = $isAdmin ? 'admin' : 'employee';
 
     @include('pdf.contract.layout.header')
     <main class="main-container">
-
         <h4>10. Annulment of This Contract (Termination for Cause)</h4>
-        <p>The Employer may terminate your employment for Cause. “Cause” means any one or more of the following events or actions by you, as determined by the Employer:</p>
+        <p>The Employer may terminate your employment for Cause. <b>“Cause”</b> means any one or more of the following events or actions by you, as determined by the Employer:</p>
         <p>1. The Employee commits a material breach of any provision of Clause 5.</p>
         <p>2. The Employee has misled the Employer in fundamental matters while negotiating this Agreement.</p>
         <p>3. Material violation of the Client’s or Employers policies or procedures, including but not limited to harassment, discrimination, or breach of confidentiality;</p>
