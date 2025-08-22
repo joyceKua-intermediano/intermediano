@@ -96,7 +96,7 @@ $type = $isAdmin ? 'admin' : 'employee';
     <main class="main-container">
         <h3 style='margin-top: -10px'>EMPLOYMENT CONTRACT</h3>
         <b>{{ $employeeName }}</b> <br>
-        <b style='margin-top: -10px'>{{ $createdDate }}</b>
+        <b style='margin-top: -10px'>Commencement: {{ $monthStartDate }} {{ $formattedStartDate  }} {{ $yearStartDate }},</b>
 
         <h4>1. Employer</h4>
         <p><b> Gate Intermediano Inc.</b></p>
@@ -169,8 +169,8 @@ $type = $isAdmin ? 'admin' : 'employee';
 
         <h4>7. Salary and Social Insurances</h4>
         <h4>7.1 Salary</h4>
-        <p>The total gross salary agreed for the performance of the duties is CAD {{ number_format($employeeGrossSalary, 2) }} per annum.</p>
-        <p>The salary is paid to the Employee’s bank account. less all applicable deductions, payable bi-weekly during the Term.</p>
+        <p>The total gross salary agreed for the performance of the duties is CAD {{ number_format($employeeGrossSalary, 2) }} per annum, The salary is paid every two weeks.</p>
+        <p>The salary will be paid electronically to the Employee’s bank account. </p>
         <h4>Bonus</h4>
         <p>Client Bonus Plans</p>
         <p>The Client may, in its sole discretion, offer participation in any bonus compensation, stock option plan, equity participation or similar program established for its eligible participants including third party contractors such as Employee. Any such agreement shall be entered into between Employee and such organization(s) and Employer will have no liability or responsibility in respect of any such plan or grants received by Employee under such plan. It is Employee’s responsibility to consult with its own financial, tax, legal and other advisors.</p>
