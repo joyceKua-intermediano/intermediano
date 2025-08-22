@@ -225,8 +225,8 @@ class CustomerContractResource extends Resource
                         Forms\Components\Select::make('contractType')
                             ->label('Contract Type')
                             ->options([
-                                // 'tcw' => 'TCW',
-                                // 'english_french' => 'English - French',
+                                'tcw' => 'TCW',
+                                'english_french' => 'English - French',
                                 'english' => 'English',
 
                             ])
@@ -234,8 +234,8 @@ class CustomerContractResource extends Resource
                     ])
                     ->action(function ($record, $data) {
                         $pdfPageMapping = [
-                            // 'tcw' => 'pdf.contract.canada.client.tcw',
-                            // 'english_french' => 'pdf.contract.canada.client.english_french',
+                            'tcw' => 'pdf.contract.canada.client.tcw',
+                            'english_french' => 'pdf.contract.canada.client.english_french',
                             'english' => 'pdf.contract.canada.client.english',
 
                         ];
