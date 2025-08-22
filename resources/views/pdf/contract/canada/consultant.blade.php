@@ -96,7 +96,7 @@ $type = $isAdmin ? 'admin' : 'employee';
     <main class="main-container">
         <h3 style='margin-top: -10px'>EMPLOYMENT CONTRACT</h3>
         <b>{{ $employeeName }}</b> <br>
-        <b style='margin-top: -10px'>Commencement: {{ $monthStartDate }} {{ $formattedStartDate  }} {{ $yearStartDate }},</b>
+        <b style='margin-top: -5px'>Commencement Date: {{ $monthStartDate }} {{ $formattedStartDate  }} {{ $yearStartDate }},</b>
 
         <h4>1. Employer</h4>
         <p><b> Gate Intermediano Inc.</b></p>
