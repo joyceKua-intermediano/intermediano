@@ -56,11 +56,15 @@ class PartnerQuotationResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('country_id')
                     ->label('Country')
-                    ->relationship('country', 'name', function ($query) {
-                        $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'Brazil']);
-                    })
                     ->reactive()
-                    ->required(),
+                    ->relationship('country', 'name'),
+                // Forms\Components\Select::make('country_id')
+                //     ->label('Country')
+                //     ->relationship('country', 'name', function ($query) {
+                //         $query->whereIn('name', ['Panama', 'Nicaragua', 'El Salvador', 'Honduras', 'Guatemala', 'Jamaica', 'Dominican Republic', 'Brazil']);
+                //     })
+                //     ->reactive()
+                //     ->required(),
 
                 Forms\Components\TextInput::make('currency_name')
                     ->label('Currency Name')
