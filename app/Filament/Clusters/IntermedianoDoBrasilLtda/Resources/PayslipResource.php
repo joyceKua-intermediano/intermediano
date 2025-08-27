@@ -37,6 +37,7 @@ class PayslipResource extends Resource
                 Tables\Columns\TextColumn::make('payslip_period')
                     ->label('Payroll Period')
                     ->searchable()
+                    ->date('d.m.Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('file_name')
                     ->label('File Name')
@@ -55,13 +56,18 @@ class PayslipResource extends Resource
                             ->mutateDehydratedStateUsing(fn($state) => \Carbon\Carbon::parse($state)->format('Y-m'))
                             ->required(),
 
+
                         FileUpload::make('file_path')
                             ->label('Payslip File')
                             ->disk('r2')
                             ->directory('payslips')
                             ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => $file->getClientOriginalName())
                             ->visibility('public')
-                            ->required(),
+                            ->preserveFilenames()
+                            ->downloadable(),
+
+
+
                         Hidden::make('cluster')->default('IntermedianoDoBrasilLtda'),
                     ]),
 
@@ -74,7 +80,7 @@ class PayslipResource extends Resource
                     ->url(function ($record) {
                         $path = "payslips/{$record->cluster}/{$record->file_name}";
 
-            
+
                         return Storage::disk('r2')->temporaryUrl(
                             $path,
                             now()->addMinutes(5)
