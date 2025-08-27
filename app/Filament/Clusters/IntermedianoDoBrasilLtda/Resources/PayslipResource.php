@@ -37,7 +37,7 @@ class PayslipResource extends Resource
                 Tables\Columns\TextColumn::make('payslip_period')
                     ->label('Payroll Period')
                     ->searchable()
-                    ->date('d.m.Y')
+                    ->date('Y.m')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('file_name')
                     ->label('File Name')
