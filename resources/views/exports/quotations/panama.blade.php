@@ -160,21 +160,21 @@
 
         <tr style="border: 2px solid rgb(0, 0, 0); background-color: #a8a8a8">
             <td></td>
-            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total Partial</th>
+            <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total Invoice</th>
             <td align="right" style="border: 2px solid rgb(0, 0, 0); background-color: #a8a8a8">
                 {{ number_format($quotationDetails['totalPartial'], 2) }}</td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td></td>
             <th>ITBMS 7%</th>
             <td align="right">{{ number_format($quotationDetails['servicesTaxes'], 2) }}</td>
-        </tr>
-        <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
+        </tr> --}}
+        {{-- <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
             <td></td>
             <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Total Invoice</th>
             <td align="right" style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
                 {{ number_format($quotationDetails['totalInvoice'], 2) }}</td>
-        </tr>
+        </tr> --}}
 
         <tr>
             <td></td>
