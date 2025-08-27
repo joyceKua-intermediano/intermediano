@@ -25,6 +25,15 @@ class PayslipResource extends Resource
     {
         return $table
             ->columns([
+
+                Tables\Columns\TextColumn::make('employee.name')
+                    ->label('Employee Name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('payslip_period')
+                    ->label('Payroll Period')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('file_name')
                     ->label('File Name')
                     ->searchable()

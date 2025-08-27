@@ -12,6 +12,8 @@ return new class extends Migration {
     {
         Schema::create('payslips', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('employee_id')->constrained();
+            $table->string('payslip_period');
             $table->string('cluster');
             $table->string('file_name');
             $table->string('file_path')->unique();

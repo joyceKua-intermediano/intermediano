@@ -8,8 +8,12 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\DatePicker;
+
 class ListPayslips extends ListRecords
 {
     protected static string $resource = PayslipResource::class;
@@ -22,6 +26,16 @@ class ListPayslips extends ListRecords
                 ->color('primary')
                 ->icon('heroicon-o-arrow-up-tray')
                 ->form([
+                    Select::make('employee_id')
+                        ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoDoBrasilLtda'))
+                        ->required(),
+                    DatePicker::make('payslip_period')
+                        ->displayFormat('Y-m')
+                        ->placeholder('Payslip Period')
+                        ->extraInputAttributes(['type' => 'month'])
+
+                        ->native(),
+
                     FileUpload::make('file_path')
                         ->label('Payslip File')
                         ->disk('r2') // directly store in your R2 disk
@@ -37,14 +51,16 @@ class ListPayslips extends ListRecords
                 ])
                 ->action(function (array $data) {
                     $cluster = $data['cluster'];
-                    $filePath = $data['file_path']; // already uploaded to R2
+                    $filePath = $data['file_path']; 
                     $fileName = basename($filePath);
                     $newPath = "payslips/{$cluster}/{$fileName}";
                     Storage::disk('r2')->move($filePath, $newPath);
                     Payslip::create([
+                        'employee_id' => $data['employee_id'],
+                        'payslip_period' => $data['payslip_period'],
                         'cluster' => $cluster,
-                        'file_name' => $fileName, // readable name
-                        'file_path' => $filePath, // full R2 object key
+                        'file_name' => $fileName,
+                        'file_path' => $newPath,
                     ]);
                 }),
         ];
