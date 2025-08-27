@@ -66,10 +66,10 @@ $intermedianoCompany = preg_replace('/(?<!^)([A-Z]) /', ' $1' , $record->cluster
 
 
             <div class="flex justify-between p-2 font-bold">
-                <span class="font-medium w-2/5">Total Partial</span>
+                <span class="font-medium w-2/5">Total Invoice</span>
                 <span class="text-gray-800 w-1/5 text-right">{{ $record->currency_name }} {{ number_format($quotationDetails['totalPartial'] / $record->exchange_rate, 2) }}</span>
             </div>
-            <div class="flex justify-between p-2">
+            {{-- <div class="flex justify-between p-2">
                 <span class="font-medium text-gray-600 w-2/5">ITBMS 7%</span>
                 <span class="text-gray-800 w-1/5 text-right">{{ $record->currency_name }}
                     {{ number_format($quotationDetails['servicesTaxes'], 2) }}</span>
@@ -77,7 +77,7 @@ $intermedianoCompany = preg_replace('/(?<!^)([A-Z]) /', ' $1' , $record->cluster
             <div class="flex justify-between bg-gray-200 p-2 font-bold">
                 <span class="font-medium w-2/5">Total Invoice</span>
                 <span class="text-gray-800 w-1/5 text-right">{{ $record->currency_name }} {{ number_format($quotationDetails['totalInvoice'] / $record->exchange_rate, 2) }}</span>
-            </div>
+            </div> --}}
 
         </div>
     </div>

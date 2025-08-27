@@ -200,7 +200,7 @@
             </td>
         </tr>
         <tr class="highlight">
-            <th class="p-4 textWeightBold">Total Partial</th>
+            <th class="p-4 textWeightBold">Total Invoice</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
                 <span class="recordAlignment">
@@ -208,7 +208,7 @@
                 </span>
             </td>
         </tr>
-        <tr>
+        {{-- <tr>
             <th class="p-4 ">ITBMS 7%</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
@@ -225,7 +225,7 @@
                     {{ number_format($quotationDetails['totalInvoice'], 2) }}
                 </span>
             </td>
-        </tr>
+        </tr> --}}
 
 
         {{-- payroll --}}
