@@ -10,8 +10,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
-
-
+use Filament\Tables\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Filament\Forms\Components\DatePicker;
 class PayslipResource extends Resource
 {
     protected static ?string $model = Payslip::class;
@@ -40,7 +44,29 @@ class PayslipResource extends Resource
                     ->sortable(),
             ])
             ->actions([
+                EditAction::make()
+                    ->modalHeading('Edit Payslip')
+                    ->form([
+                        Select::make('employee_id')
+                            ->relationship('employee', 'name', fn($query) => $query->where('company', 'IntermedianoDoBrasilLtda'))
+                            ->required(),
+                        DatePicker::make('payslip_period')
+                            ->displayFormat('Y-m')
+                            ->mutateDehydratedStateUsing(fn($state) => \Carbon\Carbon::parse($state)->format('Y-m'))
+                            ->required(),
+
+                        FileUpload::make('file_path')
+                            ->label('Payslip File')
+                            ->disk('r2')
+                            ->directory('payslips')
+                            ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file): string => $file->getClientOriginalName())
+                            ->visibility('public')
+                            ->required(),
+                        Hidden::make('cluster')->default('IntermedianoDoBrasilLtda'),
+                    ]),
+
                 // Delete action
+
                 Tables\Actions\DeleteAction::make(),
 
                 Tables\Actions\Action::make('download')
@@ -48,7 +74,6 @@ class PayslipResource extends Resource
                     ->url(function ($record) {
                         $path = "payslips/{$record->cluster}/{$record->file_name}";
 
-                        // Debug here:
             
                         return Storage::disk('r2')->temporaryUrl(
                             $path,
