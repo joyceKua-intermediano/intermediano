@@ -124,7 +124,9 @@ class ProvisionReportsResource extends Resource
             COUNT(DISTINCT quotations.id) as total_quotations,
             quotations.country_id
         ')
+            ->where('is_payroll', 1)
             ->whereNotNull('cluster_name')
+            ->whereNotLike('cluster_name', '%Partner%')  // Exclude clusters with "Partner" in the name
             ->groupBy('cluster_name', 'quotations.country_id')
             ->orderBy('cluster_name');
     }
