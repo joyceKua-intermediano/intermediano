@@ -65,7 +65,9 @@
             "app/Helpers/PayrollCostsFields/PayrollCostsFormHelper.php",
             "app/Helpers/ProvisionsFields/BrazilProvisionFormHelper.php",
             "app/Helpers/ProvisionTypeHelper.php",
-            "app/Helpers/GrossIncomeBenefitsFieldHelper.php"
+            "app/Helpers/GrossIncomeBenefitsFieldHelper.php",
+            "app/Helpers/AccruedProvisionHelper.php"
+
 
         ]
     },
