@@ -33,6 +33,7 @@ if (!function_exists('calculateQuotation')) {
         $senaContribution = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.02;
         $arlContribution = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.0244;
         $compensationFundContribution = ($totalGrossIncome - $record->medical_allowance - $record->home_allowance - $record->transport_allowance - $record->internet_allowance) * 0.04;
+        $operationalCosts = $record->payrollCosts?->operational_costs;
 
         $payrollCostsTotal =
             $pensionFund +
@@ -40,7 +41,8 @@ if (!function_exists('calculateQuotation')) {
             $icbfContribution +
             $senaContribution +
             $arlContribution +
-            $compensationFundContribution;
+            $compensationFundContribution +
+            $operationalCosts;
 
         $cesantias = 0.0833 * $totalGrossIncome;
         $interestDeCesantias = $cesantias * 0.12;
@@ -145,6 +147,7 @@ if (!function_exists('calculateQuotation')) {
             'totalInvoice' => $totalInvoice,
             'pensionFund' => $pensionFund,
             'healthFund' => $healthFund,
+            'operationalCosts'  => $operationalCosts,
             'icbfContribution' => $icbfContribution,
             'senaContribution' => $senaContribution,
             'arlContribution' => $arlContribution,

@@ -179,6 +179,10 @@ class PartnerPayrollResource extends Resource
                     TextInput::make('medical_insurance')->label('Medical Insurance (%)'),
 
                 ]),
+                // Colombia
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Colombia', [
+                    TextInput::make('operational_costs')->label('Operational Costs'),
+                ]),
                 Forms\Components\Hidden::make('cluster_name')
                     ->default('PartnerHongkong')
                     ->label('PartnerHongkong'),

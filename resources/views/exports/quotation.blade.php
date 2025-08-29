@@ -265,6 +265,14 @@
                 {{ number_format($quotationDetails['compensationFundContribution'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
+        @if($quotationDetails['operationalCosts'] != 0)
+        <tr>
+            <td></td>
+            <th>Operational Costs</th>
+            <td align="right"> {{ number_format($quotationDetails['operationalCosts'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['operationalCosts'] / $record->exchange_rate, 2) }}</td>
+        </tr>
+        @endif
         <td></td>
 
         <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">

@@ -28,6 +28,7 @@ if (!function_exists('calculateIntegralQuotation')) {
         $senaContribution = ($totalGrossIncome - $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.02;
         $arlContribution = (($totalGrossIncome - $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.70) * 0.0244;
         $compensationFundContribution = ($totalGrossIncome - $record->home_allowance - $record->transport_allowance - $record->medical_allowance - $record->internet_allowance) * 0.04;
+        $operationalCosts = $record->payrollCosts?->operational_costs;
 
         $payrollCostsTotal =
             $pensionFund +
@@ -35,7 +36,8 @@ if (!function_exists('calculateIntegralQuotation')) {
             $icbfContribution +
             $senaContribution +
             $arlContribution +
-            $compensationFundContribution;
+            $compensationFundContribution +
+            $operationalCosts;
 
         $vacation = 0.0417 * ($record->gross_salary + $record->bonus);
         $indemnization = 0.056 * ($record->gross_salary + $record->bonus);
@@ -119,6 +121,7 @@ if (!function_exists('calculateIntegralQuotation')) {
             'pensionFund' => $pensionFund,
             'healthFund' => $healthFund,
             'icbfContribution' => $icbfContribution,
+            'operationalCosts'  => $operationalCosts,
             'senaContribution' => $senaContribution,
             'arlContribution' => $arlContribution,
             'compensationFundContribution' => $compensationFundContribution,
