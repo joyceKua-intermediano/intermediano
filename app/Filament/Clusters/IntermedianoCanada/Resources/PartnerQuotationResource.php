@@ -6,6 +6,7 @@ use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoCanada;
 use App\Filament\Clusters\IntermedianoCanada\Resources\PartnerQuotationResource\Pages;
 use App\Filament\Clusters\IntermedianoCanada\Resources\PartnerQuotationResource\RelationManagers;
+use App\Forms\Components\GrossIncomeBenefitsFieldHelper;
 use App\Helpers\PayrollCostsFormHelper;
 use App\Models\Quotation;
 use Filament\Forms;
@@ -166,6 +167,10 @@ class PartnerQuotationResource extends Resource
                     })
                     ->default(0)
                     ->required(),
+                GrossIncomeBenefitsFieldHelper::make('transport_allowance')
+                    ->label('Car Allowance'),
+                GrossIncomeBenefitsFieldHelper::make('food_allowance')
+                    ->label('Food Allowance'),
                 Forms\Components\TextInput::make('uvt_amount')
                     ->default(0)
                     ->hidden(true)
