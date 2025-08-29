@@ -38,19 +38,19 @@ class ProvisionReportsResource extends Resource
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('total_quotations')
-                    ->label('Total Quotations')
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('total_quotations')
+                //     ->label('Total Quotations')
+                //     ->sortable(),
 
-                Tables\Columns\TextColumn::make('total_accrued_provisions_local')
-                    ->label('Accrued (Local)')
-                    ->getStateUsing(function ($record) {
-                        $summary = AccruedProvisionHelper::getCountryProvisionSummary($record->cluster_name);
-                        $currency = $summary['currency']['name'] ?? 'USD';
-                        $amount = $summary['local']['accrued'] ?? 0;
-                        return $currency . ' ' . number_format($amount, 2);
-                    })
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('total_accrued_provisions_local')
+                //     ->label('Accrued (Local)')
+                //     ->getStateUsing(function ($record) {
+                //         $summary = AccruedProvisionHelper::getCountryProvisionSummary($record->cluster_name);
+                //         $currency = $summary['currency']['name'] ?? 'USD';
+                //         $amount = $summary['local']['accrued'] ?? 0;
+                //         return $currency . ' ' . number_format($amount, 2);
+                //     })
+                //     ->sortable(),
 
                 // Tables\Columns\TextColumn::make('total_paid_provisions_local')
                 //     ->label('Paid (Local)')
