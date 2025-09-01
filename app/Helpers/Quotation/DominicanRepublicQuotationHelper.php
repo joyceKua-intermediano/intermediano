@@ -28,7 +28,7 @@ if (!function_exists('calculateDominicanRepublicQuotation')) {
 
         $afp = $totalGrossIncome * 0.0710;
         $sfs = $totalGrossIncome * 0.0709;
-        $srl = 77799 * .0115;
+        $srl = $totalGrossIncome * .01;
         $infotep = $totalGrossIncome * 0.01;
         $payrollCostsLists = ['afp', 'sfs', 'srl', 'infotep'];
 
