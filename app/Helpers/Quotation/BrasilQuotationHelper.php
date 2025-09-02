@@ -79,7 +79,7 @@ if (!function_exists('calculateBrasilQuotation')) {
         // end of accumulated provision
         $isTcw = $record->company->id === 110;
         $subTotalGrossPayroll = $totalGrossIncome + $provisionsTotal + $payrollCostsTotal;
-        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : ($isTcw ? $totalGrossIncome : $subTotalGrossPayroll * ($record->fee / 100));
+        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : ($isTcw ? $totalGrossIncome * ($record->fee / 100) : $subTotalGrossPayroll * ($record->fee / 100));
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
         if ($isPartner) {
