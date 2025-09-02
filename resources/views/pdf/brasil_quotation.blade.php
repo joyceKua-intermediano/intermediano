@@ -246,7 +246,7 @@
                 <span class="recordAlignment">{{ number_format($quotationDetails['bankFee'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
-        <tr class="">
+        <tr class="highlight">
             <th class="p-4 text-left">Total Partial</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
@@ -259,6 +259,34 @@
                 <span class="recordAlignment">{{ number_format($quotationDetails['subTotal'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
+        @if($quotationDetails['isPartner'])
+        <tr>
+            <th class="p-4">IRPJ</th>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
+                <span class="recordAlignment">
+                    {{ number_format($quotationDetails['irpj'], 2) }}
+                </span>
+            </td>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['irpj'] / $record->exchange_rate, 2) }}</span>
+            </td>
+        </tr>
+        <tr>
+            <th class="p-4">ISS</th>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
+                <span class="recordAlignment">
+                    {{ number_format($quotationDetails['iss'], 2) }}
+                </span>
+            </td>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['iss'] / $record->exchange_rate, 2) }}</span>
+            </td>
+        </tr>
+        @else
         <tr>
             <th class="p-4">Service taxes</th>
             <td class="p-4 space-between">
@@ -272,6 +300,7 @@
                 <span class="recordAlignment">{{ number_format($quotationDetails['servicesTaxes'] / $record->exchange_rate, 2) }}</span>
             </td>
         </tr>
+        @endif
         <tr class="highlight">
             <th class="p-4 text-left textWeightBold">Gross Payroll, PR Costs, Fees & Taxes</th>
             <td class="p-4 space-between">

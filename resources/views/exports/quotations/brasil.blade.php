@@ -182,7 +182,23 @@
                 {{ number_format($quotationDetails['subTotal'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
+        @if($quotationDetails['isPartner'])
+        <tr>
+            <td></td>
+            <th>IRPJ</th>
+            <td align="right">{{ number_format($quotationDetails['irpj'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['irpj'] / $record->exchange_rate, 2) }}</td>
 
+        </tr>
+        <tr>
+            <td></td>
+            <th>ISS</th>
+            <td align="right">{{ number_format($quotationDetails['iss'], 2) }}</td>
+            <td align="right">{{ number_format($quotationDetails['iss'] / $record->exchange_rate, 2) }}</td>
+
+        </tr>
+
+        @else
         <tr>
             <td></td>
             <th>Services taxes</th>
@@ -190,6 +206,7 @@
             <td align="right">{{ number_format($quotationDetails['servicesTaxes'] / $record->exchange_rate, 2) }}</td>
 
         </tr>
+        @endif
         <tr style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">
             <td></td>
             <th style="border: 2px solid rgb(0, 0, 0); font-weight: bold; background-color: #a8a8a8">Gross Payroll, PR Costs, Fees and Taxes</th>
@@ -369,7 +386,7 @@
             </td>
             <td style="background-color: #a8a8a8; font-weight:bold" align="center">USD</td>
         </tr>
-        @elseif ($quotationDetails['hasPreviousRecords']  && !$isPartner)
+        @elseif ($quotationDetails['hasPreviousRecords'] && !$isPartner)
         <!-- Accumulated Provisions -->
         <tr class="highlight">
             <td></td>
