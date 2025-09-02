@@ -22,7 +22,7 @@ if (!function_exists('calculateArgentinaQuotation')) {
         $familySalary = $totalGrossIncome * 0.0470;
         $ansal = $totalGrossIncome * 0.06;
         $workRiskInsuranceART = ($totalGrossIncome * 0.0223) + 350;
-        $lifeInsuranceSVO = 7046; //$totalGrossIncome * 0.007269
+        $lifeInsuranceSVO = $totalGrossIncome * 0.007456244;
         $osde = $totalGrossIncome * 0.0;
 
         $payrollCostsLists = ['jubilacion', 'socialSecurityINSSJP', 'nEFund', 'familySalary', 'ansal', 'workRiskInsuranceART', 'lifeInsuranceSVO', 'osde'];
@@ -86,7 +86,7 @@ if (!function_exists('calculateArgentinaQuotation')) {
             'fee' => $fee,
             'bankFee' => $bankFee,
             'subTotal' => $subTotal,
-            'bankFeePercentage' =>  $bankFeePercentage,
+            'bankFeePercentage' => $bankFeePercentage,
             'servicesTaxes' => $servicesTaxes,
             'totalInvoice' => $totalInvoice,
             'christmasBonus' => $christmasBonus,
