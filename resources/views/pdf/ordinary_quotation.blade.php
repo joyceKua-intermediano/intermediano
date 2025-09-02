@@ -392,6 +392,23 @@
             </td>
         </tr>
 
+        @if($quotationDetails['operationalCosts'] != 0)
+
+        <tr class="">
+            <th class="p-4 text-left">Operational Costs</th>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment"> {{ $record->currency_name }}</span>
+                <span class="recordAlignment">
+                    {{ number_format($quotationDetails['operationalCosts'], 2) }}
+                </span>
+            </td>
+            <td class="p-4 space-between">
+                <span class="currencyAlignment">USD</span>
+                <span class="recordAlignment">{{ number_format($quotationDetails['operationalCosts'] / $record->exchange_rate, 2) }}</span>
+            </td>
+        </tr>
+        @endif
+
         <tr class="highlight">
             <th class="p-4 textWeightBold">Total</th>
             <td class="p-4 space-between">
