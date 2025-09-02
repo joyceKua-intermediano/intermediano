@@ -100,7 +100,29 @@ $intermedianoCompany =preg_replace('/(?<!^)([A-Z]) /', ' $1' , $record->cluster_
                 <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['subTotal']  / $record->exchange_rate, 2) }}</span>
 
             </div>
+            @if($quotationDetails['isPartner'])
+            <div class="flex justify-between p-2">
+                <span class="font-medium text-gray-600 w-2/5">IRPJ</span>
+                <div class="flex justify-between w-40">
+                    <span class="mr-4">
+                        {{ $record->currency_name }}
+                    </span>
+                    <span class="text-gray-800">{{ number_format($quotationDetails['irpj'], 2) }}</span>
+                </div>
+                <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['irpj']  / $record->exchange_rate, 2) }}</span>
+            </div>
+            <div class="flex justify-between p-2">
+                <span class="font-medium text-gray-600 w-2/5">ISS</span>
+                <div class="flex justify-between w-40">
+                    <span class="mr-4">
+                        {{ $record->currency_name }}
+                    </span>
+                    <span class="text-gray-800">{{ number_format($quotationDetails['iss'], 2) }}</span>
+                </div>
+                <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['iss']  / $record->exchange_rate, 2) }}</span>
+            </div>
 
+            @else
             <div class="flex justify-between p-2">
                 <span class="font-medium text-gray-600 w-2/5">Services taxes</span>
                 <div class="flex justify-between w-40">
@@ -111,6 +133,7 @@ $intermedianoCompany =preg_replace('/(?<!^)([A-Z]) /', ' $1' , $record->cluster_
                 </div>
                 <span class="text-gray-800 w-1/5 text-right">USD {{ number_format($quotationDetails['servicesTaxes']  / $record->exchange_rate, 2) }}</span>
             </div>
+            @endif
 
             <div class="flex justify-between bg-gray-200 p-2 font-bold">
                 <span class="font-medium w-2/5">Gross Payroll, PR Costs, Fees & Taxes</span>

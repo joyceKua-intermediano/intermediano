@@ -1,8 +1,11 @@
 <?php
+use Illuminate\Support\Str;
 
 if (!function_exists('calculateBrasilQuotation')) {
     function calculateBrasilQuotation($record, $previousRecords)
     {
+        $isPartner = Str::contains($record->cluster_name, 'Partner');
+
         $previousSalary13th = 0;
         $previousVacation = 0;
         $previousVacationBonus = 0;
@@ -74,14 +77,24 @@ if (!function_exists('calculateBrasilQuotation')) {
 
 
         // end of accumulated provision
-
+        $isTcw = $record->company->id === 110;
         $subTotalGrossPayroll = $totalGrossIncome + $provisionsTotal + $payrollCostsTotal;
-        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : $subTotalGrossPayroll * ($record->fee / 100);
+        $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : ($isTcw ? $totalGrossIncome : $subTotalGrossPayroll * ($record->fee / 100));
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
-        $municipalTax = 0 * $subTotal;
-        $servicesTaxes = ($subTotalGrossPayroll + $fee) * 0.0695;
-        $totalInvoice = $subTotal + $municipalTax + $servicesTaxes;
+        if ($isPartner) {
+            $irpjSubValue = ($fee + $bankFee) * .25;
+            $csll = ($fee + $bankFee) * .09;
+            $totalIrpj = $irpjSubValue + $csll;
+
+            $iss = 0.0583 * ($subTotal + $totalIrpj);
+            $totalInvoice = $subTotal + $totalIrpj + $iss;
+
+        } else {
+            $municipalTax = 0 * $subTotal;
+            $servicesTaxes = ($subTotalGrossPayroll + $fee) * 0.0695;
+            $totalInvoice = $subTotal + $municipalTax + $servicesTaxes;
+        }
 
         // Get current payment
         // $currentPaid13th = $record->paymentProvisions->where('provision_type_id', 1)->sum('amount');
@@ -132,8 +145,10 @@ if (!function_exists('calculateBrasilQuotation')) {
             'fee' => $fee,
             'bankFee' => $bankFee,
             'subTotal' => $subTotal,
-            'municipalTax' => $municipalTax,
-            'servicesTaxes' => $servicesTaxes,
+            'municipalTax' => $municipalTax ?? 0,
+            'irpj' => $totalIrpj ?? 0,
+            'iss' => $iss ?? 0,
+            'servicesTaxes' => $servicesTaxes ?? 0,
             'totalInvoice' => $totalInvoice,
             'inss' => $inss,
             'fgts' => $fgts,
@@ -142,7 +157,7 @@ if (!function_exists('calculateBrasilQuotation')) {
             'medicalInsurance' => $medicalInsurance,
             'mealTicket' => $mealTicket,
             'transportationTicket' => $transportationTicket,
-            'operationalCosts'  => $operationalCosts,
+            'operationalCosts' => $operationalCosts,
             'payrollCostsTotal' => $payrollCostsTotal,
             'salary13th' => $salary13th,
             'vacation' => $vacation,
@@ -161,6 +176,7 @@ if (!function_exists('calculateBrasilQuotation')) {
             'balanceVacationBonus' => $balanceVacationBonus,
             'balanceTermination' => $balanceTermination,
             'balanceProvisionsTotal' => $balanceProvisionsTotal,
+            'isPartner' => $isPartner
         ];
     }
 }
