@@ -185,7 +185,7 @@
         @if($quotationDetails['isPartner'])
         <tr>
             <td></td>
-            <th>IRPJ</th>
+            <th>IRPJ + CSLL</th>
             <td align="right">{{ number_format($quotationDetails['irpj'], 2) }}</td>
             <td align="right">{{ number_format($quotationDetails['irpj'] / $record->exchange_rate, 2) }}</td>
 

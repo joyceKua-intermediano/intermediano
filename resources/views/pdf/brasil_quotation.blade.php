@@ -261,7 +261,7 @@
         </tr>
         @if($quotationDetails['isPartner'])
         <tr>
-            <th class="p-4">IRPJ</th>
+            <th class="p-4">IRPJ + CSLL</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
                 <span class="recordAlignment">
