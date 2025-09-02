@@ -102,7 +102,7 @@ $intermedianoCompany =preg_replace('/(?<!^)([A-Z]) /', ' $1' , $record->cluster_
             </div>
             @if($quotationDetails['isPartner'])
             <div class="flex justify-between p-2">
-                <span class="font-medium text-gray-600 w-2/5">IRPJ</span>
+                <span class="font-medium text-gray-600 w-2/5">IRPJ + CSLL</span>
                 <div class="flex justify-between w-40">
                     <span class="mr-4">
                         {{ $record->currency_name }}
