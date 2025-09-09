@@ -36,13 +36,13 @@ class Dashboard extends Page
             ['name' => 'Cesare Pluchino', 'date' => '14-Jan', 'position' => 'Funcionário'],
             ['name' => 'Kendrick Liwanag', 'date' => '31-Oct', 'position' => 'Funcionário'],
             ['name' => 'Joyce Kua', 'date' => '28-Nov', 'position' => 'Funcionário'],
-            ['name' => 'Bianca Isabela Novaes Ben', 'date' => '1-Sept', 'position' => 'Funcionário'],
+            ['name' => 'Bianca Isabela Novaes Ben', 'date' => '1-Sep', 'position' => 'Funcionário'],
             ['name' => 'Mônica Anjos', 'date' => '20-Dec', 'position' => 'Prestador'],
             ['name' => 'Paulo Magalhães', 'date' => '21-Aug', 'position' => 'Prestador'],
             ['name' => 'Thiago Oliveira', 'date' => '22-Oct', 'position' => 'Prestador'],
             ['name' => 'Paola Femeninas', 'date' => '29-Mar', 'position' => 'Prestador'],
-
         ];
+
         $consultants = Consultant::select(['name', 'date_of_birth'])->get()->map(function ($consultant) {
             return [
                 'name' => $consultant->name,
@@ -54,9 +54,16 @@ class Dashboard extends Page
 
         $currentMonth = Carbon::now()->format('M');
         $birthdaysThisMonth = array_filter($mergeAllBirthdayData, function ($birthday) use ($currentMonth) {
-            return str_contains($birthday['date'], $currentMonth);
+            return $birthday['date'] && str_contains($birthday['date'], $currentMonth);
         });
 
-        return array_values($birthdaysThisMonth); // Return filtered list
+        // 🔹 Sort by day within the month
+        usort($birthdaysThisMonth, function ($a, $b) {
+            $dayA = Carbon::createFromFormat('d-M', $a['date'])->day;
+            $dayB = Carbon::createFromFormat('d-M', $b['date'])->day;
+            return $dayA <=> $dayB;
+        });
+
+        return array_values($birthdaysThisMonth);
     }
 }
