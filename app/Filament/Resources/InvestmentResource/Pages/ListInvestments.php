@@ -18,7 +18,7 @@ class ListInvestments extends ListRecords
         return [
             Actions\CreateAction::make(),
             Action::make(__("Export investments"))->action(function () {
-                $file_name = "investments_".date("dmY_His").".xlsx";
+                $file_name = "investments_" . date("dmY_His") . ".xlsx";
                 return Excel::download(new InvestmentsExport, $file_name);
             }),
         ];
@@ -27,6 +27,7 @@ class ListInvestments extends ListRecords
     {
         return [
             \App\Filament\Resources\InvestmentResource\Widgets\InvestmentWidget::class,
+            \App\Filament\Resources\InvestmentResource\Widgets\ExpiringInvestmentsWidget::class,
         ];
     }
 }
