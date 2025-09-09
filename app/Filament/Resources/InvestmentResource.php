@@ -240,6 +240,7 @@ class InvestmentResource extends Resource
     {
         return [
             \App\Filament\Resources\InvestmentResource\Widgets\InvestmentWidget::class,
+            \App\Filament\Resources\InvestmentResource\Widgets\ExpiringInvestmentsWidget::class,
         ];
     }
 
