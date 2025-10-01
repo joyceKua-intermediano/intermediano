@@ -30,10 +30,17 @@ class AccruedProvisionHelper
             'Vacation' => 0.0417,
         ],
         'intermedianocolombiasas' => [
-            '13th Salary' => 0.0833333,
-            'Vacation' => 0.0833333,
-            'Termination' => 0.0833333,
-            'Indemnization' => 0.0833333,
+            'integral' => [
+                'Vacation' => 0.0417,
+                'Indemnization' => 0.0833333,
+            ],
+            'ordinary' => [
+                'Cesantias' => 0.0833333,
+                'Interest de Cesantias' => 0.01,
+                'Prima' => 0.0833333,
+                'Vacation' => 0.0417,
+                'Indemnization' => 0.056,
+            ],
         ],
         'intermedianoecuadorsas' => [
             '13th Salary' => 0.0833333,
@@ -88,19 +95,37 @@ class AccruedProvisionHelper
 
     public static function getCountryProvisionSummary(string $clusterName): array
     {
-        $quotations = Quotation::where('cluster_name', $clusterName)
+        // Handle modified cluster names from ProvisionReportsResource
+        $originalClusterName = $clusterName;
+        $isIntegral = null;
+        
+        if (str_contains($clusterName, ' - Integral')) {
+            $originalClusterName = str_replace(' - Integral', '', $clusterName);
+            $isIntegral = 1;
+        } elseif (str_contains($clusterName, ' - Ordinary')) {
+            $originalClusterName = str_replace(' - Ordinary', '', $clusterName);
+            $isIntegral = 0;
+        }
+
+        $query = Quotation::where('cluster_name', $originalClusterName)
             ->where('is_payroll', 1)
-            ->whereNull('deleted_at')
-            ->get();
+            ->whereNull('deleted_at');
+            
+        // If we have a specific integral type, filter by it
+        if ($isIntegral !== null) {
+            $query->where('is_integral', $isIntegral);
+        }
+        
+        $quotations = $query->get();
         
         $totalAccruedLocal = 0;
         $provisionTypes = [];
         $currencyInfo = null;
 
-        \Log::info("Processing cluster: {$clusterName}");
-        \Log::info("Found quotations: " . $quotations->count());
-        \Log::info("Cluster name in lowercase: " . strtolower($clusterName));
-        \Log::info("Available multipliers: " . json_encode(array_keys(self::CLUSTER_MULTIPLIERS)));
+        // \Log::info("Processing cluster: {$clusterName}");
+        // \Log::info("Found quotations: " . $quotations->count());
+        // \Log::info("Cluster name in lowercase: " . strtolower($clusterName));
+        // \Log::info("Available multipliers: " . json_encode(array_keys(self::CLUSTER_MULTIPLIERS)));
 
         foreach ($quotations as $quotation) {
             if (!$currencyInfo) {
@@ -124,10 +149,18 @@ class AccruedProvisionHelper
                 ($quotation->uvt_amount ?? 0) +
                 ($quotation->payroll_cost_medical_insurance ?? 0);
 
-            $multipliers = self::CLUSTER_MULTIPLIERS[strtolower($clusterName)] ?? [];
+            $clusterMultipliers = self::CLUSTER_MULTIPLIERS[strtolower($originalClusterName)] ?? [];
 
-            \Log::info("Cluster: {$clusterName}, Multipliers found: " . count($multipliers));
-            \Log::info("Gross income: {$grossIncome}");
+            if (strtolower($originalClusterName) === 'intermedianocolombiasas' && isset($clusterMultipliers['integral']) && isset($clusterMultipliers['ordinary'])) {
+                $quotationType = $quotation->is_integral ? 'integral' : 'ordinary';
+                $multipliers = $clusterMultipliers[$quotationType] ?? [];
+            } else {
+                $multipliers = $clusterMultipliers;
+            }
+
+            // \Log::info("Cluster: {$clusterName}, Quotation Type: " . ($quotation->is_integral ? 'integral' : 'ordinary'));
+            // \Log::info("Multipliers found: " . count($multipliers));
+            // \Log::info("Gross income: {$grossIncome}");
 
             foreach ($multipliers as $type => $multiplier) {
                 $localAmount = $multiplier * $grossIncome;
@@ -142,7 +175,7 @@ class AccruedProvisionHelper
 
         \Log::info("Final total - Local: {$totalAccruedLocal}");
 
-        $totalPaidLocal = PaymentProvision::where('cluster_name', $clusterName)->sum('amount');
+        $totalPaidLocal = PaymentProvision::where('cluster_name', $originalClusterName)->sum('amount');
         $netBalanceLocal = $totalAccruedLocal - $totalPaidLocal;
         
         // Debug: Final summary

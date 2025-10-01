@@ -36,7 +36,10 @@ class ProvisionReportsResource extends Resource
                 Tables\Columns\TextColumn::make('cluster_name')
                     ->label('Cluster')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        return str_replace([' - Integral', ' - Ordinary'], [' (Integral)', ' (Ordinary)'], $state);
+                    }),
 
                 // Tables\Columns\TextColumn::make('total_quotations')
                 //     ->label('Total Quotations')
@@ -119,15 +122,24 @@ class ProvisionReportsResource extends Resource
     {
         return parent::getEloquentQuery()
             ->selectRaw('
-            cluster_name as id,
-            cluster_name,
-            COUNT(DISTINCT quotations.id) as total_quotations,
-            quotations.country_id
-        ')
+                CASE 
+                    WHEN cluster_name = "IntermedianoColombiaSAS" AND is_integral = 1 THEN CONCAT(cluster_name, " - Integral")
+                    WHEN cluster_name = "IntermedianoColombiaSAS" AND is_integral = 0 THEN CONCAT(cluster_name, " - Ordinary")
+                    ELSE cluster_name
+                END as id,
+                CASE 
+                    WHEN cluster_name = "IntermedianoColombiaSAS" AND is_integral = 1 THEN CONCAT(cluster_name, " - Integral")
+                    WHEN cluster_name = "IntermedianoColombiaSAS" AND is_integral = 0 THEN CONCAT(cluster_name, " - Ordinary")
+                    ELSE cluster_name
+                END as cluster_name,
+                COUNT(DISTINCT quotations.id) as total_quotations,
+                quotations.country_id,
+                quotations.is_integral
+            ')
             ->where('is_payroll', 1)
             ->whereNotNull('cluster_name')
-            ->whereNotLike('cluster_name', '%Partner%')  // Exclude clusters with "Partner" in the name
-            ->groupBy('cluster_name', 'quotations.country_id')
+            ->whereNotLike('cluster_name', '%Partner%')
+            ->groupBy('cluster_name', 'quotations.country_id', 'quotations.is_integral')
             ->orderBy('cluster_name');
     }
 }
