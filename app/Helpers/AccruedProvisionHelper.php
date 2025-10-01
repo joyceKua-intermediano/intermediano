@@ -30,10 +30,17 @@ class AccruedProvisionHelper
             'Vacation' => 0.0417,
         ],
         'intermedianocolombiasas' => [
-            '13th Salary' => 0.0833333,
-            'Vacation' => 0.0833333,
-            'Termination' => 0.0833333,
-            'Indemnization' => 0.0833333,
+            'integral' => [
+                'Vacation' => 0.0417,
+                'Indemnization' => 0.0833333,
+            ],
+            'ordinary' => [
+                'Cesantias' => 0.0833333,
+                'Interest de Cesantias' => 0.01,
+                'Prima' => 0.0833333,
+                'Vacation' => 0.0417,
+                'Indemnization' => 0.056,
+            ],
         ],
         'intermedianoecuadorsas' => [
             '13th Salary' => 0.0833333,
@@ -124,9 +131,17 @@ class AccruedProvisionHelper
                 ($quotation->uvt_amount ?? 0) +
                 ($quotation->payroll_cost_medical_insurance ?? 0);
 
-            $multipliers = self::CLUSTER_MULTIPLIERS[strtolower($clusterName)] ?? [];
+            $clusterMultipliers = self::CLUSTER_MULTIPLIERS[strtolower($clusterName)] ?? [];
 
-            \Log::info("Cluster: {$clusterName}, Multipliers found: " . count($multipliers));
+            if (strtolower($clusterName) === 'intermedianocolombiasas' && isset($clusterMultipliers['integral']) && isset($clusterMultipliers['ordinary'])) {
+                $quotationType = $quotation->is_integral ? 'integral' : 'ordinary';
+                $multipliers = $clusterMultipliers[$quotationType] ?? [];
+            } else {
+                $multipliers = $clusterMultipliers;
+            }
+
+            \Log::info("Cluster: {$clusterName}, Quotation Type: " . ($quotation->is_integral ? 'integral' : 'ordinary'));
+            \Log::info("Multipliers found: " . count($multipliers));
             \Log::info("Gross income: {$grossIncome}");
 
             foreach ($multipliers as $type => $multiplier) {
