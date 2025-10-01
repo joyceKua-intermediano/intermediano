@@ -6,6 +6,7 @@ use App\Exports\QuotationExport;
 use App\Filament\Clusters\IntermedianoColombiaSAS;
 use App\Filament\Clusters\IntermedianoColombiaSAS\Resources\PayrollResource\Pages;
 use App\Models\Consultant;
+use App\Models\Employee;
 use App\Models\Quotation;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -305,7 +306,7 @@ class PayrollResource extends Resource
 
                 SelectFilter::make('consultant_id')
                     ->label('Consultant')
-                    ->options(Consultant::all()->pluck('name', 'id')),
+                    ->options(Employee::where('company', 'IntermedianoColombiaSAS')->pluck('name', 'id')),
                 Filter::make('Month')
                     ->form([
                         DatePicker::make('month')
