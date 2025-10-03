@@ -32,12 +32,12 @@ class AccruedProvisionHelper
         'intermedianocolombiasas' => [
             'integral' => [
                 'Vacation' => 0.0417,
-                'Indemnization' => 0.0833333,
+                'Indemnization' => 0.056,
             ],
             'ordinary' => [
-                'Cesantias' => 0.0833333,
+                'Cesantias' => 0.0833,
                 'Interest de Cesantias' => 0.01,
-                'Prima' => 0.0833333,
+                'Prima' => 0.0833,
                 'Vacation' => 0.0417,
                 'Indemnization' => 0.056,
             ],
@@ -95,7 +95,6 @@ class AccruedProvisionHelper
 
     public static function getCountryProvisionSummary(string $clusterName): array
     {
-        // Handle modified cluster names from ProvisionReportsResource
         $originalClusterName = $clusterName;
         $isIntegral = null;
         
@@ -107,11 +106,165 @@ class AccruedProvisionHelper
             $isIntegral = 0;
         }
 
-        $query = Quotation::where('cluster_name', $originalClusterName)
+        if (strtolower($originalClusterName) === 'intermedianocolombiasas') {
+            if ($isIntegral === 1) {
+                return self::getColombiaIntegralProvisionSummary($originalClusterName);
+            } elseif ($isIntegral === 0) {
+                return self::getColombiaOrdinaryProvisionSummary($originalClusterName);
+            } else {
+                return self::getColombiaCombinedProvisionSummary($originalClusterName);
+            }
+        }
+
+        return self::getDefaultProvisionSummary($originalClusterName, $isIntegral);
+    }
+
+
+    private static function getColombiaIntegralProvisionSummary(string $clusterName): array
+    {
+        $quotations = Quotation::where('cluster_name', $clusterName)
+            ->where('is_payroll', 1)
+            ->where('is_integral', 1)
+            ->whereNull('deleted_at')
+            ->get();
+        
+        $totalAccruedLocal = 0;
+        $provisionTypes = [];
+        $currencyInfo = null;
+
+        foreach ($quotations as $quotation) {
+            if (!$currencyInfo) {
+                $currencyInfo = [
+                    'name' => $quotation->currency_name,
+                    'acronym' => $quotation->exchange_acronym
+                ];
+            }
+
+            $grossIncome = self::calculateColombiaIntegralGrossIncome($quotation);
+            $multipliers = self::CLUSTER_MULTIPLIERS[strtolower($clusterName)]['integral'] ?? [];
+
+            foreach ($multipliers as $type => $multiplier) {
+                $localAmount = $multiplier * $grossIncome;
+                $totalAccruedLocal += $localAmount;
+
+                if (!isset($provisionTypes[$type])) {
+                    $provisionTypes[$type] = ['local' => 0];
+                }
+                $provisionTypes[$type]['local'] += $localAmount;
+            }
+        }
+
+        $totalPaidLocal = PaymentProvision::where('cluster_name', $clusterName)->sum('amount');
+        $netBalanceLocal = $totalAccruedLocal - $totalPaidLocal;
+        
+        return [
+            'currency' => $currencyInfo,
+            'total_quotations' => $quotations->count(),
+            'local' => [
+                'accrued' => $totalAccruedLocal,
+                'paid' => $totalPaidLocal,
+                'balance' => $netBalanceLocal
+            ],
+            'provisionTypes' => $provisionTypes
+        ];
+    }
+    private static function getColombiaOrdinaryProvisionSummary(string $clusterName): array
+    {
+        $quotations = Quotation::where('cluster_name', $clusterName)
+            ->where('is_payroll', 1)
+            ->where('is_integral', 0)
+            ->whereNull('deleted_at')
+            ->get();
+        
+        $totalAccruedLocal = 0;
+        $provisionTypes = [];
+        $currencyInfo = null;
+
+        foreach ($quotations as $quotation) {
+            if (!$currencyInfo) {
+                $currencyInfo = [
+                    'name' => $quotation->currency_name,
+                    'acronym' => $quotation->exchange_acronym
+                ];
+            }
+
+            $grossIncome = self::calculateColombiaOrdinaryGrossIncome($quotation);
+            $multipliers = self::CLUSTER_MULTIPLIERS[strtolower($clusterName)]['ordinary'] ?? [];
+
+            foreach ($multipliers as $type => $multiplier) {
+                $localAmount = $multiplier * $grossIncome;
+                $totalAccruedLocal += $localAmount;
+
+                if (!isset($provisionTypes[$type])) {
+                    $provisionTypes[$type] = ['local' => 0];
+                }
+                $provisionTypes[$type]['local'] += $localAmount;
+            }
+        }
+
+        $totalPaidLocal = PaymentProvision::where('cluster_name', $clusterName)->sum('amount');
+        $netBalanceLocal = $totalAccruedLocal - $totalPaidLocal;
+        
+        return [
+            'currency' => $currencyInfo,
+            'total_quotations' => $quotations->count(),
+            'local' => [
+                'accrued' => $totalAccruedLocal,
+                'paid' => $totalPaidLocal,
+                'balance' => $netBalanceLocal
+            ],
+            'provisionTypes' => $provisionTypes
+        ];
+    }
+
+    private static function getColombiaCombinedProvisionSummary(string $clusterName): array
+    {
+        $integralSummary = self::getColombiaIntegralProvisionSummary($clusterName);
+        $ordinarySummary = self::getColombiaOrdinaryProvisionSummary($clusterName);
+
+        $combinedProvisions = [];
+        foreach ($integralSummary['provisionTypes'] as $type => $data) {
+            $combinedProvisions[$type] = ['local' => $data['local']];
+        }
+        foreach ($ordinarySummary['provisionTypes'] as $type => $data) {
+            if (isset($combinedProvisions[$type])) {
+                $combinedProvisions[$type]['local'] += $data['local'];
+            } else {
+                $combinedProvisions[$type] = ['local' => $data['local']];
+            }
+        }
+
+        return [
+            'currency' => $integralSummary['currency'] ?: $ordinarySummary['currency'],
+            'total_quotations' => $integralSummary['total_quotations'] + $ordinarySummary['total_quotations'],
+            'local' => [
+                'accrued' => $integralSummary['local']['accrued'] + $ordinarySummary['local']['accrued'],
+                'paid' => $integralSummary['local']['paid'] + $ordinarySummary['local']['paid'],
+                'balance' => $integralSummary['local']['balance'] + $ordinarySummary['local']['balance']
+            ],
+            'provisionTypes' => $combinedProvisions
+        ];
+    }
+
+    private static function calculateColombiaIntegralGrossIncome($quotation): float
+    {
+        return ($quotation->gross_salary ?? 0) + ($quotation->bonus ?? 0);
+    }
+    private static function calculateColombiaOrdinaryGrossIncome($quotation): float
+    {
+        return ($quotation->gross_salary ?? 0) + 
+               ($quotation->bonus ?? 0) + 
+               ($quotation->home_allowance ?? 0) + 
+               ($quotation->transport_allowance ?? 0) + 
+               ($quotation->medical_allowance ?? 0) + 
+               ($quotation->internet_allowance ?? 0);
+    }
+    private static function getDefaultProvisionSummary(string $clusterName, ?int $isIntegral): array
+    {
+        $query = Quotation::where('cluster_name', $clusterName)
             ->where('is_payroll', 1)
             ->whereNull('deleted_at');
             
-        // If we have a specific integral type, filter by it
         if ($isIntegral !== null) {
             $query->where('is_integral', $isIntegral);
         }
@@ -121,11 +274,6 @@ class AccruedProvisionHelper
         $totalAccruedLocal = 0;
         $provisionTypes = [];
         $currencyInfo = null;
-
-        // \Log::info("Processing cluster: {$clusterName}");
-        // \Log::info("Found quotations: " . $quotations->count());
-        // \Log::info("Cluster name in lowercase: " . strtolower($clusterName));
-        // \Log::info("Available multipliers: " . json_encode(array_keys(self::CLUSTER_MULTIPLIERS)));
 
         foreach ($quotations as $quotation) {
             if (!$currencyInfo) {
@@ -149,18 +297,7 @@ class AccruedProvisionHelper
                 ($quotation->uvt_amount ?? 0) +
                 ($quotation->payroll_cost_medical_insurance ?? 0);
 
-            $clusterMultipliers = self::CLUSTER_MULTIPLIERS[strtolower($originalClusterName)] ?? [];
-
-            if (strtolower($originalClusterName) === 'intermedianocolombiasas' && isset($clusterMultipliers['integral']) && isset($clusterMultipliers['ordinary'])) {
-                $quotationType = $quotation->is_integral ? 'integral' : 'ordinary';
-                $multipliers = $clusterMultipliers[$quotationType] ?? [];
-            } else {
-                $multipliers = $clusterMultipliers;
-            }
-
-            // \Log::info("Cluster: {$clusterName}, Quotation Type: " . ($quotation->is_integral ? 'integral' : 'ordinary'));
-            // \Log::info("Multipliers found: " . count($multipliers));
-            // \Log::info("Gross income: {$grossIncome}");
+            $multipliers = self::CLUSTER_MULTIPLIERS[strtolower($clusterName)] ?? [];
 
             foreach ($multipliers as $type => $multiplier) {
                 $localAmount = $multiplier * $grossIncome;
@@ -173,14 +310,8 @@ class AccruedProvisionHelper
             }
         }
 
-        \Log::info("Final total - Local: {$totalAccruedLocal}");
-
-        $totalPaidLocal = PaymentProvision::where('cluster_name', $originalClusterName)->sum('amount');
+        $totalPaidLocal = PaymentProvision::where('cluster_name', $clusterName)->sum('amount');
         $netBalanceLocal = $totalAccruedLocal - $totalPaidLocal;
-        
-        // Debug: Final summary
-        \Log::info("=== FINAL SUMMARY ===");
-        \Log::info("Local - Accrued: {$totalAccruedLocal}, Paid: {$totalPaidLocal}, Balance: {$netBalanceLocal}");
         
         return [
             'currency' => $currencyInfo,
