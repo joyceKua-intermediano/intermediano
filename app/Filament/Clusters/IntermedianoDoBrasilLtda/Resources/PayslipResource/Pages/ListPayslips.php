@@ -30,11 +30,10 @@ class ListPayslips extends ListRecords
                         ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoDoBrasilLtda'))
                         ->required(),
                     DatePicker::make('payslip_period')
-                        ->displayFormat('Y-m')
-                        ->placeholder('Payslip Period')
-                        ->extraInputAttributes(['type' => 'month'])
-
-                        ->native(),
+                        ->displayFormat('Y-m-d')
+                        ->placeholder('yy-mm-dd')
+                        ->native(false)
+                        ->placeholder('Payslip Period'),
 
                     FileUpload::make('file_path')
                         ->label('Payslip File')

@@ -31,11 +31,10 @@ class ListPayslips extends ListRecords
                         ->relationship('employee', 'name', fn(Builder $query) => $query->where('company', 'IntermedianoCanada'))
                         ->required(),
                     DatePicker::make('payslip_period')
-                        ->displayFormat('Y-m')
-                        ->placeholder('Payslip Period')
-                        ->extraInputAttributes(['type' => 'month'])
-
-                        ->native(),
+                        ->displayFormat('Y-m-d')
+                        ->placeholder('yy-mm-dd')
+                        ->native(false)
+                        ->placeholder('Payslip Period'),
 
                     FileUpload::make('file_path')
                         ->label('Payslip File')
@@ -52,7 +51,7 @@ class ListPayslips extends ListRecords
                 ])
                 ->action(function (array $data) {
                     $cluster = $data['cluster'];
-                    $filePath = $data['file_path']; 
+                    $filePath = $data['file_path'];
                     $fileName = basename($filePath);
                     $newPath = "payslips/{$cluster}/{$fileName}";
                     Storage::disk('r2')->move($filePath, $newPath);
