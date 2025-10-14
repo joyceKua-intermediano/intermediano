@@ -47,7 +47,7 @@ class ListPayslips extends ListRecords
                         ->visibility('public')
                         ->required(),
                     Hidden::make('cluster')
-                        ->default('IntermedianoDoBrasilLtda'),
+                        ->default('IntermedianoCanada'),
                 ])
                 ->action(function (array $data) {
                     $cluster = $data['cluster'];
