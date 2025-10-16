@@ -65,7 +65,7 @@ class LeadResource extends Resource
                         ->maxLength(255),
 
                     Forms\Components\Select::make('lead_status')->required()->live()
-                    ->label(__('Lead Status'))->options(Lead::LEAD_STATUS),
+                        ->label(__('Lead Status'))->options(Lead::LEAD_STATUS),
 
                     Forms\Components\Textarea::make('close_reason')->label(__('Close Reason'))
                         ->hidden(function (Get $get) {
@@ -90,8 +90,8 @@ class LeadResource extends Resource
                     Forms\Components\Toggle::make('a2t')->label(__('A2T')),
 
                     Forms\Components\TextInput::make('estimated_tender_value')->label(__('Estimated Tender Value'))
-                    ->numeric()
-                    ->rules(['max:100000000']),
+                        ->numeric()
+                        ->rules(['max:100000000']),
 
                     Forms\Components\DatePicker::make('estimated_close_date')->label(__('Close Date')),
 
@@ -147,7 +147,7 @@ class LeadResource extends Resource
                     Forms\Components\Select::make('contact_id')->label(__('Lead Contact'))
                         // ->relationship('contact', 'contact_name')
                         ->options(function (Get $get, Set $set) {
-                            $contacts = Contact::when($get('company_id'), function ($query) use ($get)  {
+                            $contacts = Contact::when($get('company_id'), function ($query) use ($get) {
                                 $query->where('company_id', $get('company_id'));
                             })->pluck("contact_name", "id");
 
@@ -156,7 +156,7 @@ class LeadResource extends Resource
                         ->searchable()->preload()
                         ->live()
                         ->afterStateUpdated(function (Get $get, Set $set) {
-                            
+
                             if ($get("contact_id")) {
                                 $contact = Contact::find($get("contact_id"));
                                 if ($contact && $contact->company_id) {
@@ -179,7 +179,7 @@ class LeadResource extends Resource
                             ])->columns(4)
                         ])
                         ->createOptionUsing(function (Get $get, array $data): int {
-                         
+
                             if ($get('company_id')) {
                                 $data['company_id'] = $get('company_id');
                             }
@@ -189,13 +189,13 @@ class LeadResource extends Resource
                         ->createOptionModalHeading(__("Contact Registration")),
 
                     Forms\Components\Select::make('opportunity_owner')->label(__('Lead Owner'))->relationship("owner", "name")
-                        ->searchable()->preload(),                   
+                        ->searchable()->preload(),
 
                     // Forms\Components\TextInput::make('contact_name')->label(__('Contact name'))
                     //     ->maxLength(255),
 
-                    
-                    
+
+
                 ])->columns(2)
             ]);
     }
@@ -206,12 +206,12 @@ class LeadResource extends Resource
             ->columns([
                 TextColumn::make("id")->label(__("ID"))->sortable(),
                 Tables\Columns\TextColumn::make('lead')->label(__('Opportunity name'))
-                    ->searchable(),
+                    ->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('country')->toggleable(isToggledHiddenByDefault: false)->label(__('Country'))
                     ->searchable(),
                 Tables\Columns\SelectColumn::make('opportunity_type')->label(__('Opportunity type'))->options(Lead::OPPORTUNITY_TYPES)->disabled()
                     ->searchable(),
-                
+
                 Tables\Columns\IconColumn::make('a2t')->label(__('A2T'))
                     ->boolean(),
 
@@ -219,7 +219,8 @@ class LeadResource extends Resource
 
                 Tables\Columns\TextColumn::make('lead_source')->label(__('Lead Source'))
                     ->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\SelectColumn::make('lead_status')->label(__('Lead Status')
+                Tables\Columns\SelectColumn::make('lead_status')->label(
+                    __('Lead Status')
                 )->options(Lead::LEAD_STATUS)->disabled()
                     ->searchable(),
 
@@ -238,8 +239,9 @@ class LeadResource extends Resource
                     ->date("d/m/Y")
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
-                
+
                 Tables\Columns\TextColumn::make('owner.name')->label(__('Lead Owner'))
+                    ->searchable()
                     ->sortable(),
 
                 // Tables\Columns\TextColumn::make('company.name')->toggleable(isToggledHiddenByDefault: false)->label(__('Company'))
@@ -247,7 +249,7 @@ class LeadResource extends Resource
                 //     ->sortable(),
                 // Tables\Columns\TextColumn::make('lead')->toggleable(isToggledHiddenByDefault: false)->label(__('Lead'))
                 //     ->searchable(),
-               
+
                 // Tables\Columns\TextColumn::make('created_at')->label(__('Created at'))
                 //     ->dateTime()
                 //     ->sortable()

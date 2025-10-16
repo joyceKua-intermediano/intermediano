@@ -113,16 +113,17 @@ class CompanyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label(__("Company Name"))
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('country')->label(__("Country"))
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('country')->label(__("Country"))->sortable()
                     ->searchable()->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('industry_field.name')->label(__("Field of industry"))->toggleable(isToggledHiddenByDefault: false),
+                Tables\Columns\TextColumn::make('industry_field.name')->label(__("Field of industry"))->sortable()->searchable()->toggleable(isToggledHiddenByDefault: false),
                
                 Tables\Columns\TextColumn::make('website')->label(__("Website"))
                     ->searchable(),
-                Tables\Columns\TextColumn::make(name: 'contact_fullname')->label(__("Contact")),
-                Tables\Columns\TextColumn::make(name: 'main_contact.position')->label(__("Job Title")),
-                Tables\Columns\TextColumn::make(name: 'main_contact.email')->label(__("Email")),
+                Tables\Columns\TextColumn::make(name: 'contact_fullname')->label(__("Contact"))->sortable()->searchable(),
+                Tables\Columns\TextColumn::make(name: 'main_contact.position')->label(__("Job Title"))->sortable()->searchable(),
+                Tables\Columns\TextColumn::make(name: 'main_contact.email')->label(__("Email"))->sortable()->searchable(),
                 Tables\Columns\TextColumn::make(name: 'main_contact.mobile')->label(__("Mobile")),
                 // Tables\Columns\TextColumn::make(name: 'main_contact.whatsapp')->label(__("Whatsapp")),
 
