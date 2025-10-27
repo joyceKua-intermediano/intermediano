@@ -27,6 +27,7 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Get;
 
 
@@ -59,6 +60,18 @@ class PartnerQuotationResource extends Resource
                     ->label('Country')
                     ->reactive()
                     ->relationship('country', 'name'),
+                Select::make('is_integral')
+                    ->live()
+                    ->required()
+                    ->label('Type of Payroll')
+                    ->visible(
+                        fn(callable $get) =>
+                        \App\Models\Country::find($get('country_id'))?->name === 'Colombia'
+                    )
+                    ->options([
+                        '0' => 'Ordinary',
+                        '1' => 'Integral',
+                    ]),
                 // Forms\Components\Select::make('country_id')
                 //     ->label('Country')
                 //     ->relationship('country', 'name', function ($query) {
@@ -197,6 +210,10 @@ class PartnerQuotationResource extends Resource
                     TextInput::make('medical_insurance')->default(0)->label('Medical Insurance (%)'),
 
                 ]),
+                // Colombia
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Colombia', [
+                    TextInput::make('operational_costs')->label('Operational Costs'),
+                ]),
                 Forms\Components\Hidden::make(name: 'cluster_name')
                     ->default('PartnerCanada')
                     ->label('PartnerCanada'),
@@ -262,6 +279,7 @@ class PartnerQuotationResource extends Resource
                     ->modal()
                     ->modalSubmitAction(false)
                     ->modalContent(function ($record) {
+                        $isIntegral = $record->is_integral;
                         $viewModal = [
                             'Panama' => 'filament.quotations.panama_modal',
                             'Nicaragua' => 'filament.quotations.nicaragua_modal',
@@ -269,6 +287,8 @@ class PartnerQuotationResource extends Resource
                             'Brazil' => 'filament.quotations.brasil_modal',
                             'Costa Rica' => 'filament.quotations.costa_rica_modal',
                             'Mexico' => 'filament.quotations.mexico_modal',
+                            'Colombia' => $isIntegral ? 'filament.quotations.integral_modal' : 'filament.quotations.ordinary_modal',
+
                         ];
                         $viewModal = $viewModal[$record->country->name] ?? null;
                         return view($viewModal, [
@@ -290,6 +310,7 @@ class PartnerQuotationResource extends Resource
                     ->color('success')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
+                        $isIntegral = $record->is_integral;
                         $pdfPages = [
                             'Panama' => 'pdf.panama_quotation',
                             'Nicaragua' => 'pdf.nicaragua_quotation',
@@ -297,6 +318,8 @@ class PartnerQuotationResource extends Resource
                             'Brazil' => 'pdf.brasil_quotation',
                             'Costa Rica' => 'pdf.costa_rica_quotation',
                             'Mexico' => 'pdf.mexico_quotation',
+                            'Colombia' => $isIntegral ? 'pdf.integral_quotation' : 'pdf.ordinary_quotation',
+
                         ];
                         $pdfPage = $pdfPages[$record->country->name] ?? null;
 
