@@ -26,7 +26,7 @@ if (!function_exists('calculateMexicoQuotation')) {
             $record->bonus +
             $record->transport_allowance +
             $record->food_allowance;
-        $payrollTax = $totalGrossIncome * 0.04;
+        $payrollTax = $totalGrossIncome * 0.03; // request to reduce 1% tax value
         $workRisk = $totalGrossIncome * 0.0266;
         $fixContribution = $totalGrossIncome * 0.0252;
         $cashBenefits = $totalGrossIncome * 0.0070;
