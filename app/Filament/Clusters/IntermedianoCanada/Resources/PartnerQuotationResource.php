@@ -192,6 +192,11 @@ class PartnerQuotationResource extends Resource
                     TextInput::make('transportation')->label('Transportation Tickets'),
                     TextInput::make('operational_costs')->label('Operational Costs'),
                 ]),
+                // Costa Rica
+                PayrollCostsFormHelper::getPayrollCostsFieldset('Costa Rica', [
+                    TextInput::make('medical_insurance')->default(0)->label('Medical Insurance (%)'),
+
+                ]),
                 Forms\Components\Hidden::make(name: 'cluster_name')
                     ->default('PartnerCanada')
                     ->label('PartnerCanada'),
@@ -261,7 +266,8 @@ class PartnerQuotationResource extends Resource
                             'Panama' => 'filament.quotations.panama_modal',
                             'Nicaragua' => 'filament.quotations.nicaragua_modal',
                             'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
-                            'Brazil' => 'filament.quotations.brasil_modal'
+                            'Brazil' => 'filament.quotations.brasil_modal',
+                            'Costa Rica' => 'filament.quotations.costa_rica_modal',
                         ];
                         $viewModal = $viewModal[$record->country->name] ?? null;
                         return view($viewModal, [
@@ -287,7 +293,8 @@ class PartnerQuotationResource extends Resource
                             'Panama' => 'pdf.panama_quotation',
                             'Nicaragua' => 'pdf.nicaragua_quotation',
                             'Dominican Republic' => 'pdf.dominican_republic_quotation',
-                            'Brazil' => 'pdf.brasil_quotation'
+                            'Brazil' => 'pdf.brasil_quotation',
+                            'Costa Rica' => 'pdf.costa_rica_quotation',
                         ];
                         $pdfPage = $pdfPages[$record->country->name] ?? null;
 
