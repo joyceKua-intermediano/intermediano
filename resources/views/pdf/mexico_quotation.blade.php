@@ -323,7 +323,7 @@
             <td class="p-4">USD</td>
         </tr>
         <tr class="">
-            <th class="p-4 text-left">4.0% Payroll Tax - 2025</th>
+            <th class="p-4 text-left">3.0% Payroll Tax - 2025</th>
             <td class="p-4 space-between">
                 <span class="currencyAlignment"> {{ $record->currency_name }}</span>
                 <span class="recordAlignment">

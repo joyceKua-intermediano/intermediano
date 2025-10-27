@@ -143,7 +143,7 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-1 gap-6 mt-4">
         <div class="flex justify-between p-2">
-            <span class="font-medium text-gray-600 	w-2/5">4.0% Payroll Tax - 2025</span>
+            <span class="font-medium text-gray-600 	w-2/5">3.0% Payroll Tax - 2025</span>
             <div class="flex justify-between w-40">
                 <span class="mr-4">
                     {{ $record->currency_name }}
