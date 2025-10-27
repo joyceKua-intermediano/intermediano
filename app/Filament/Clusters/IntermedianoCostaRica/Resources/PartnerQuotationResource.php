@@ -248,6 +248,7 @@ class PartnerQuotationResource extends Resource
                             'Panama' => 'filament.quotations.panama_modal',
                             'Nicaragua' => 'filament.quotations.nicaragua_modal',
                             'Dominican Republic' => 'filament.quotations.dominican_republic_modal',
+                            'Costa Rica' => 'filament.quotations.costa_rica_modal',
                         ];
                         $viewModal = $viewModal[$record->country->name] ?? null;
                         return view($viewModal, [
@@ -273,6 +274,7 @@ class PartnerQuotationResource extends Resource
                             'Panama' => 'pdf.panama_quotation',
                             'Nicaragua' => 'pdf.nicaragua_quotation',
                             'Dominican Republic' => 'pdf.dominican_republic_quotation',
+                            'Costa Rica' => 'pdf.costa_rica_quotation',
                         ];
                         $pdfPage = $pdfPages[$record->country->name] ?? null;
 
