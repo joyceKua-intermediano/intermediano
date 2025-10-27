@@ -219,7 +219,7 @@
         {{-- start --}}
         <tr>
             <td></td>
-            <th>4.0% Payroll Tax - 2025</th>
+            <th>3.0% Payroll Tax - 2025</th>
             <td align="right"> {{ number_format($quotationDetails['payrollTax'], 2) }}</td>
             <td align="right">{{ number_format($quotationDetails['payrollTax'] / $record->exchange_rate, 2) }}</td>
 
