@@ -5,9 +5,8 @@ if (!function_exists('calculateBrasilQuotation')) {
     function calculateBrasilQuotation($record, $previousRecords)
     {
         $isPartner = Str::contains($record->cluster_name, 'Partner');
-        $checkDate = date("Y-m-d");
-        $setDateforNewFormula = "2025-10-30";
-
+        $createdDate = $record->created_at->format('Y-m-d');
+        $setDateforNewFormula = "2025-10-29";
         $previousSalary13th = 0;
         $previousVacation = 0;
         $previousVacationBonus = 0;
@@ -85,7 +84,7 @@ if (!function_exists('calculateBrasilQuotation')) {
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
         if ($isPartner) {
-            $isNewFormula = (new DateTime($setDateforNewFormula)) >= (new DateTime($checkDate));
+            $isNewFormula =$setDateforNewFormula > $createdDate;
             if ($isNewFormula) {
                 $irpjSubValue = ($fee + $bankFee) * .25;
                 $csll = ($fee + $bankFee) * .09;
@@ -93,6 +92,7 @@ if (!function_exists('calculateBrasilQuotation')) {
                 $totalInvoice = ($subTotal + $totalIrpj) / 0.95;
                 $iss = $totalInvoice - ($subTotal + $totalIrpj);
             } else {
+
                 $irpjSubValue = ($fee + $bankFee) * .25;
                 $csll = ($fee + $bankFee) * .09;
                 $totalIrpj = $irpjSubValue + $csll;
