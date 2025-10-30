@@ -5,7 +5,8 @@ if (!function_exists('calculateBrasilQuotation')) {
     function calculateBrasilQuotation($record, $previousRecords)
     {
         $isPartner = Str::contains($record->cluster_name, 'Partner');
-
+        $createdDate = $record->created_at->format('Y-m-d');
+        $setDateforNewFormula = "2025-10-29";
         $previousSalary13th = 0;
         $previousVacation = 0;
         $previousVacationBonus = 0;
@@ -83,13 +84,21 @@ if (!function_exists('calculateBrasilQuotation')) {
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
         if ($isPartner) {
-            $irpjSubValue = ($fee + $bankFee) * .25;
-            $csll = ($fee + $bankFee) * .09;
-            $totalIrpj = $irpjSubValue + $csll;
+            $isNewFormula =$setDateforNewFormula > $createdDate;
+            if ($isNewFormula) {
+                $irpjSubValue = ($fee + $bankFee) * .25;
+                $csll = ($fee + $bankFee) * .09;
+                $totalIrpj = $irpjSubValue + $csll;
+                $totalInvoice = ($subTotal + $totalIrpj) / 0.95;
+                $iss = $totalInvoice - ($subTotal + $totalIrpj);
+            } else {
 
-            $iss = 0.0583 * ($subTotal + $totalIrpj);
-            $totalInvoice = $subTotal + $totalIrpj + $iss;
-
+                $irpjSubValue = ($fee + $bankFee) * .25;
+                $csll = ($fee + $bankFee) * .09;
+                $totalIrpj = $irpjSubValue + $csll;
+                $iss = 0.05 * ($subTotal + $totalIrpj);
+                $totalInvoice = $subTotal + $totalIrpj + $iss;
+            }
         } else {
             $municipalTax = 0 * $subTotal;
             $servicesTaxes = ($subTotalGrossPayroll + $fee) * 0.0695;
