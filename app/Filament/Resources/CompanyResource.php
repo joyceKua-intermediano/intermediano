@@ -121,9 +121,9 @@ class CompanyResource extends Resource
                
                 Tables\Columns\TextColumn::make('website')->label(__("Website"))
                     ->searchable(),
-                Tables\Columns\TextColumn::make(name: 'contact_fullname')->label(__("Contact"))->sortable()->searchable(),
-                Tables\Columns\TextColumn::make(name: 'main_contact.position')->label(__("Job Title"))->sortable()->searchable(),
-                Tables\Columns\TextColumn::make(name: 'main_contact.email')->label(__("Email"))->sortable()->searchable(),
+                Tables\Columns\TextColumn::make(name: 'contact_fullname')->label(__("Contact")),
+                Tables\Columns\TextColumn::make(name: 'main_contact.position')->label(__("Job Title")),
+                Tables\Columns\TextColumn::make(name: 'main_contact.email')->label(__("Email")),
                 Tables\Columns\TextColumn::make(name: 'main_contact.mobile')->label(__("Mobile")),
                 // Tables\Columns\TextColumn::make(name: 'main_contact.whatsapp')->label(__("Whatsapp")),
 
