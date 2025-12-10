@@ -63,7 +63,7 @@ class ProvisionReportsResource extends Resource
                 //     ->sortable(),
 
                 Tables\Columns\TextColumn::make('net_provision_balance_local')
-                    ->label('Accurued Balance (Local)')
+                    ->label('Accrued Balance (Local)')
                     ->getStateUsing(function ($record) {
                         $summary = AccruedProvisionHelper::getCountryProvisionSummary($record->cluster_name);
                         $currency = $summary['currency']['name'] ?? 'USD';

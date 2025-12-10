@@ -288,7 +288,9 @@ class PartnerQuotationResource extends Resource
                             'Costa Rica' => 'filament.quotations.costa_rica_modal',
                             'Mexico' => 'filament.quotations.mexico_modal',
                             'Colombia' => $isIntegral ? 'filament.quotations.integral_modal' : 'filament.quotations.ordinary_modal',
-
+                            'Canada' => 'filament.quotations.canada_modal',
+                            'Ecuador' => 'filament.quotations.ecuador_modal',
+                            'Argentina' => 'filament.quotations.argentina_modal',
                         ];
                         $viewModal = $viewModal[$record->country->name] ?? null;
                         return view($viewModal, [
@@ -319,7 +321,9 @@ class PartnerQuotationResource extends Resource
                             'Costa Rica' => 'pdf.costa_rica_quotation',
                             'Mexico' => 'pdf.mexico_quotation',
                             'Colombia' => $isIntegral ? 'pdf.integral_quotation' : 'pdf.ordinary_quotation',
-
+                            'Canada' => 'pdf.canada_quotation',
+                            'Ecuador' => 'pdf.ecuador_quotation',
+                            'Argentina' => 'pdf.argentina_quotation'
                         ];
                         $pdfPage = $pdfPages[$record->country->name] ?? null;
 
