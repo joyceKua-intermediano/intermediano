@@ -109,8 +109,6 @@ $type = $isAdmin ? 'admin' : 'employee';
                 $record->employee->consultant->employeer === 'company: Intermediano do Brasil Ltda.'
                 );
             @endphp        
-            
-            
             @if($isBrazilEmployer)
                 @include('pdf.brasil_quotation', ['record' => $record->quotation, 'hideHeader' =>  true])
             @else
