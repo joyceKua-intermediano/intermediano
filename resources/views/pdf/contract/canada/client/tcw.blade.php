@@ -30,9 +30,10 @@ $contractCreatedDate = $record->created_date;
 $signatureExists = Storage::disk('private')->exists($record->signature);
 $adminSignaturePath = 'signatures/admin/admin_' . $record->id . '.webp';
 $adminSignatureExists = Storage::disk('private')->exists($adminSignaturePath);
-$adminSignedBy = $record->user->name ?? '';
+$currentUser = $currentUser ?? auth()->user() ?? $record->user ?? null;
+$adminSignedBy = $currentUser->name ?? '';
 $adminSignedByPosition = $adminSignedBy === 'Fernando Guiterrez' ? 'CEO' : ($adminSignedBy === 'Paola Mac Eachen' ? 'VP' : 'Legal Representative');
-$user = auth()->user();
+$user = $currentUser;
 $isAdmin = $user instanceof \App\Models\User;
 $type = $isAdmin ? 'admin' : 'employee';
 @endphp

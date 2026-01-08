@@ -271,7 +271,13 @@ class CustomerContractResource extends Resource
                             'domain' => 'www.intermediano.com',
                             'mobile' => '+1 514 907 5393'
                         ];
-                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'is_pdf' => true, 'footerDetails' => $footerDetails]);
+                        $pdf = Pdf::loadView($pdfPage, [
+                            'record' => $record, 
+                            'poNumber' => $contractTitle, 
+                            'is_pdf' => true, 
+                            'footerDetails' => $footerDetails,
+                            'currentUser' => auth()->user()
+                        ]);
                         return response()->streamDownload(
                             fn() => print ($pdf->output()),
                             $fileName . '.pdf'
