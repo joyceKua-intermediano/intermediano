@@ -7,6 +7,7 @@ if (!function_exists('calculateBrasilQuotation')) {
         $isPartner = Str::contains($record->cluster_name, 'Partner');
         $createdDate = $record->created_at->format('Y-m-d');
         $setDateforNewFormula = "2025-10-29";
+        $setDateforNewFormula2026 = "2026-01-09";
         $previousSalary13th = 0;
         $previousVacation = 0;
         $previousVacationBonus = 0;
@@ -85,13 +86,20 @@ if (!function_exists('calculateBrasilQuotation')) {
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
         if ($isPartner) {
             $isNewFormula =$setDateforNewFormula > $createdDate;
+            $isNewFormula2026 =$setDateforNewFormula2026 > $createdDate;
             if ($isNewFormula) {
                 $irpjSubValue = ($fee + $bankFee) * .25;
                 $csll = ($fee + $bankFee) * .09;
                 $totalIrpj = $irpjSubValue + $csll;
                 $totalInvoice = ($subTotal + $totalIrpj) / 0.95;
                 $iss = $totalInvoice - ($subTotal + $totalIrpj);
-            } else {
+            } elseif($isNewFormula2026) {
+                $irpjSubValue = ($fee + $bankFee) * .25;
+                $csll = ($fee + $bankFee) * .09;
+                $totalIrpj = $irpjSubValue + $csll;
+                $iss = 0.0583 * ($subTotal + $totalIrpj);
+                $totalInvoice = $subTotal + $totalIrpj + $iss;
+            }else {
 
                 $irpjSubValue = ($fee + $bankFee) * .25;
                 $csll = ($fee + $bankFee) * .09;
