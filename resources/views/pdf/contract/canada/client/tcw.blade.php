@@ -140,6 +140,8 @@ $type = $isAdmin ? 'admin' : 'employee';
                                 ? storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp') 
                                 : url('/signatures/' . $type. '/' . $record->id . '/admin') . '?v=' . filemtime(storage_path('app/private/signatures/admin/admin_' . $record->id . '.webp')) 
                         }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
+                        @else
+                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);" />
                         @endif
                     </div>
                     <div style="width: 100%; border-bottom: 1px solid black;"></div>
@@ -148,17 +150,14 @@ $type = $isAdmin ? 'admin' : 'employee';
                 </td>
                 <td style="width: 50%; vertical-align: top; border: none; text-align:center !important;">
                     <h4>{{ $companyName }}</h4>
-                    @if($signatureExists)
-                    <div style="text-align: center; position: relative; height: 100px">
+                    <div style="text-align: center; position: relative; height: 100px;">
+                        @if($signatureExists)
                         <img src="{{ $is_pdf ? storage_path('app/private/' . $record->signature) : asset('storage/' . $record->employee_id) }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        @else
+                        <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; position: absolute; bottom: 25%; left: 50%; transform: translateX(-50%);">
+                        @endif
                     </div>
-
-                    @else
-                    <img src="{{ $is_pdf ? public_path('images/blank_signature.png') : asset('images/blank_signature.png') }}" alt="Signature" style="height: 50px; margin-top: 40px;">
-
-                    @endif
                     <div style="width: 100%; border-bottom: 1px solid black"></div>
-
                     <p style="margin-top: -30px;  text-align: center;">{{ $companyContactName }} {{ $companyContactSurname }} </p>
                     <p style="margin-top: -15px;  text-align: center;"> Authorized Responsible </p>
                 </td>
