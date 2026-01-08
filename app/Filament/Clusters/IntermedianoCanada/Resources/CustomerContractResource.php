@@ -6,6 +6,7 @@ use App\Filament\Clusters\IntermedianoCanada;
 use App\Filament\Clusters\IntermedianoCanada\Resources\CustomerContractResource\Pages;
 use App\Filament\Clusters\IntermedianoCanada\Resources\CustomerContractResource\RelationManagers;
 use App\Models\Contract;
+use App\Models\Consultant;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -50,7 +51,7 @@ class CustomerContractResource extends Resource
                     ->relationship(
                         'quotation',
                         'title',
-                        fn(Builder $query) => $query->where('cluster_name', 'IntermedianoCanada')->where('is_payroll', '0')
+                        fn(Builder $query) => $query->whereIn('cluster_name', ['IntermedianoCanada', 'PartnerCanada'])->where('is_payroll', '0')
                     )
                     ->required(),
                 Forms\Components\TextInput::make('country_work')
@@ -240,11 +241,21 @@ class CustomerContractResource extends Resource
 
                         ];
 
+                        $record->load(['employee', 'company', 'companyContact']);
+                        
+                        if (!$record->employee) {
+                            throw new \Exception('Employee not found for this contract.');
+                        }
+                        $consultant = Consultant::where('name', $record->employee->name)->first();
+                        if (!$consultant) {
+                            throw new \Exception('Consultant not found for employee: ' . $record->employee->name);
+                        } 
+                        $record->employee->consultant = $consultant;
+   
                         $pdfPage = $pdfPageMapping[$data['contractType']] ?? null;
                         if (!$pdfPage) {
                             throw new \Exception('Invalid contract type selected.');
                         }
-
                         $year = date('Y', strtotime($record->created_at));
                         $formattedId = sprintf('%04d', $record->id);
                         $tr = new GoogleTranslate();

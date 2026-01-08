@@ -104,7 +104,16 @@ $type = $isAdmin ? 'admin' : 'employee';
     @include('pdf.contract.layout.header')
     <main class="main-container" style='page-break-after: avoid'>
         <div style="margin-top: -30px !important">
-            @include('pdf.hong_kong_quotation', ['record' => $record->quotation, 'hideHeader' => true])
+            @php
+                $isBrazilEmployer = $record->employee->consultant && $record->employee->consultant->employeer && (
+                $record->employee->consultant->employeer === 'company: Intermediano do Brasil Ltda.'
+                );
+            @endphp        
+            @if($isBrazilEmployer)
+                @include('pdf.brasil_quotation', ['record' => $record->quotation, 'hideHeader' =>  true])
+            @else
+                @include('pdf.hong_kong_quotation', ['record' => $record->quotation, 'hideHeader' => true])
+            @endif
         </div>
 
         <p>In addition to the monthly fee, there may be additional costs required by law in the Country where the
@@ -149,7 +158,7 @@ $type = $isAdmin ? 'admin' : 'employee';
                     @endif
                     <div style="width: 100%; border-bottom: 1px solid black"></div>
 
-                    <p style="margin-top: -30px;  text-align: center;">{{ $companyContactName }} </p>
+                    <p style="margin-top: -30px;  text-align: center;">{{ $companyContactName }} {{ $companyContactSurname }} </p>
                     <p style="margin-top: -15px;  text-align: center;"> Authorized Responsible </p>
                 </td>
             </tr>
