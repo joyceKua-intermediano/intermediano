@@ -5,7 +5,12 @@ if (!function_exists('getContractModalContent')) {
     function getContractModalContent($record)
     {
         $contractQuotationType = $record->is_integral;
+        $TCWEmployeeIds = [70, 69, 68, 67, 66, 65, 63, 54];
+
         switch ($record->cluster_name) {
+            case in_array($record->employee_id, $TCWEmployeeIds):
+                $pdfPage = 'pdf.contract.brazil.2026_intermediano_labor_agreement_REV';
+                break;
             case 'IntermedianoDoBrasilLtda':
                 $companyTitle = 'Intermediano do Brasil Ltda.';
                 $pdfPage = $record->end_date == null ? 'pdf.contract.brazil.undefined_employee' : 'pdf.contract.brazil.defined_employee';
