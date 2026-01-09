@@ -269,7 +269,11 @@ class EmployeeContractResource extends Resource
                     ->action(function ($record) {
                         $createdAt = strtotime($record->created_at);
                         $comparisonDate = strtotime('2025-05-03');
+                        $TCWEmployeeIds = [70, 69, 68, 67, 66, 65, 63, 54];
                         switch (true) {
+                            case in_array($record->employee_id, $TCWEmployeeIds):
+                                $pdfPage = 'pdf.contract.brazil.2026_intermediano_labor_agreement_REV';
+                                break;
                             case $record->end_date === null && $createdAt <= $comparisonDate:
                                 $pdfPage = 'pdf.contract.brazil.undefined_employee';
                                 break;
