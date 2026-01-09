@@ -5,7 +5,7 @@ if (!function_exists('getContractModalContent')) {
     function getContractModalContent($record)
     {
         $contractQuotationType = $record->is_integral;
-        $TCWEmployeeIds = [70, 69, 68, 67, 66, 65, 63, 54];
+        $TCWEmployeeIds = [55, 56, 57, 58, 59, 60, 61, 62];
 
         switch ($record->cluster_name) {
             case in_array($record->employee_id, $TCWEmployeeIds):
