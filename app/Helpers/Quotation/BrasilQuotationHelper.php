@@ -6,8 +6,7 @@ if (!function_exists('calculateBrasilQuotation')) {
     {
         $isPartner = Str::contains($record->cluster_name, 'Partner');
         $createdDate = $record->created_at->format('Y-m-d');
-        $setDateforNewFormula = "2025-10-29";
-        $setDateforNewFormula2026 = "2026-01-09";
+
         $previousSalary13th = 0;
         $previousVacation = 0;
         $previousVacationBonus = 0;
@@ -84,28 +83,29 @@ if (!function_exists('calculateBrasilQuotation')) {
         $fee = $record->is_fix_fee ? $record->fee * $record->exchange_rate : ($isTcw ? $totalGrossIncome * ($record->fee / 100) : $subTotalGrossPayroll * ($record->fee / 100));
         $bankFee = $record->bank_fee * $record->exchange_rate;
         $subTotal = $subTotalGrossPayroll + $fee + $bankFee;
+
         if ($isPartner) {
-            $isNewFormula =$setDateforNewFormula > $createdDate;
-            $isNewFormula2026 =$setDateforNewFormula2026 > $createdDate;
-            if ($isNewFormula) {
+            $isOctober2025NewFormula =$createdDate >= "2025-10-29" && $createdDate < "2026-01-09";
+            $isJanuary2026NewFormula =$createdDate >= "2026-01-09";
+            if ($isOctober2025NewFormula) {
                 $irpjSubValue = ($fee + $bankFee) * .25;
                 $csll = ($fee + $bankFee) * .09;
                 $totalIrpj = $irpjSubValue + $csll;
-                $totalInvoice = ($subTotal + $totalIrpj) / 0.95;
-                $iss = $totalInvoice - ($subTotal + $totalIrpj);
-            } elseif($isNewFormula2026) {
+                $iss = 0.05 * ($subTotal + $totalIrpj);
+                $totalInvoice = $subTotal + $totalIrpj + $iss;
+            } elseif($isJanuary2026NewFormula) {
                 $irpjSubValue = ($fee + $bankFee) * .25;
                 $csll = ($fee + $bankFee) * .09;
                 $totalIrpj = $irpjSubValue + $csll;
                 $iss = 0.0583 * ($subTotal + $totalIrpj);
                 $totalInvoice = $subTotal + $totalIrpj + $iss;
             }else {
-
                 $irpjSubValue = ($fee + $bankFee) * .25;
                 $csll = ($fee + $bankFee) * .09;
                 $totalIrpj = $irpjSubValue + $csll;
-                $iss = 0.05 * ($subTotal + $totalIrpj);
-                $totalInvoice = $subTotal + $totalIrpj + $iss;
+                $totalInvoice = ($subTotal + $totalIrpj) / 0.95;
+                $iss = $totalInvoice - ($subTotal + $totalIrpj);
+
             }
         } else {
             $municipalTax = 0 * $subTotal;
