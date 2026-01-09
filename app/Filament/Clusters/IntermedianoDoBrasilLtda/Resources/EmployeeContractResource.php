@@ -269,7 +269,7 @@ class EmployeeContractResource extends Resource
                     ->action(function ($record) {
                         $createdAt = strtotime($record->created_at);
                         $comparisonDate = strtotime('2025-05-03');
-                        $TCWEmployeeIds = [70, 69, 68, 67, 66, 65, 63, 54];
+                        $TCWEmployeeIds = [55, 56, 57, 58, 59, 60, 61, 62];
                         switch (true) {
                             case in_array($record->employee_id, $TCWEmployeeIds):
                                 $pdfPage = 'pdf.contract.brazil.2026_intermediano_labor_agreement_REV';
