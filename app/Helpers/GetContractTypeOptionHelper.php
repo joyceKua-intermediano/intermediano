@@ -17,9 +17,9 @@ if (!function_exists('getContractTypeOptions')) {
             'ClientContractCanada' => [
                 'visible' => true,
                 'options' => [
-                    // 'tcw' => 'TCW',
+                    'tcw' => 'TCW',
                     // 'english_french' => 'English - French',
-                    'english' => 'English',
+                    // 'english' => 'English',
                 ],
             ],
         ];
