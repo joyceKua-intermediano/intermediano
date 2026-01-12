@@ -253,7 +253,13 @@ class ContractResource extends Resource
                             'domain' => $content['domain'],
                             'mobile' => $content['mobile']
                         ];
-                        $pdf = Pdf::loadView($pdfPage, ['record' => $record, 'poNumber' => $contractTitle, 'footerDetails' => $footerDetails, 'is_pdf' => true]);
+                        $pdf = Pdf::loadView($pdfPage, [
+                            'record' => $record, 
+                            'poNumber' => $contractTitle, 
+                            'footerDetails' => $footerDetails, 
+                            'is_pdf' => true,
+                            'currentUser' => auth()->user() // Pass the current logged-in user
+                        ]);
                         return response()->streamDownload(
                             fn() => print ($pdf->output()),
                             $fileName . '.pdf'
