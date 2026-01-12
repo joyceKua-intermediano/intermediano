@@ -309,20 +309,33 @@
                 <td style="width: 50%; vertical-align: top;">
 
                     <b>Clause 4 – Validity</b>
-                    <p> This employment contract is entered into for a fixed term, as provided for in Article 443, §2,
-                        of the Consolidation of Labor Laws (CLT), and its validity will be limited to the duration of
-                        the specific project for which the employee is hired, or until the end of the agreed period,
-                        which starts on inicial date, and ends on final date, without the need for prior notice for
-                        termination, should there be no renewal.</p>
+                    <p>
+                        This Agreement shall be for a period of 90 (ninety) days probation period, starting on
+                        {{ $employeeStartDate }}, being
+                        one period of 45 days that can be extended for
+                        more 45 days.</p>
+                    <p>
+                        After the probation period, the EMPLOYER shall
+                        notify the EMPLOYEE of any possible extension for
+                        undetermined period, when the agreement can be
+                        terminated at any time, at the initiative of both or
+                        one of the parties. </p>
+
                 </td>
                 <td style="width: 50%; vertical-align: top;">
 
                     <b>Cláusula 4ª – Da Vigência</b>
-                    <p> Este contrato de trabalho é celebrado por prazo determinado, conforme o disposto no artigo 443,
-                        §2°, da Consolidação das Leis do Trabalho (CLT), e terá sua vigência limitada à duração do
-                        projeto específico para o qual o empregado é contratado, ou ao término do período acordado, que
-                        é de data de início e terminando em data final, sem necessidade de aviso prévio para rescisão,
-                        caso não haja renovação.</p>
+                    <p>O presente contrato será pelo prazo determinado
+                        de 90 dias de experiência, a começar em
+                        {{ $employeeStartDate }}, sendo um prazo de 45 dias e podendo
+                        ser prorrogável por mais 45 dias. </p>
+                    <p> Após o prazo de período de experiência, deverá a
+                        EMPREGADORA comunicar expressamente o
+                        EMPREGADO se tem interesse na continuidade do
+                        contrato, que passará a viger por prazo
+                        indeterminado, quando também poderá ser
+                        rescindido a qualquer tempo, por iniciativa de
+                        ambas ou uma das partes.</p>
                 </td>
             </tr>
             <tr>
@@ -593,7 +606,7 @@
                         this section.</p>
 
 
-                
+
                 </td>
 
                 <td style="width: 50%; vertical-align: top;">
@@ -620,7 +633,7 @@
                         compensação será devida ao EMPREGADO pelo cumprimento de suas obrigações sob esta seção.</p>
 
 
-                 
+
 
                 </td>
             </tr>
@@ -636,13 +649,13 @@
         <table >
             <tr>
                 <td style="width: 50%; vertical-align: top;">
-                                        <p>Irrevocably appoint the EMPLOYER to be EMPLOYEE’S attorney in his name and on his behalf to
+                    <p>Irrevocably appoint the EMPLOYER to be EMPLOYEE’S attorney in his name and on his behalf to
                         execute and do any such instruments or things and generally to use EMPLOYEE’S name for the
                         purpose of giving to the EMPLOYER (or its nominee) the full benefit of the provisions of this
                         section. EMPLOYEE acknowledge in favour of third party a certificate in writing signed by any
                         director or the secretary of the EMPLOYER that any instrument or act falls within the authority
                         conferred shall be conclusive evidence that such is the case.</p>
-                                        <p>Agree to give all necessary assistance to the EMPLOYER, at the EMPLOYER’S reasonable cost, to
+                    <p>Agree to give all necessary assistance to the EMPLOYER, at the EMPLOYER’S reasonable cost, to
                         vest the Intellectual Property in the EMPLOYER or its nominees, to enable it to enforce its
                         Intellectual Property rights against third parties, to defend claims for infringement of third
                         party IP rights and to apply for registration of Intellectual Property, where appropriate
@@ -660,7 +673,7 @@
                 </td>
 
                 <td style="width: 50%; vertical-align: top;">
-                                        <p>Nomear irrevogavelmente o EMPREGADOR como seu procurador, autorizando-o a executar e tomar todas
+                    <p>Nomear irrevogavelmente o EMPREGADOR como seu procurador, autorizando-o a executar e tomar todas
                         as medidas necessárias para garantir que os benefícios desta seção sejam conferidos
                         integralmente ao EMPREGADOR (ou seus indicados). Um certificado por escrito, assinado por um
                         diretor ou secretário do EMPREGADOR, confirmando que um ato ou documento está dentro da
@@ -688,7 +701,7 @@
         @include('pdf.contract.layout.footer')
     </main>
 
-    
+
     @include('pdf.contract.layout.header')
     <main class="{{ $is_pdf ? 'is-pdf' : 'non-pdf' }}">
         <table >
@@ -740,7 +753,7 @@
         @include('pdf.contract.layout.footer')
     </main>
 
-        @include('pdf.contract.layout.header')
+    @include('pdf.contract.layout.header')
     <main class="{{ $is_pdf ? 'is-pdf' : 'non-pdf' }}">
         <table >
 
@@ -752,7 +765,7 @@
                     <p>Parágrafo Primeiro: Constituirão motivos para imediata e justa dispensa do EMPREGADO, aqueles previstos no art. 482 da CLT, dentre os quais deve-se destacar o desacato moral ou agressão física a qualquer Diretor ou superior hierárquico da EMPREGADORA, o desacato moral ou agressão física a qualquer EMPREGADO, parceiro ou terceiros que se relacionem com a EMPREGADORA, no local de trabalho, qualquer ato de indisciplina ou de insubordinação e a embriaguez no serviço.</p>
                 </td>
             </tr>
-                        <tr>
+            <tr>
                 <td style="width: 50%; vertical-align: top;">
                     <b>Clause 14 – Competent Court</b>
                     <p>	Pursuant to art. 651, of the CLT, the court of the District of City of Rio de Janeiro shall be competent to resolve any dispute arising from the AGREEMENT.</p>
