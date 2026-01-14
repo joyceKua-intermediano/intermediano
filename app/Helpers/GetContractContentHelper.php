@@ -9,6 +9,9 @@ if (!function_exists('getContractModalContent')) {
 
         switch ($record->cluster_name) {
             case in_array($record->employee_id, $TCWEmployeeIds):
+                $companyTitle = 'Intermediano do Brasil Ltda.';
+                $mobile = '+1 514-907-5393';
+                $address = '';
                 $pdfPage = 'pdf.contract.brazil.2026_intermediano_labor_agreement_REV';
                 break;
             case 'IntermedianoDoBrasilLtda':
